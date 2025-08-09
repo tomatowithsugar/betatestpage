@@ -10,7 +10,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
-        // Firebase 설정 (여기에 본인의 Firebase 설정을 입력하세요)
+        // Firebase 설정
         const firebaseConfig = {
             apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
             authDomain: "cart-witnessing-404c0.firebaseapp.com",
@@ -26,8 +26,21 @@
         const db = getFirestore(app);
 
         // 전역에서 사용할 수 있도록 window 객체에 저장
+        window.firebaseApp = app;
         window.db = db;
-        window.firestore = { collection, addDoc, getDocs, query, where, onSnapshot };
+        window.firestoreFunctions = {
+            collection,
+            addDoc,
+            getDocs,
+            query,
+            where,
+            onSnapshot
+        };
+
+        // DOM이 로드된 후 실행
+        window.addEventListener('DOMContentLoaded', function() {
+            window.initializeApp();
+        });
     </script>
     
     <style>
@@ -495,7 +508,7 @@
         });
 
         // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
+        window.initializeApp = function() {
             setCurrentWeekDates();
             loadDataFromFirestore();
             
@@ -505,16 +518,26 @@
                     login();
                 }
             });
-        });
+        };
 
-        // Firestore에서 데이터 로드
+        // Firestore에서 데이터 로드 (현재 주 데이터만)
         async function loadDataFromFirestore() {
             try {
-                const { collection, getDocs, onSnapshot } = window.firestore;
+                const { collection, onSnapshot, query, where } = window.firestoreFunctions;
                 const applicantsRef = collection(window.db, 'applicants');
                 
+                // 현재 주의 날짜 범위 계산
+                const currentWeekDates = getCurrentWeekDates();
+                
+                // 현재 주 데이터만 쿼리
+                const weekQuery = query(
+                    applicantsRef,
+                    where('actualDate', '>=', currentWeekDates.start),
+                    where('actualDate', '<=', currentWeekDates.end)
+                );
+                
                 // 실시간 데이터 감지
-                onSnapshot(applicantsRef, (querySnapshot) => {
+                onSnapshot(weekQuery, (querySnapshot) => {
                     // 데이터 초기화
                     days.forEach(day => {
                         zones.forEach(zone => {
@@ -539,17 +562,37 @@
             }
         }
 
+        // 현재 주의 날짜 범위 계산 (월요일~일요일)
+        function getCurrentWeekDates() {
+            const today = new Date();
+            const currentDay = today.getDay();
+            const monday = new Date(today);
+            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
+            monday.setDate(today.getDate() + daysFromMonday);
+            
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            
+            return {
+                start: monday.toISOString().split('T')[0], // YYYY-MM-DD
+                end: sunday.toISOString().split('T')[0]    // YYYY-MM-DD
+            };
+        }
+
         // Firestore에 데이터 저장
         async function saveToFirestore(name, day, zone) {
             try {
-                const { collection, addDoc } = window.firestore;
+                const { collection, addDoc } = window.firestoreFunctions;
                 const applicantsRef = collection(window.db, 'applicants');
+                
+                const actualDate = getActualDateForDay(day);
                 
                 await addDoc(applicantsRef, {
                     name: name,
                     day: day,
                     zone: zone,
-                    timestamp: new Date()
+                    actualDate: actualDate, // 실제 날짜 (2025-08-11)
+                    timestamp: new Date()   // 신청 시간
                 });
                 
                 return true;
@@ -690,6 +733,25 @@
                 closeRegistrationModal();
             }
         });
+
+        // 특정 요일의 실제 날짜 계산
+        function getActualDateForDay(dayName) {
+            const today = new Date();
+            const currentDay = today.getDay();
+            const monday = new Date(today);
+            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
+            monday.setDate(today.getDate() + daysFromMonday);
+            
+            const dayMap = {
+                '월요일': 0, '화요일': 1, '수요일': 2, '목요일': 3,
+                '금요일': 4, '토요일': 5, '일요일': 6
+            };
+            
+            const targetDate = new Date(monday);
+            targetDate.setDate(monday.getDate() + dayMap[dayName]);
+            
+            return targetDate.toISOString().split('T')[0]; // YYYY-MM-DD 형태
+        }
 
         // 메시지 표시 함수
         function showMessage(text, type) {
