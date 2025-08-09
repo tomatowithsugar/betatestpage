@@ -8,9 +8,9 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
-        // Firebase 설정 (예시 값 사용: 실제 배포 시 보안 주의)
+        // Firebase 설정
         const firebaseConfig = {
             apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
             authDomain: "cart-witnessing-404c0.firebaseapp.com",
@@ -34,9 +34,7 @@
             getDocs,
             query,
             where,
-            onSnapshot,
-            deleteDoc,
-            doc
+            onSnapshot
         };
 
         // DOM이 로드된 후 실행
@@ -46,60 +44,322 @@
     </script>
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); width: 100%; max-width: 800px; }
-        h1 { text-align: center; color: #333; margin-bottom: 30px; font-size: 28px; font-weight: 700; line-height: 1.3; }
-        .login-page { display: block; }
-        .main-page { display: none; }
-        .form-group { margin-bottom: 25px; }
-        label { display: block; margin-bottom: 8px; color: #555; font-weight: 600; font-size: 16px; }
-        input[type="text"] { width: 100%; padding: 15px; border: 2px solid #e1e5e9; border-radius: 10px; font-size: 16px; transition: border-color 0.3s ease; }
-        input[type="text"]:focus { outline: none; border-color: #667eea; }
-        .btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.2s ease; margin-bottom: 10px; }
-        .btn:hover { transform: translateY(-2px); }
-        .btn.secondary { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); }
-        .btn.danger { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); padding: 8px 16px; width: auto; font-size: 14px; margin: 0; }
-        .btn.inline { width: auto; display: inline-block; }
-        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-        .user-info { text-align: center; margin-bottom: 20px; color: #667eea; font-size: 18px; font-weight: 600; }
-        .action-buttons { display: flex; gap: 15px; margin-bottom: 20px; }
-        .day-selection { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
-        .zone-selection { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
-        .day-label, .zone-label { display: block; padding: 12px 10px; border: 2px solid #e1e5e9; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.2s ease; background: white; font-weight: 500; }
-        input[type="radio"]{ display:none; }
-        input[type="radio"]:checked + .day-label, input[type="radio"]:checked + .zone-label { background: #667eea; color: white; border-color: #667eea; }
-        .date-info { font-size: 11px; margin-top: 3px; color: #999; font-weight: normal; }
-        .capacity-info { font-size: 12px; margin-top: 5px; text-align: center; color: #888; }
-        .message { margin-top: 20px; padding: 12px; border-radius: 10px; text-align: center; font-weight: 600; display: none; }
-        .message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .applicants-list { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px; max-height: 400px; overflow-y: auto; }
-        .day-section { margin-bottom: 10px; padding: 10px; background: white; border-radius: 10px; }
-        .day-title { font-weight: 700; color: #667eea; margin-bottom: 8px; font-size: 16px; }
-        .zone-applicants { margin-bottom: 8px; padding: 8px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #667eea; }
-        .zone-name { font-weight: 600; color: #333; margin-bottom: 5px; }
-        .applicant-names { color: #666; font-size: 14px; }
-        .zone-selection-container { display: none; }
-        .zone-selection-container.show { display: block; }
-        /* modal */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: white; margin: 5% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 700px; max-height: 80vh; overflow-y: auto; position: relative; }
-        .close { position: absolute; right: 20px; top: 20px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close:hover { color: #000; }
-        .cancel-list { max-height: 400px; overflow-y: auto; }
-        .cancel-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; margin-bottom: 10px; background: #f8f9fa; border-radius: 10px; border: 1px solid #e1e5e9; }
-        .cancel-info { flex: 1; }
-        .cancel-day { font-weight: 700; color: #667eea; font-size: 16px; }
-        .cancel-details { color: #666; font-size: 14px; margin-top: 5px; }
-        .no-applications { text-align: center; color: #999; font-style: italic; padding: 20px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .login-page {
+            display: block;
+        }
+
+        .main-page {
+            display: none;
+        }
+
+        .login-form {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn.secondary {
+            background: #6c757d;
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .user-info {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #667eea;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .day-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .zone-selection {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .day-option, .zone-option {
+            position: relative;
+        }
+
+        .day-option input[type="radio"], .zone-option input[type="radio"] {
+            display: none;
+        }
+
+        .day-label, .zone-label {
+            display: block;
+            padding: 15px 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-weight: 500;
+        }
+
+        .zone-label {
+            padding: 20px 15px;
+        }
+
+        .day-option input[type="radio"]:checked + .day-label,
+        .zone-option input[type="radio"]:checked + .zone-label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .day-label:hover, .zone-label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .date-info {
+            font-size: 11px;
+            margin-top: 3px;
+            color: #999;
+            font-weight: normal;
+        }
+
+        .day-option input[type="radio"]:checked + .day-label .date-info {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .capacity-info {
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+            color: #888;
+        }
+
+        .zone-label .capacity-info {
+            font-size: 14px;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .applicants-list {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .applicants-list h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .day-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .day-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .zone-applicants {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+
+        .zone-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .applicant-names {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .zone-selection-container {
+            display: none;
+        }
+
+        .zone-selection-container.show {
+            display: block;
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 로그인 -->
+        <!-- 로그인 페이지 -->
         <div class="login-page" id="loginPage">
             <h1>불광서부회중<br>전시대 봉사 신청</h1>
+            
             <div class="login-form">
                 <div class="form-group">
                     <label for="loginName">이름</label>
@@ -109,16 +369,19 @@
             </div>
         </div>
 
-        <!-- 메인 -->
+        <!-- 메인 페이지 -->
         <div class="main-page" id="mainPage">
             <h1>불광서부회중<br>전시대 봉사 신청</h1>
+            
             <div class="user-info" id="userInfo"></div>
+            
             <div class="action-buttons">
                 <button type="button" class="btn" onclick="openRegistrationModal()">전시대 봉사 신청</button>
-                <button type="button" class="btn secondary" onclick="openCancelModal()">신청 취소</button>
+                <button type="button" class="btn secondary" onclick="cancelRegistration()">신청 취소</button>
             </div>
         </div>
 
+        <!-- 신청 현황은 두 페이지 모두에서 공통으로 표시 -->
         <div class="applicants-list">
             <h3>신청 현황</h3>
             <div id="applicantsList"></div>
@@ -132,27 +395,94 @@
         <div class="modal-content">
             <span class="close" onclick="closeRegistrationModal()">&times;</span>
             <h2>전시대 봉사 신청</h2>
+            
             <form id="registrationForm">
                 <div class="form-group">
                     <label>요일 선택</label>
                     <div class="day-selection">
-                        <div class="day-option"><input type="radio" id="monday" name="day" value="월요일"><label for="monday" class="day-label" data-day="월요일">월요일<div class="date-info" id="monday-date"></div></label></div>
-                        <div class="day-option"><input type="radio" id="tuesday" name="day" value="화요일"><label for="tuesday" class="day-label" data-day="화요일">화요일<div class="date-info" id="tuesday-date"></div></label></div>
-                        <div class="day-option"><input type="radio" id="wednesday" name="day" value="수요일"><label for="wednesday" class="day-label" data-day="수요일">수요일<div class="date-info" id="wednesday-date"></div></label></div>
-                        <div class="day-option"><input type="radio" id="thursday" name="day" value="목요일"><label for="thursday" class="day-label" data-day="목요일">목요일<div class="date-info" id="thursday-date"></div></label></div>
-                        <div class="day-option"><input type="radio" id="friday" name="day" value="금요일"><label for="friday" class="day-label" data-day="금요일">금요일<div class="date-info" id="friday-date"></div></label></div>
-                        <div class="day-option"><input type="radio" id="saturday" name="day" value="토요일"><label for="saturday" class="day-label" data-day="토요일">토요일<div class="date-info" id="saturday-date"></div></label></div>
-                        <div class="day-option"><input type="radio" id="sunday" name="day" value="일요일"><label for="sunday" class="day-label" data-day="일요일">일요일<div class="date-info" id="sunday-date"></div></label></div>
+                        <div class="day-option">
+                            <input type="radio" id="monday" name="day" value="월요일">
+                            <label for="monday" class="day-label" data-day="월요일">
+                                월요일
+                                <div class="date-info" id="monday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="tuesday" name="day" value="화요일">
+                            <label for="tuesday" class="day-label" data-day="화요일">
+                                화요일
+                                <div class="date-info" id="tuesday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="wednesday" name="day" value="수요일">
+                            <label for="wednesday" class="day-label" data-day="수요일">
+                                수요일
+                                <div class="date-info" id="wednesday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="thursday" name="day" value="목요일">
+                            <label for="thursday" class="day-label" data-day="목요일">
+                                목요일
+                                <div class="date-info" id="thursday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="friday" name="day" value="금요일">
+                            <label for="friday" class="day-label" data-day="금요일">
+                                금요일
+                                <div class="date-info" id="friday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="saturday" name="day" value="토요일">
+                            <label for="saturday" class="day-label" data-day="토요일">
+                                토요일
+                                <div class="date-info" id="saturday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="sunday" name="day" value="일요일">
+                            <label for="sunday" class="day-label" data-day="일요일">
+                                일요일
+                                <div class="date-info" id="sunday-date"></div>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-group zone-selection-container" id="zoneSelectionContainer">
                     <label>구역 선택</label>
                     <div class="zone-selection" id="zoneSelection">
-                        <div class="zone-option"><input type="radio" id="zone1" name="zone" value="1구역"><label for="zone1" class="zone-label" data-zone="1구역">1구역<div class="capacity-info">0/4</div></label></div>
-                        <div class="zone-option"><input type="radio" id="zone2" name="zone" value="2구역"><label for="zone2" class="zone-label" data-zone="2구역">2구역<div class="capacity-info">0/4</div></label></div>
-                        <div class="zone-option"><input type="radio" id="zone3" name="zone" value="3구역"><label for="zone3" class="zone-label" data-zone="3구역">3구역<div class="capacity-info">0/4</div></label></div>
-                        <div class="zone-option"><input type="radio" id="zone4" name="zone" value="4구역"><label for="zone4" class="zone-label" data-zone="4구역">4구역<div class="capacity-info">0/4</div></label></div>
+                        <div class="zone-option">
+                            <input type="radio" id="zone1" name="zone" value="1구역">
+                            <label for="zone1" class="zone-label" data-zone="1구역">
+                                1구역
+                                <div class="capacity-info">0/4</div>
+                            </label>
+                        </div>
+                        <div class="zone-option">
+                            <input type="radio" id="zone2" name="zone" value="2구역">
+                            <label for="zone2" class="zone-label" data-zone="2구역">
+                                2구역
+                                <div class="capacity-info">0/4</div>
+                            </label>
+                        </div>
+                        <div class="zone-option">
+                            <input type="radio" id="zone3" name="zone" value="3구역">
+                            <label for="zone3" class="zone-label" data-zone="3구역">
+                                3구역
+                                <div class="capacity-info">0/4</div>
+                            </label>
+                        </div>
+                        <div class="zone-option">
+                            <input type="radio" id="zone4" name="zone" value="4구역">
+                            <label for="zone4" class="zone-label" data-zone="4구역">
+                                4구역
+                                <div class="capacity-info">0/4</div>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -161,144 +491,130 @@
         </div>
     </div>
 
-    <!-- 취소 모달 -->
-    <div id="cancelModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeCancelModal()">&times;</span>
-            <h2>신청 취소</h2>
-            <div id="cancelList" class="cancel-list"></div>
-        </div>
-    </div>
-
     <script>
-        // 로컬 데이터 구조
+        // 신청자 데이터를 저장할 객체 (요일 > 구역 > 신청자 배열)
         const applicants = {};
-        const allApplications = []; // Firestore에서 받아온 문서 목록 (id 포함)
-        const days = ['월요일','화요일','수요일','목요일','금요일','토요일','일요일'];
-        const zones = ['1구역','2구역','3구역','4구역'];
+        const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+        const zones = ['1구역', '2구역', '3구역', '4구역'];
         const maxCapacity = 4;
         let currentUser = '';
-        let userApplications = []; // 현재 로그인한 사용자의 신청 목록 (filtered from allApplications)
 
-        // 초기 구조 생성
-        days.forEach(day => { applicants[day] = {}; zones.forEach(zone => applicants[day][zone] = []); });
+        // 초기 데이터 구조 생성
+        days.forEach(day => {
+            applicants[day] = {};
+            zones.forEach(zone => {
+                applicants[day][zone] = [];
+            });
+        });
 
-        // 초기화 함수
+        // 페이지 로드 시 초기화
         window.initializeApp = function() {
             setCurrentWeekDates();
-            attachDayChangeHandlers();
-            attachFormSubmit();
             loadDataFromFirestore();
-
+            
             // Enter 키로 로그인
             document.getElementById('loginName').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') login();
+                if (e.key === 'Enter') {
+                    login();
+                }
             });
         };
 
-        // Firestore에서 현재 주 데이터 로드 (실시간)
+        // Firestore에서 데이터 로드 (현재 주 데이터만)
         async function loadDataFromFirestore() {
             try {
                 const { collection, onSnapshot, query, where } = window.firestoreFunctions;
                 const applicantsRef = collection(window.db, 'applicants');
-
+                
+                // 현재 주의 날짜 범위 계산
                 const currentWeekDates = getCurrentWeekDates();
-
+                
+                // 현재 주 데이터만 쿼리
                 const weekQuery = query(
                     applicantsRef,
                     where('actualDate', '>=', currentWeekDates.start),
                     where('actualDate', '<=', currentWeekDates.end)
                 );
-
+                
+                // 실시간 데이터 감지
                 onSnapshot(weekQuery, (querySnapshot) => {
-                    // 초기화
-                    days.forEach(day => zones.forEach(zone => applicants[day][zone] = []));
-                    allApplications.length = 0;
-
-                    querySnapshot.forEach((docSnap) => {
-                        const data = docSnap.data();
-                        const id = docSnap.id;
-                        allApplications.push({ id, ...data });
-
-                        const { name, day, zone } = data;
-                        if (applicants[day] && applicants[day][zone]) applicants[day][zone].push(name);
+                    // 데이터 초기화
+                    days.forEach(day => {
+                        zones.forEach(zone => {
+                            applicants[day][zone] = [];
+                        });
                     });
-
-                    // 현재 로그인 사용자가 있으면 userApplications 갱신
-                    rebuildUserApplications();
-
+                    
+                    // Firestore에서 데이터 가져와서 로컬 객체에 저장
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const { name, day, zone } = data;
+                        if (applicants[day] && applicants[day][zone]) {
+                            applicants[day][zone].push(name);
+                        }
+                    });
+                    
                     updateDisplay();
-                    // 모달 열려 있으면 zone 표시 갱신
-                    updateZoneDisplayForModal();
                 });
             } catch (error) {
                 console.error('Firebase 연결 오류:', error);
-                showMessage('데이터베이스 연결에 실패했습니다. Firebase 설정을 확인해주세요.', 'error');
+                alert('데이터베이스 연결에 실패했습니다. Firebase 설정을 확인해주세요.');
             }
         }
 
-        // 현재 주 범위 구하기 (YYYY-MM-DD)
+        // 현재 주의 날짜 범위 계산 (월요일~일요일)
         function getCurrentWeekDates() {
             const today = new Date();
             const currentDay = today.getDay();
             const monday = new Date(today);
             const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
             monday.setDate(today.getDate() + daysFromMonday);
+            
             const sunday = new Date(monday);
             sunday.setDate(monday.getDate() + 6);
-            return { start: monday.toISOString().split('T')[0], end: sunday.toISOString().split('T')[0] };
+            
+            return {
+                start: monday.toISOString().split('T')[0], // YYYY-MM-DD
+                end: sunday.toISOString().split('T')[0]    // YYYY-MM-DD
+            };
         }
 
-        // 특정 요일 문자열로 실제 날짜(YYYY-MM-DD) 얻기
-        function getActualDateForDay(dayStr) {
-            const today = new Date();
-            const currentDay = today.getDay();
-            const monday = new Date(today);
-            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
-            monday.setDate(today.getDate() + daysFromMonday);
-            const offset = days.indexOf(dayStr);
-            const target = new Date(monday);
-            target.setDate(monday.getDate() + offset);
-            return target.toISOString().split('T')[0];
-        }
-
-        // Firestore에 저장
+        // Firestore에 데이터 저장
         async function saveToFirestore(name, day, zone) {
             try {
                 const { collection, addDoc } = window.firestoreFunctions;
                 const applicantsRef = collection(window.db, 'applicants');
+                
                 const actualDate = getActualDateForDay(day);
-                await addDoc(applicantsRef, { name, day, zone, actualDate, timestamp: new Date() });
+                
+                await addDoc(applicantsRef, {
+                    name: name,
+                    day: day,
+                    zone: zone,
+                    actualDate: actualDate, // 실제 날짜 (2025-08-11)
+                    timestamp: new Date()   // 신청 시간
+                });
+                
                 return true;
             } catch (error) {
                 console.error('저장 오류:', error);
-                showMessage('신청 저장 중 오류가 발생했습니다.', 'error');
+                alert('신청 저장 중 오류가 발생했습니다.');
                 return false;
             }
         }
 
-        // Firestore에서 삭제
-        async function deleteFromFirestore(docId) {
-            try {
-                const { deleteDoc, doc } = window.firestoreFunctions;
-                await deleteDoc(doc(window.db, 'applicants', docId));
-                return true;
-            } catch (error) {
-                console.error('삭제 오류:', error);
-                showMessage('신청 취소 중 오류가 발생했습니다.', 'error');
-                return false;
-            }
-        }
-
-        // 로그인
+        // 로그인 함수
         function login() {
             const name = document.getElementById('loginName').value.trim();
-            if (!name) { showMessage('이름을 입력해주세요.', 'error'); return; }
+            if (!name) {
+                showMessage('이름을 입력해주세요.', 'error');
+                return;
+            }
+            
             currentUser = name;
             document.getElementById('userInfo').textContent = `${currentUser}님 환영합니다!`;
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('mainPage').style.display = 'block';
-            rebuildUserApplications();
         }
 
         // 신청 모달 열기
@@ -307,214 +623,271 @@
             setCurrentWeekDates();
             updateZoneDisplayForModal();
         }
+
+        // 신청 모달 닫기
         function closeRegistrationModal() {
             document.getElementById('registrationModal').style.display = 'none';
             document.getElementById('registrationForm').reset();
             document.getElementById('zoneSelectionContainer').classList.remove('show');
         }
 
-        // 취소 모달
-        function openCancelModal() {
-            if (!currentUser) { showMessage('먼저 로그인 해주세요.', 'error'); return; }
-            document.getElementById('cancelModal').style.display = 'block';
-            updateCancelList();
-        }
-        function closeCancelModal() { document.getElementById('cancelModal').style.display = 'none'; }
-
-        // userApplications 재구성 (allApplications -> userApplications)
-        function rebuildUserApplications() {
-            userApplications = allApplications.filter(a => a.name === currentUser).map(a => ({ ...a }));
+        // 신청 취소 함수 (현재는 메시지만 표시)
+        function cancelRegistration() {
+            showMessage('신청 취소 기능은 준비 중입니다.', 'error');
         }
 
-        // 취소 목록 업데이트 (모달에 표시)
-        function updateCancelList() {
-            const cancelListEl = document.getElementById('cancelList');
-            cancelListEl.innerHTML = '';
-
-            if (!userApplications || userApplications.length === 0) {
-                const noApplicationsDiv = document.createElement('div');
-                noApplicationsDiv.className = 'no-applications';
-                noApplicationsDiv.textContent = '신청 내역이 없습니다.';
-                cancelListEl.appendChild(noApplicationsDiv);
-                return;
-            }
-
-            userApplications.forEach(application => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'cancel-item';
-
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'cancel-info';
-
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'cancel-day';
-                dayDiv.textContent = application.day;
-
-                const detailsDiv = document.createElement('div');
-                detailsDiv.className = 'cancel-details';
-                const date = new Date(application.actualDate);
-                const dateString = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
-                detailsDiv.textContent = `${dateString} • ${application.zone}`;
-
-                infoDiv.appendChild(dayDiv);
-                infoDiv.appendChild(detailsDiv);
-
-                const cancelBtn = document.createElement('button');
-                cancelBtn.className = 'btn danger';
-                cancelBtn.textContent = '취소';
-                cancelBtn.onclick = () => confirmCancelApplication(application);
-
-                itemDiv.appendChild(infoDiv);
-                itemDiv.appendChild(cancelBtn);
-                cancelListEl.appendChild(itemDiv);
+        // 현재 주의 각 요일 날짜 설정
+        function setCurrentWeekDates() {
+            const today = new Date();
+            const currentDay = today.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+            
+            // 이번 주 월요일 찾기
+            const monday = new Date(today);
+            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay; // 일요일인 경우 -6, 그 외는 1-현재요일
+            monday.setDate(today.getDate() + daysFromMonday);
+            
+            // 각 요일의 날짜 설정
+            const dayElements = [
+                { id: 'monday-date', offset: 0 },
+                { id: 'tuesday-date', offset: 1 },
+                { id: 'wednesday-date', offset: 2 },
+                { id: 'thursday-date', offset: 3 },
+                { id: 'friday-date', offset: 4 },
+                { id: 'saturday-date', offset: 5 },
+                { id: 'sunday-date', offset: 6 }
+            ];
+            
+            dayElements.forEach(day => {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + day.offset);
+                const dateString = `${date.getMonth() + 1}/${date.getDate()}`;
+                const element = document.getElementById(day.id);
+                if (element) {
+                    element.textContent = dateString;
+                }
             });
         }
 
-        // 취소 확인
-        function confirmCancelApplication(application) {
-            const date = new Date(application.actualDate);
-            const dateString = `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
-            const confirmMessage = `${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?`;
-            if (confirm(confirmMessage)) {
-                // 삭제 실행
-                executeCancel(application);
-            }
-        }
+        // 요일 선택 시 구역 선택 영역 표시
+        document.querySelectorAll('input[name="day"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const zoneContainer = document.getElementById('zoneSelectionContainer');
+                if (this.checked) {
+                    zoneContainer.classList.add('show');
+                    updateZoneDisplay(this.value);
+                    // 구역 선택 초기화
+                    document.querySelectorAll('input[name="zone"]').forEach(zoneRadio => {
+                        zoneRadio.checked = false;
+                    });
+                }
+            });
+        });
 
-        // 취소 실행 (삭제 요청하고 성공 시 알림)
-        async function executeCancel(application) {
-            const deleted = await deleteFromFirestore(application.id);
-            if (deleted) {
-                alert('취소되었습니다.');
-                // onSnapshot이 실시간으로 반영하므로 UI는 자동 갱신됨.
-                // 모달 목록도 최신화
-                rebuildUserApplications();
-                updateCancelList();
-                updateDisplay();
+        // 폼 제출 이벤트 처리
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const selectedDay = document.querySelector('input[name="day"]:checked');
+            const selectedZone = document.querySelector('input[name="zone"]:checked');
+            
+            if (!selectedDay) {
+                showMessage('요일을 선택해주세요.', 'error');
+                return;
             }
-        }
 
-        // 요일 날짜 표시
-        function setCurrentWeekDates() {
+            if (!selectedZone) {
+                showMessage('구역을 선택해주세요.', 'error');
+                return;
+            }
+            
+            const dayValue = selectedDay.value;
+            const zoneValue = selectedZone.value;
+            
+            // 정원 체크
+            if (applicants[dayValue][zoneValue].length >= maxCapacity) {
+                showMessage(`${dayValue} ${zoneValue}은 마감되었습니다.`, 'error');
+                return;
+            }
+            
+            // 중복 신청 체크 (같은 요일 다른 구역 포함)
+            let isDuplicate = false;
+            zones.forEach(zone => {
+                if (applicants[dayValue][zone].includes(currentUser)) {
+                    isDuplicate = true;
+                }
+            });
+            
+            if (isDuplicate) {
+                showMessage(`${dayValue}에 이미 신청하셨습니다.`, 'error');
+                return;
+            }
+            
+            // Firestore에 저장
+            const saved = await saveToFirestore(currentUser, dayValue, zoneValue);
+            
+            if (saved) {
+                // 성공 메시지 표시
+                showMessage(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`, 'success');
+                
+                // 모달 닫기
+                closeRegistrationModal();
+            }
+        });
+
+        // 특정 요일의 실제 날짜 계산
+        function getActualDateForDay(dayName) {
             const today = new Date();
             const currentDay = today.getDay();
             const monday = new Date(today);
             const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
             monday.setDate(today.getDate() + daysFromMonday);
-
-            const dayElements = [
-                { id: 'monday-date', offset: 0 },{ id: 'tuesday-date', offset: 1 },{ id: 'wednesday-date', offset: 2 },{ id: 'thursday-date', offset: 3 },{ id: 'friday-date', offset: 4 },{ id: 'saturday-date', offset: 5 },{ id: 'sunday-date', offset: 6 }
-            ];
-
-            dayElements.forEach(day => {
-                const date = new Date(monday);
-                date.setDate(monday.getDate() + day.offset);
-                const dateString = `${date.getMonth()+1}/${date.getDate()}`;
-                const element = document.getElementById(day.id);
-                if (element) element.textContent = dateString;
-            });
+            
+            const dayMap = {
+                '월요일': 0, '화요일': 1, '수요일': 2, '목요일': 3,
+                '금요일': 4, '토요일': 5, '일요일': 6
+            };
+            
+            const targetDate = new Date(monday);
+            targetDate.setDate(monday.getDate() + dayMap[dayName]);
+            
+            return targetDate.toISOString().split('T')[0]; // YYYY-MM-DD 형태
         }
 
-        // 요일 선택 핸들러 추가
-        function attachDayChangeHandlers() {
-            document.querySelectorAll('input[name="day"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    const zoneContainer = document.getElementById('zoneSelectionContainer');
-                    if (this.checked) {
-                        zoneContainer.classList.add('show');
-                        updateZoneCapacity(this.value);
-                        // 구역 선택 초기화
-                        document.querySelectorAll('input[name="zone"]').forEach(z => z.checked = false);
-                    }
-                });
-            });
+        // 메시지 표시 함수
+        function showMessage(text, type) {
+            if (type === 'success') {
+                alert(text);
+            } else {
+                alert(text);
+            }
         }
 
-        // 구역별 인원 표시
-        function updateZoneCapacity(selectedDay) {
-            zones.forEach((zone, index) => {
-                const capacity = applicants[selectedDay][zone].length;
-                const label = document.querySelector(`#zone${index+1} + .zone-label .capacity-info`);
-                if (label) label.textContent = `${capacity}/${maxCapacity}`;
-
-                const input = document.getElementById(`zone${index+1}`);
-                if (input) {
-                    input.disabled = capacity >= maxCapacity;
-                    const parent = input.nextElementSibling;
-                    if (capacity >= maxCapacity) parent.style.opacity = 0.5; else parent.style.opacity = 1;
-                }
-            });
-        }
-
-        // 모달 열려있을 때 구역 표시 업데이터
-        function updateZoneDisplayForModal() {
-            const checkedDay = document.querySelector('input[name="day"]:checked')?.value;
-            if (checkedDay) updateZoneCapacity(checkedDay);
-        }
-
-        // 신청 제출 처리
-        function attachFormSubmit() {
-            document.getElementById('registrationForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                if (!currentUser) { showMessage('먼저 로그인 해주세요.', 'error'); return; }
-                const day = document.querySelector('input[name="day"]:checked')?.value;
-                const zone = document.querySelector('input[name="zone"]:checked')?.value;
-                if (!day || !zone) { showMessage('요일과 구역을 모두 선택해주세요.', 'error'); return; }
-                if (applicants[day][zone].length >= maxCapacity) { showMessage('해당 구역은 이미 정원이 찼습니다.', 'error'); return; }
-                // 중복 신청 방지 (같은 이름/같은 요일/같은 구역)
-                if (allApplications.some(a => a.name === currentUser && a.day === day && a.zone === zone)) { showMessage('이미 신청한 요일과 구역입니다.', 'error'); return; }
-
-                const success = await saveToFirestore(currentUser, day, zone);
-                if (success) {
-                    closeRegistrationModal();
-                    showMessage('신청이 완료되었습니다.', 'success');
-                }
-            });
-        }
-
-        // 신청 현황 화면 갱신
+        // 화면 업데이트 함수
         function updateDisplay() {
-            const container = document.getElementById('applicantsList');
-            container.innerHTML = '';
-            days.forEach(day => {
-                let dayHtml = '';
-                let hasData = false;
-                zones.forEach(zone => {
-                    if (applicants[day][zone].length > 0) {
-                        hasData = true;
-                        dayHtml += `
-                        <div class="zone-applicants">
-                            <div class="zone-name">${zone}</div>
-                            <div class="applicant-names">${applicants[day][zone].join(', ')}</div>
-                        </div>
-                        `;
+            updateApplicantsList();
+        }
+
+        // 모달에서 구역 표시 업데이트
+        function updateZoneDisplayForModal() {
+            // 모달이 열릴 때 초기화
+            document.querySelectorAll('.zone-label').forEach(label => {
+                label.style.background = '';
+                label.style.color = '';
+                label.style.borderColor = '';
+                label.style.cursor = 'pointer';
+                label.previousElementSibling.disabled = false;
+            });
+        }
+
+        // 특정 요일의 구역 표시 업데이트
+        function updateZoneDisplay(selectedDay) {
+            const zoneLabels = document.querySelectorAll('.zone-label');
+            
+            zoneLabels.forEach(label => {
+                const zone = label.dataset.zone;
+                const currentCount = applicants[selectedDay][zone].length;
+                const capacityInfo = label.querySelector('.capacity-info');
+                const radioInput = label.previousElementSibling;
+                
+                capacityInfo.textContent = `${currentCount}/${maxCapacity}`;
+                
+                if (currentCount >= maxCapacity) {
+                    label.style.background = '#ff6b6b';
+                    label.style.color = 'white';
+                    label.style.borderColor = '#ff6b6b';
+                    label.style.cursor = 'not-allowed';
+                    radioInput.disabled = true;
+                } else {
+                    // 선택되지 않은 상태로 초기화
+                    if (!radioInput.checked) {
+                        label.style.background = '';
+                        label.style.color = '';
+                        label.style.borderColor = '';
                     }
-                });
-                if (hasData) {
-                    const section = document.createElement('div');
-                    section.className = 'day-section';
-                    const title = document.createElement('div');
-                    title.className = 'day-title';
-                    title.textContent = day;
-                    section.appendChild(title);
-                    section.innerHTML += dayHtml;
-                    container.appendChild(section);
+                    label.style.cursor = 'pointer';
+                    radioInput.disabled = false;
                 }
             });
         }
 
-        // 메시지 표시
-        let messageTimeout = null;
-        function showMessage(text, type='success') {
-            const el = document.getElementById('message');
-            el.textContent = text;
-            el.className = `message ${type}`;
-            el.style.display = 'block';
-            if (messageTimeout) clearTimeout(messageTimeout);
-            messageTimeout = setTimeout(() => { el.style.display = 'none'; }, 3500);
+        // 신청자 목록 업데이트
+        function updateApplicantsList() {
+            const applicantsListEl = document.getElementById('applicantsList');
+            applicantsListEl.innerHTML = '';
+            
+            days.forEach(day => {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day-section';
+                
+                const dayTitleDiv = document.createElement('div');
+                dayTitleDiv.className = 'day-title';
+                
+                // 해당 요일의 날짜 가져오기
+                const dayDate = getDateForDay(day);
+                dayTitleDiv.textContent = `${day} (${dayDate})`;
+                dayDiv.appendChild(dayTitleDiv);
+                
+                zones.forEach(zone => {
+                    const zoneApplicants = applicants[day][zone];
+                    
+                    const zoneDiv = document.createElement('div');
+                    zoneDiv.className = 'zone-applicants';
+                    
+                    const zoneNameDiv = document.createElement('div');
+                    zoneNameDiv.className = 'zone-name';
+                    zoneNameDiv.textContent = `${zone} (${zoneApplicants.length}/${maxCapacity})`;
+                    
+                    const applicantNamesDiv = document.createElement('div');
+                    applicantNamesDiv.className = 'applicant-names';
+                    applicantNamesDiv.textContent = zoneApplicants.length > 0 ? 
+                        zoneApplicants.join(', ') : '신청자 없음';
+                    
+                    zoneDiv.appendChild(zoneNameDiv);
+                    zoneDiv.appendChild(applicantNamesDiv);
+                    dayDiv.appendChild(zoneDiv);
+                });
+                
+                applicantsListEl.appendChild(dayDiv);
+            });
         }
 
-        // 취소 확인 후 모달 닫기 처리 등은 onSnapshot에서 자동 갱신되므로 별도 강제 업데이트는 rebuildUserApplications로 반영
+        // 특정 요일의 날짜 가져오기 (2025/8/4 형식)
+        function getDateForDay(dayName) {
+            const today = new Date();
+            const currentDay = today.getDay();
+            const monday = new Date(today);
+            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
+            monday.setDate(today.getDate() + daysFromMonday);
+            
+            const dayMap = {
+                '월요일': 0, '화요일': 1, '수요일': 2, '목요일': 3,
+                '금요일': 4, '토요일': 5, '일요일': 6
+            };
+            
+            const targetDate = new Date(monday);
+            targetDate.setDate(monday.getDate() + dayMap[dayName]);
+            
+            return `${targetDate.getFullYear()}/${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
+        }
+
+        // 마감된 구역 클릭 방지
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('zone-label') && e.target.previousElementSibling.disabled) {
+                e.preventDefault();
+                const selectedDay = document.querySelector('input[name="day"]:checked');
+                if (selectedDay) {
+                    showMessage(`${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.`, 'error');
+                }
+            }
+        });
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('registrationModal');
+            if (event.target == modal) {
+                closeRegistrationModal();
+            }
+        }
     </script>
 </body>
 </html>
