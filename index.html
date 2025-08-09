@@ -508,9 +508,12 @@
                     label.style.cursor = 'not-allowed';
                     radioInput.disabled = true;
                 } else {
-                    label.style.background = 'white';
-                    label.style.color = '#333';
-                    label.style.borderColor = '#e1e5e9';
+                    // 선택되지 않은 상태로 초기화
+                    if (!radioInput.checked) {
+                        label.style.background = '';
+                        label.style.color = '';
+                        label.style.borderColor = '';
+                    }
                     label.style.cursor = 'pointer';
                     radioInput.disabled = false;
                 }
