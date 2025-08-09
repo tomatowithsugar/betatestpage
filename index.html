@@ -613,15 +613,11 @@
 
         // 메시지 표시 함수
         function showMessage(text, type) {
-            const messageEl = document.getElementById('message');
-            messageEl.textContent = text;
-            messageEl.className = `message ${type}`;
-            messageEl.style.display = 'block';
-            
-            // 3초 후 메시지 숨김
-            setTimeout(() => {
-                messageEl.style.display = 'none';
-            }, 3000);
+            if (type === 'success') {
+                alert(text);
+            } else {
+                alert(text);
+            }
         }
 
         // 화면 업데이트 함수
