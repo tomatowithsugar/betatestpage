@@ -39,6 +39,18 @@
             line-height: 1.3;
         }
 
+        .login-page {
+            display: block;
+        }
+
+        .main-page {
+            display: none;
+        }
+
+        .login-form {
+            text-align: center;
+        }
+
         .form-group {
             margin-bottom: 25px;
         }
@@ -63,6 +75,49 @@
         input[type="text"]:focus {
             outline: none;
             border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn.secondary {
+            background: #6c757d;
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .user-info {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #667eea;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
         .day-selection {
@@ -135,29 +190,6 @@
 
         .zone-label .capacity-info {
             font-size: 14px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .submit-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
         }
 
         .message {
@@ -235,115 +267,188 @@
         .zone-selection-container.show {
             display: block;
         }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>불광서부회중<br>전시대 봉사 신청</h1>
-        
-        <form id="registrationForm">
-            <div class="form-group">
-                <label for="userName">이름</label>
-                <input type="text" id="userName" name="userName" placeholder="이름을 입력하세요" required>
-            </div>
-
-            <div class="form-group">
-                <label>요일 선택</label>
-                <div class="day-selection">
-                    <div class="day-option">
-                        <input type="radio" id="monday" name="day" value="월요일">
-                        <label for="monday" class="day-label" data-day="월요일">
-                            월요일
-                            <div class="date-info" id="monday-date"></div>
-                        </label>
-                    </div>
-                    <div class="day-option">
-                        <input type="radio" id="tuesday" name="day" value="화요일">
-                        <label for="tuesday" class="day-label" data-day="화요일">
-                            화요일
-                            <div class="date-info" id="tuesday-date"></div>
-                        </label>
-                    </div>
-                    <div class="day-option">
-                        <input type="radio" id="wednesday" name="day" value="수요일">
-                        <label for="wednesday" class="day-label" data-day="수요일">
-                            수요일
-                            <div class="date-info" id="wednesday-date"></div>
-                        </label>
-                    </div>
-                    <div class="day-option">
-                        <input type="radio" id="thursday" name="day" value="목요일">
-                        <label for="thursday" class="day-label" data-day="목요일">
-                            목요일
-                            <div class="date-info" id="thursday-date"></div>
-                        </label>
-                    </div>
-                    <div class="day-option">
-                        <input type="radio" id="friday" name="day" value="금요일">
-                        <label for="friday" class="day-label" data-day="금요일">
-                            금요일
-                            <div class="date-info" id="friday-date"></div>
-                        </label>
-                    </div>
-                    <div class="day-option">
-                        <input type="radio" id="saturday" name="day" value="토요일">
-                        <label for="saturday" class="day-label" data-day="토요일">
-                            토요일
-                            <div class="date-info" id="saturday-date"></div>
-                        </label>
-                    </div>
-                    <div class="day-option">
-                        <input type="radio" id="sunday" name="day" value="일요일">
-                        <label for="sunday" class="day-label" data-day="일요일">
-                            일요일
-                            <div class="date-info" id="sunday-date"></div>
-                        </label>
-                    </div>
+        <!-- 로그인 페이지 -->
+        <div class="login-page" id="loginPage">
+            <h1>불광서부회중<br>전시대 봉사 신청</h1>
+            
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="loginName">이름</label>
+                    <input type="text" id="loginName" placeholder="이름을 입력하세요" required>
                 </div>
+                <button type="button" class="btn" onclick="login()">확인</button>
             </div>
+        </div>
 
-            <div class="form-group zone-selection-container" id="zoneSelectionContainer">
-                <label>구역 선택</label>
-                <div class="zone-selection" id="zoneSelection">
-                    <div class="zone-option">
-                        <input type="radio" id="zone1" name="zone" value="1구역">
-                        <label for="zone1" class="zone-label" data-zone="1구역">
-                            1구역
-                            <div class="capacity-info">0/4</div>
-                        </label>
-                    </div>
-                    <div class="zone-option">
-                        <input type="radio" id="zone2" name="zone" value="2구역">
-                        <label for="zone2" class="zone-label" data-zone="2구역">
-                            2구역
-                            <div class="capacity-info">0/4</div>
-                        </label>
-                    </div>
-                    <div class="zone-option">
-                        <input type="radio" id="zone3" name="zone" value="3구역">
-                        <label for="zone3" class="zone-label" data-zone="3구역">
-                            3구역
-                            <div class="capacity-info">0/4</div>
-                        </label>
-                    </div>
-                    <div class="zone-option">
-                        <input type="radio" id="zone4" name="zone" value="4구역">
-                        <label for="zone4" class="zone-label" data-zone="4구역">
-                            4구역
-                            <div class="capacity-info">0/4</div>
-                        </label>
-                    </div>
-                </div>
+        <!-- 메인 페이지 -->
+        <div class="main-page" id="mainPage">
+            <h1>불광서부회중<br>전시대 봉사 신청</h1>
+            
+            <div class="user-info" id="userInfo"></div>
+            
+            <div class="action-buttons">
+                <button type="button" class="btn" onclick="openRegistrationModal()">전시대 봉사 신청</button>
+                <button type="button" class="btn secondary" onclick="cancelRegistration()">신청 취소</button>
             </div>
+        </div>
 
-            <button type="submit" class="submit-btn">신청하기</button>
-        </form>
-
-        <div id="message" class="message"></div>
-
+        <!-- 신청 현황은 두 페이지 모두에서 공통으로 표시 -->
         <div class="applicants-list">
             <h3>신청 현황</h3>
             <div id="applicantsList"></div>
+        </div>
+
+        <div id="message" class="message"></div>
+    </div>
+
+    <!-- 신청 모달 -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegistrationModal()">&times;</span>
+            <h2>전시대 봉사 신청</h2>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label>요일 선택</label>
+                    <div class="day-selection">
+                        <div class="day-option">
+                            <input type="radio" id="monday" name="day" value="월요일">
+                            <label for="monday" class="day-label" data-day="월요일">
+                                월요일
+                                <div class="date-info" id="monday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="tuesday" name="day" value="화요일">
+                            <label for="tuesday" class="day-label" data-day="화요일">
+                                화요일
+                                <div class="date-info" id="tuesday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="wednesday" name="day" value="수요일">
+                            <label for="wednesday" class="day-label" data-day="수요일">
+                                수요일
+                                <div class="date-info" id="wednesday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="thursday" name="day" value="목요일">
+                            <label for="thursday" class="day-label" data-day="목요일">
+                                목요일
+                                <div class="date-info" id="thursday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="friday" name="day" value="금요일">
+                            <label for="friday" class="day-label" data-day="금요일">
+                                금요일
+                                <div class="date-info" id="friday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="saturday" name="day" value="토요일">
+                            <label for="saturday" class="day-label" data-day="토요일">
+                                토요일
+                                <div class="date-info" id="saturday-date"></div>
+                            </label>
+                        </div>
+                        <div class="day-option">
+                            <input type="radio" id="sunday" name="day" value="일요일">
+                            <label for="sunday" class="day-label" data-day="일요일">
+                                일요일
+                                <div class="date-info" id="sunday-date"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group zone-selection-container" id="zoneSelectionContainer">
+                    <label>구역 선택</label>
+                    <div class="zone-selection" id="zoneSelection">
+                        <div class="zone-option">
+                            <input type="radio" id="zone1" name="zone" value="1구역">
+                            <label for="zone1" class="zone-label" data-zone="1구역">
+                                1구역
+                                <div class="capacity-info">0/4</div>
+                            </label>
+                        </div>
+                        <div class="zone-option">
+                            <input type="radio" id="zone2" name="zone" value="2구역">
+                            <label for="zone2" class="zone-label" data-zone="2구역">
+                                2구역
+                                <div class="capacity-info">0/4</div>
+                            </label>
+                        </div>
+                        <div class="zone-option">
+                            <input type="radio" id="zone3" name="zone" value="3구역">
+                            <label for="zone3" class="zone-label" data-zone="3구역">
+                                3구역
+                                <div class="capacity-info">0/4</div>
+                            </label>
+                        </div>
+                        <div class="zone-option">
+                            <input type="radio" id="zone4" name="zone" value="4구역">
+                            <label for="zone4" class="zone-label" data-zone="4구역">
+                                4구역
+                                <div class="capacity-info">0/4</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">신청하기</button>
+            </form>
         </div>
     </div>
 
@@ -353,6 +458,7 @@
         const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
         const zones = ['1구역', '2구역', '3구역', '4구역'];
         const maxCapacity = 4;
+        let currentUser = '';
 
         // 초기 데이터 구조 생성
         days.forEach(day => {
@@ -366,7 +472,47 @@
         document.addEventListener('DOMContentLoaded', function() {
             setCurrentWeekDates();
             updateDisplay();
+            
+            // Enter 키로 로그인
+            document.getElementById('loginName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
         });
+
+        // 로그인 함수
+        function login() {
+            const name = document.getElementById('loginName').value.trim();
+            if (!name) {
+                showMessage('이름을 입력해주세요.', 'error');
+                return;
+            }
+            
+            currentUser = name;
+            document.getElementById('userInfo').textContent = `${currentUser}님 환영합니다!`;
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+        }
+
+        // 신청 모달 열기
+        function openRegistrationModal() {
+            document.getElementById('registrationModal').style.display = 'block';
+            setCurrentWeekDates();
+            updateZoneDisplayForModal();
+        }
+
+        // 신청 모달 닫기
+        function closeRegistrationModal() {
+            document.getElementById('registrationModal').style.display = 'none';
+            document.getElementById('registrationForm').reset();
+            document.getElementById('zoneSelectionContainer').classList.remove('show');
+        }
+
+        // 신청 취소 함수 (현재는 메시지만 표시)
+        function cancelRegistration() {
+            showMessage('신청 취소 기능은 준비 중입니다.', 'error');
+        }
 
         // 현재 주의 각 요일 날짜 설정
         function setCurrentWeekDates() {
@@ -393,7 +539,10 @@
                 const date = new Date(monday);
                 date.setDate(monday.getDate() + day.offset);
                 const dateString = `${date.getMonth() + 1}/${date.getDate()}`;
-                document.getElementById(day.id).textContent = dateString;
+                const element = document.getElementById(day.id);
+                if (element) {
+                    element.textContent = dateString;
+                }
             });
         }
 
@@ -416,14 +565,8 @@
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const userName = document.getElementById('userName').value.trim();
             const selectedDay = document.querySelector('input[name="day"]:checked');
             const selectedZone = document.querySelector('input[name="zone"]:checked');
-            
-            if (!userName) {
-                showMessage('이름을 입력해주세요.', 'error');
-                return;
-            }
             
             if (!selectedDay) {
                 showMessage('요일을 선택해주세요.', 'error');
@@ -447,7 +590,7 @@
             // 중복 신청 체크 (같은 요일 다른 구역 포함)
             let isDuplicate = false;
             zones.forEach(zone => {
-                if (applicants[dayValue][zone].includes(userName)) {
+                if (applicants[dayValue][zone].includes(currentUser)) {
                     isDuplicate = true;
                 }
             });
@@ -458,16 +601,13 @@
             }
             
             // 신청자 추가
-            applicants[dayValue][zoneValue].push(userName);
+            applicants[dayValue][zoneValue].push(currentUser);
             
             // 성공 메시지 표시
             showMessage(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`, 'success');
             
-            // 폼 초기화
-            document.getElementById('registrationForm').reset();
-            document.getElementById('zoneSelectionContainer').classList.remove('show');
-            
-            // 화면 업데이트
+            // 모달 닫기 및 화면 업데이트
+            closeRegistrationModal();
             updateDisplay();
         });
 
@@ -487,6 +627,18 @@
         // 화면 업데이트 함수
         function updateDisplay() {
             updateApplicantsList();
+        }
+
+        // 모달에서 구역 표시 업데이트
+        function updateZoneDisplayForModal() {
+            // 모달이 열릴 때 초기화
+            document.querySelectorAll('.zone-label').forEach(label => {
+                label.style.background = '';
+                label.style.color = '';
+                label.style.borderColor = '';
+                label.style.cursor = 'pointer';
+                label.previousElementSibling.disabled = false;
+            });
         }
 
         // 특정 요일의 구역 표시 업데이트
@@ -590,6 +742,14 @@
                 }
             }
         });
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('registrationModal');
+            if (event.target == modal) {
+                closeRegistrationModal();
+            }
+        }
     </script>
 </body>
 </html>
