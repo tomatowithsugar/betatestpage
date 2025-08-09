@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>불광서부회중 전시대 신청</title>
+    <title><pre>불광서부회중 
+        전시대 신청</pre></title>
     <style>
         * {
             margin: 0;
@@ -104,9 +105,9 @@
 
         .day-option input[type="radio"]:checked + .day-label,
         .zone-option input[type="radio"]:checked + .zone-label {
-            background: #667eea !important;
-            color: white !important;
-            border-color: #667eea !important;
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
 
         .day-label:hover, .zone-label:hover {
@@ -135,6 +136,8 @@
         .zone-label .capacity-info {
             font-size: 14px;
         }
+
+        .submit-btn {
             width: 100%;
             padding: 18px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -393,6 +396,8 @@
                 document.getElementById(day.id).textContent = dateString;
             });
         }
+
+        // 요일 선택 시 구역 선택 영역 표시
         document.querySelectorAll('input[name="day"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const zoneContainer = document.getElementById('zoneSelectionContainer');
