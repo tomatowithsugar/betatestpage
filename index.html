@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>불광서부회중 전시대 신청</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .day-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .zone-selection {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .day-option, .zone-option {
+            position: relative;
+        }
+
+        .day-option input[type="radio"], .zone-option input[type="radio"] {
+            display: none;
+        }
+
+        .day-label, .zone-label {
+            display: block;
+            padding: 15px 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-weight: 500;
+        }
+
+        .zone-label {
+            padding: 20px 15px;
+        }
+
+        .day-option input[type="radio"]:checked + .day-label,
+        .zone-option input[type="radio"]:checked + .zone-label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .day-label:hover, .zone-label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .capacity-info {
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+            color: #888;
+        }
+
+        .zone-label .capacity-info {
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .applicants-list {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .applicants-list h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .day-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .day-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .zone-applicants {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+
+        .zone-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .applicant-names {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .zone-selection-container {
+            display: none;
+        }
+
+        .zone-selection-container.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>불광서부회중 전시대 신청</h1>
+        
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="userName">이름</label>
+                <input type="text" id="userName" name="userName" placeholder="이름을 입력하세요" required>
+            </div>
+
+            <div class="form-group">
+                <label>요일 선택</label>
+                <div class="day-selection">
+                    <div class="day-option">
+                        <input type="radio" id="monday" name="day" value="월요일">
+                        <label for="monday" class="day-label" data-day="월요일">
+                            월요일
+                        </label>
+                    </div>
+                    <div class="day-option">
+                        <input type="radio" id="tuesday" name="day" value="화요일">
+                        <label for="tuesday" class="day-label" data-day="화요일">
+                            화요일
+                        </label>
+                    </div>
+                    <div class="day-option">
+                        <input type="radio" id="wednesday" name="day" value="수요일">
+                        <label for="wednesday" class="day-label" data-day="수요일">
+                            수요일
+                        </label>
+                    </div>
+                    <div class="day-option">
+                        <input type="radio" id="thursday" name="day" value="목요일">
+                        <label for="thursday" class="day-label" data-day="목요일">
+                            목요일
+                        </label>
+                    </div>
+                    <div class="day-option">
+                        <input type="radio" id="friday" name="day" value="금요일">
+                        <label for="friday" class="day-label" data-day="금요일">
+                            금요일
+                        </label>
+                    </div>
+                    <div class="day-option">
+                        <input type="radio" id="saturday" name="day" value="토요일">
+                        <label for="saturday" class="day-label" data-day="토요일">
+                            토요일
+                        </label>
+                    </div>
+                    <div class="day-option">
+                        <input type="radio" id="sunday" name="day" value="일요일">
+                        <label for="sunday" class="day-label" data-day="일요일">
+                            일요일
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group zone-selection-container" id="zoneSelectionContainer">
+                <label>구역 선택</label>
+                <div class="zone-selection" id="zoneSelection">
+                    <div class="zone-option">
+                        <input type="radio" id="zone1" name="zone" value="1구역">
+                        <label for="zone1" class="zone-label" data-zone="1구역">
+                            1구역
+                            <div class="capacity-info">0/4</div>
+                        </label>
+                    </div>
+                    <div class="zone-option">
+                        <input type="radio" id="zone2" name="zone" value="2구역">
+                        <label for="zone2" class="zone-label" data-zone="2구역">
+                            2구역
+                            <div class="capacity-info">0/4</div>
+                        </label>
+                    </div>
+                    <div class="zone-option">
+                        <input type="radio" id="zone3" name="zone" value="3구역">
+                        <label for="zone3" class="zone-label" data-zone="3구역">
+                            3구역
+                            <div class="capacity-info">0/4</div>
+                        </label>
+                    </div>
+                    <div class="zone-option">
+                        <input type="radio" id="zone4" name="zone" value="4구역">
+                        <label for="zone4" class="zone-label" data-zone="4구역">
+                            4구역
+                            <div class="capacity-info">0/4</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">신청하기</button>
+        </form>
+
+        <div id="message" class="message"></div>
+
+        <div class="applicants-list">
+            <h3>신청 현황</h3>
+            <div id="applicantsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // 신청자 데이터를 저장할 객체 (요일 > 구역 > 신청자 배열)
+        const applicants = {};
+        const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+        const zones = ['1구역', '2구역', '3구역', '4구역'];
+        const maxCapacity = 4;
+
+        // 초기 데이터 구조 생성
+        days.forEach(day => {
+            applicants[day] = {};
+            zones.forEach(zone => {
+                applicants[day][zone] = [];
+            });
+        });
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDisplay();
+        });
+
+        // 요일 선택 시 구역 선택 영역 표시
+        document.querySelectorAll('input[name="day"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const zoneContainer = document.getElementById('zoneSelectionContainer');
+                if (this.checked) {
+                    zoneContainer.classList.add('show');
+                    updateZoneDisplay(this.value);
+                    // 구역 선택 초기화
+                    document.querySelectorAll('input[name="zone"]').forEach(zoneRadio => {
+                        zoneRadio.checked = false;
+                    });
+                }
+            });
+        });
+
+        // 폼 제출 이벤트 처리
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userName = document.getElementById('userName').value.trim();
+            const selectedDay = document.querySelector('input[name="day"]:checked');
+            const selectedZone = document.querySelector('input[name="zone"]:checked');
+            
+            if (!userName) {
+                showMessage('이름을 입력해주세요.', 'error');
+                return;
+            }
+            
+            if (!selectedDay) {
+                showMessage('요일을 선택해주세요.', 'error');
+                return;
+            }
+
+            if (!selectedZone) {
+                showMessage('구역을 선택해주세요.', 'error');
+                return;
+            }
+            
+            const dayValue = selectedDay.value;
+            const zoneValue = selectedZone.value;
+            
+            // 정원 체크
+            if (applicants[dayValue][zoneValue].length >= maxCapacity) {
+                showMessage(`${dayValue} ${zoneValue}은 마감되었습니다.`, 'error');
+                return;
+            }
+            
+            // 중복 신청 체크 (같은 요일 다른 구역 포함)
+            let isDuplicate = false;
+            zones.forEach(zone => {
+                if (applicants[dayValue][zone].includes(userName)) {
+                    isDuplicate = true;
+                }
+            });
+            
+            if (isDuplicate) {
+                showMessage(`${dayValue}에 이미 신청하셨습니다.`, 'error');
+                return;
+            }
+            
+            // 신청자 추가
+            applicants[dayValue][zoneValue].push(userName);
+            
+            // 성공 메시지 표시
+            showMessage(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`, 'success');
+            
+            // 폼 초기화
+            document.getElementById('registrationForm').reset();
+            document.getElementById('zoneSelectionContainer').classList.remove('show');
+            
+            // 화면 업데이트
+            updateDisplay();
+        });
+
+        // 메시지 표시 함수
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
+            
+            // 3초 후 메시지 숨김
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 3000);
+        }
+
+        // 화면 업데이트 함수
+        function updateDisplay() {
+            updateApplicantsList();
+        }
+
+        // 특정 요일의 구역 표시 업데이트
+        function updateZoneDisplay(selectedDay) {
+            const zoneLabels = document.querySelectorAll('.zone-label');
+            
+            zoneLabels.forEach(label => {
+                const zone = label.dataset.zone;
+                const currentCount = applicants[selectedDay][zone].length;
+                const capacityInfo = label.querySelector('.capacity-info');
+                const radioInput = label.previousElementSibling;
+                
+                capacityInfo.textContent = `${currentCount}/${maxCapacity}`;
+                
+                if (currentCount >= maxCapacity) {
+                    label.style.background = '#ff6b6b';
+                    label.style.color = 'white';
+                    label.style.borderColor = '#ff6b6b';
+                    label.style.cursor = 'not-allowed';
+                    radioInput.disabled = true;
+                } else {
+                    label.style.background = 'white';
+                    label.style.color = '#333';
+                    label.style.borderColor = '#e1e5e9';
+                    label.style.cursor = 'pointer';
+                    radioInput.disabled = false;
+                }
+            });
+        }
+
+        // 신청자 목록 업데이트
+        function updateApplicantsList() {
+            const applicantsListEl = document.getElementById('applicantsList');
+            applicantsListEl.innerHTML = '';
+            
+            days.forEach(day => {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day-section';
+                
+                const dayTitleDiv = document.createElement('div');
+                dayTitleDiv.className = 'day-title';
+                dayTitleDiv.textContent = day;
+                dayDiv.appendChild(dayTitleDiv);
+                
+                zones.forEach(zone => {
+                    const zoneApplicants = applicants[day][zone];
+                    
+                    const zoneDiv = document.createElement('div');
+                    zoneDiv.className = 'zone-applicants';
+                    
+                    const zoneNameDiv = document.createElement('div');
+                    zoneNameDiv.className = 'zone-name';
+                    zoneNameDiv.textContent = `${zone} (${zoneApplicants.length}/${maxCapacity})`;
+                    
+                    const applicantNamesDiv = document.createElement('div');
+                    applicantNamesDiv.className = 'applicant-names';
+                    applicantNamesDiv.textContent = zoneApplicants.length > 0 ? 
+                        zoneApplicants.join(', ') : '신청자 없음';
+                    
+                    zoneDiv.appendChild(zoneNameDiv);
+                    zoneDiv.appendChild(applicantNamesDiv);
+                    dayDiv.appendChild(zoneDiv);
+                });
+                
+                applicantsListEl.appendChild(dayDiv);
+            });
+        }
+
+        // 마감된 구역 클릭 방지
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('zone-label') && e.target.previousElementSibling.disabled) {
+                e.preventDefault();
+                const selectedDay = document.querySelector('input[name="day"]:checked');
+                if (selectedDay) {
+                    showMessage(`${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.`, 'error');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
