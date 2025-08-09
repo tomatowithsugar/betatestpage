@@ -114,6 +114,17 @@
             transform: translateY(-2px);
         }
 
+        .date-info {
+            font-size: 11px;
+            margin-top: 3px;
+            color: #999;
+            font-weight: normal;
+        }
+
+        .day-option input[type="radio"]:checked + .day-label .date-info {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
         .capacity-info {
             font-size: 12px;
             margin-top: 5px;
@@ -124,8 +135,6 @@
         .zone-label .capacity-info {
             font-size: 14px;
         }
-
-        .submit-btn {
             width: 100%;
             padding: 18px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -242,42 +251,49 @@
                         <input type="radio" id="monday" name="day" value="월요일">
                         <label for="monday" class="day-label" data-day="월요일">
                             월요일
+                            <div class="date-info" id="monday-date"></div>
                         </label>
                     </div>
                     <div class="day-option">
                         <input type="radio" id="tuesday" name="day" value="화요일">
                         <label for="tuesday" class="day-label" data-day="화요일">
                             화요일
+                            <div class="date-info" id="tuesday-date"></div>
                         </label>
                     </div>
                     <div class="day-option">
                         <input type="radio" id="wednesday" name="day" value="수요일">
                         <label for="wednesday" class="day-label" data-day="수요일">
                             수요일
+                            <div class="date-info" id="wednesday-date"></div>
                         </label>
                     </div>
                     <div class="day-option">
                         <input type="radio" id="thursday" name="day" value="목요일">
                         <label for="thursday" class="day-label" data-day="목요일">
                             목요일
+                            <div class="date-info" id="thursday-date"></div>
                         </label>
                     </div>
                     <div class="day-option">
                         <input type="radio" id="friday" name="day" value="금요일">
                         <label for="friday" class="day-label" data-day="금요일">
                             금요일
+                            <div class="date-info" id="friday-date"></div>
                         </label>
                     </div>
                     <div class="day-option">
                         <input type="radio" id="saturday" name="day" value="토요일">
                         <label for="saturday" class="day-label" data-day="토요일">
                             토요일
+                            <div class="date-info" id="saturday-date"></div>
                         </label>
                     </div>
                     <div class="day-option">
                         <input type="radio" id="sunday" name="day" value="일요일">
                         <label for="sunday" class="day-label" data-day="일요일">
                             일요일
+                            <div class="date-info" id="sunday-date"></div>
                         </label>
                     </div>
                 </div>
@@ -345,10 +361,38 @@
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            setCurrentWeekDates();
             updateDisplay();
         });
 
-        // 요일 선택 시 구역 선택 영역 표시
+        // 현재 주의 각 요일 날짜 설정
+        function setCurrentWeekDates() {
+            const today = new Date();
+            const currentDay = today.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+            
+            // 이번 주 월요일 찾기
+            const monday = new Date(today);
+            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay; // 일요일인 경우 -6, 그 외는 1-현재요일
+            monday.setDate(today.getDate() + daysFromMonday);
+            
+            // 각 요일의 날짜 설정
+            const dayElements = [
+                { id: 'monday-date', offset: 0 },
+                { id: 'tuesday-date', offset: 1 },
+                { id: 'wednesday-date', offset: 2 },
+                { id: 'thursday-date', offset: 3 },
+                { id: 'friday-date', offset: 4 },
+                { id: 'saturday-date', offset: 5 },
+                { id: 'sunday-date', offset: 6 }
+            ];
+            
+            dayElements.forEach(day => {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + day.offset);
+                const dateString = `${date.getMonth() + 1}/${date.getDate()}`;
+                document.getElementById(day.id).textContent = dateString;
+            });
+        }
         document.querySelectorAll('input[name="day"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const zoneContainer = document.getElementById('zoneSelectionContainer');
@@ -479,7 +523,10 @@
                 
                 const dayTitleDiv = document.createElement('div');
                 dayTitleDiv.className = 'day-title';
-                dayTitleDiv.textContent = day;
+                
+                // 해당 요일의 날짜 가져오기
+                const dayDate = getDateForDay(day);
+                dayTitleDiv.textContent = `${day} (${dayDate})`;
                 dayDiv.appendChild(dayTitleDiv);
                 
                 zones.forEach(zone => {
@@ -504,6 +551,25 @@
                 
                 applicantsListEl.appendChild(dayDiv);
             });
+        }
+
+        // 특정 요일의 날짜 가져오기 (2025/8/4 형식)
+        function getDateForDay(dayName) {
+            const today = new Date();
+            const currentDay = today.getDay();
+            const monday = new Date(today);
+            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
+            monday.setDate(today.getDate() + daysFromMonday);
+            
+            const dayMap = {
+                '월요일': 0, '화요일': 1, '수요일': 2, '목요일': 3,
+                '금요일': 4, '토요일': 5, '일요일': 6
+            };
+            
+            const targetDate = new Date(monday);
+            targetDate.setDate(monday.getDate() + dayMap[dayName]);
+            
+            return `${targetDate.getFullYear()}/${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
         }
 
         // 마감된 구역 클릭 방지
