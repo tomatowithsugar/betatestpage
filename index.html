@@ -402,6 +402,9 @@
             font-style: italic;
             padding: 40px;
         }
+        .action-buttons { display: flex; flex-direction: column; gap: 10px; }
+        .row-buttons { display: flex; gap: 10px; }
+        .full-width { width: 100%; }
     </style>
 </head>
 <body>
@@ -428,8 +431,8 @@
             <div class="action-buttons">
                 <button type="button" class="btn" onclick="openRegistrationModal()">전시대 봉사 신청</button>
                 <button type="button" class="btn secondary" onclick="openCancelModal()">신청 취소</button>
-                <button type="button" class="btn secondary" onclick="openMyApplicationsModal()">나의 신청 내역</button>
             </div>
+            <button type="button" class="btn secondary full-width" onclick="openMyApplicationsModal()">나의 신청 내역</button>
         </div>
 
         <!-- 신청 현황은 두 페이지 모두에서 공통으로 표시 -->
