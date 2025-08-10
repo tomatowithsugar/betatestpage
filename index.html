@@ -1354,7 +1354,12 @@
             const summaryEl = document.getElementById('statsSummary');
             const totalApplications = data.length;
             const uniqueUsers = new Set(data.map(d => d.name)).size;
-            const averagePerZone = (totalApplications / zones.length).toFixed(1);
+            
+            const zoneCounts = Object.values(zoneStats);
+            const mean = totalApplications / zones.length;
+            const variance = zoneCounts.reduce((acc, count) => acc + Math.pow(count - mean, 2), 0) / zones.length;
+            const stdDev = Math.sqrt(variance);
+            const imbalanceRate = mean > 0 ? (stdDev / mean) * 100 : 0;
             
             summaryEl.innerHTML = `
                 <div class="stat-card">
@@ -1366,8 +1371,8 @@
                     <div class="stat-label">참여 인원</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">${averagePerZone}</div>
-                    <div class="stat-label">구역별 평균</div>
+                    <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
+                    <div class="stat-label">불균형률</div>
                 </div>
             `;
             
