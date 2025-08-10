@@ -1159,6 +1159,54 @@
             console.log('Admin user selected:', this.value);
         });
 
+        // 신청 취소 목록 업데이트
+        function updateCancelList() {
+            const cancelListEl = document.getElementById('cancelList');
+            cancelListEl.innerHTML = '';
+
+            if (userApplications.length === 0) {
+                const noApplicationsDiv = document.createElement('div');
+                noApplicationsDiv.className = 'no-applications';
+                noApplicationsDiv.textContent = '신청 내역이 없습니다.';
+                cancelListEl.appendChild(noApplicationsDiv);
+                console.log('No user applications to display in cancel list');
+                return;
+            }
+
+            userApplications.forEach(application => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cancel-item';
+
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'cancel-info';
+
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'cancel-day';
+                dayDiv.textContent = application.day;
+
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'cancel-details';
+                // actualDate를 UTC 기준으로 파싱하고 KST로 표시
+                const dateParts = application.actualDate.split('-');
+                const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
+                const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+                detailsDiv.textContent = `${dateString} • ${application.zone}`;
+
+                infoDiv.appendChild(dayDiv);
+                infoDiv.appendChild(detailsDiv);
+
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'btn danger';
+                cancelBtn.textContent = '취소';
+                cancelBtn.onclick = () => confirmCancelApplication(application);
+
+                itemDiv.appendChild(infoDiv);
+                itemDiv.appendChild(cancelBtn);
+                cancelListEl.appendChild(itemDiv);
+            });
+            console.log('User cancel list updated with', userApplications.length, 'items');
+        }
+
         // 관리자 취소 리스트 업데이트
         function updateAdminCancelList() {
             const selectedUser = document.getElementById('adminUserSelect').value;
@@ -1182,9 +1230,8 @@
             userApps.forEach((app, index) => {
                 console.log('Processing application:', app);
                 const dateParts = app.actualDate.split('-');
-                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                console.log('Parsed date:', date, 'from actualDate:', app.actualDate);
-                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
+                const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
                 
                 const optionDiv = document.createElement('div');
                 optionDiv.className = 'cancel-item';
@@ -1288,8 +1335,8 @@
                 }
                 
                 const dateParts = application.actualDate.split('-');
-                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
+                const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
                 
                 if (confirm(`${application.name}님의 ${application.day}(${dateString}) ${application.zone} 신청을 취소하시겠습니까?`)) {
                     const deleted = await deleteFromFirestore(docId);
@@ -1501,60 +1548,11 @@
             console.log('Filtered user applications:', userApplications);
         }
 
-        // 신청 취소 목록 업데이트
-        // 신청 취소 목록 업데이트
-function updateCancelList() {
-    const cancelListEl = document.getElementById('cancelList');
-    cancelListEl.innerHTML = '';
-
-    if (userApplications.length === 0) {
-        const noApplicationsDiv = document.createElement('div');
-        noApplicationsDiv.className = 'no-applications';
-        noApplicationsDiv.textContent = '신청 내역이 없습니다.';
-        cancelListEl.appendChild(noApplicationsDiv);
-        console.log('No user applications to display in cancel list');
-        return;
-    }
-
-    userApplications.forEach(application => {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'cancel-item';
-
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'cancel-info';
-
-        const dayDiv = document.createElement('div');
-        dayDiv.className = 'cancel-day';
-        dayDiv.textContent = application.day;
-
-        const detailsDiv = document.createElement('div');
-        detailsDiv.className = 'cancel-details';
-        // actualDate를 UTC 기준으로 파싱하고 KST로 표시
-        const dateParts = application.actualDate.split('-');
-        const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
-        const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
-        detailsDiv.textContent = `${dateString} • ${application.zone}`;
-
-        infoDiv.appendChild(dayDiv);
-        infoDiv.appendChild(detailsDiv);
-
-        const cancelBtn = document.createElement('button');
-        cancelBtn.className = 'btn danger';
-        cancelBtn.textContent = '취소';
-        cancelBtn.onclick = () => confirmCancelApplication(application);
-
-        itemDiv.appendChild(infoDiv);
-        itemDiv.appendChild(cancelBtn);
-        cancelListEl.appendChild(itemDiv);
-    });
-    console.log('User cancel list updated with', userApplications.length, 'items');
-}
-
         // 신청 취소 확인
         function confirmCancelApplication(application) {
             const dateParts = application.actualDate.split('-');
-            const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-            const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+            const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
+            const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
             const confirmMessage = `${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?`;
             
             if (confirm(confirmMessage)) {
@@ -1567,8 +1565,8 @@ function updateCancelList() {
             const deleted = await deleteFromFirestore(docId);
             if (deleted) {
                 const dateParts = application.actualDate.split('-');
-                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
+                const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
                 alert(`${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.`);
                 closeCancelModal();
             }
