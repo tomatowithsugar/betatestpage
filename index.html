@@ -1180,7 +1180,10 @@
             }
             
             userApps.forEach((app, index) => {
-                const date = new Date(app.actualDate);
+                console.log('Processing application:', app);
+                const dateParts = app.actualDate.split('-');
+                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                console.log('Parsed date:', date, 'from actualDate:', app.actualDate);
                 const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
                 
                 const optionDiv = document.createElement('div');
@@ -1284,7 +1287,8 @@
                     return;
                 }
                 
-                const date = new Date(application.actualDate);
+                const dateParts = application.actualDate.split('-');
+                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
                 const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
                 
                 if (confirm(`${application.name}님의 ${application.day}(${dateString}) ${application.zone} 신청을 취소하시겠습니까?`)) {
@@ -1519,7 +1523,8 @@
 
                 const detailsDiv = document.createElement('div');
                 detailsDiv.className = 'cancel-details';
-                const date = new Date(application.actualDate);
+                const dateParts = application.actualDate.split('-');
+                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
                 const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
                 detailsDiv.textContent = `${dateString} • ${application.zone}`;
 
@@ -1540,7 +1545,8 @@
 
         // 신청 취소 확인
         function confirmCancelApplication(application) {
-            const date = new Date(application.actualDate);
+            const dateParts = application.actualDate.split('-');
+            const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
             const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
             const confirmMessage = `${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?`;
             
@@ -1553,7 +1559,8 @@
         async function cancelApplication(docId, application) {
             const deleted = await deleteFromFirestore(docId);
             if (deleted) {
-                const date = new Date(application.actualDate);
+                const dateParts = application.actualDate.split('-');
+                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
                 const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
                 alert(`${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.`);
                 closeCancelModal();
