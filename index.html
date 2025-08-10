@@ -1502,51 +1502,53 @@
         }
 
         // 신청 취소 목록 업데이트
-        function updateCancelList() {
-            const cancelListEl = document.getElementById('cancelList');
-            cancelListEl.innerHTML = '';
+        // 신청 취소 목록 업데이트
+function updateCancelList() {
+    const cancelListEl = document.getElementById('cancelList');
+    cancelListEl.innerHTML = '';
 
-            if (userApplications.length === 0) {
-                const noApplicationsDiv = document.createElement('div');
-                noApplicationsDiv.className = 'no-applications';
-                noApplicationsDiv.textContent = '신청 내역이 없습니다.';
-                cancelListEl.appendChild(noApplicationsDiv);
-                console.log('No user applications to display in cancel list');
-                return;
-            }
+    if (userApplications.length === 0) {
+        const noApplicationsDiv = document.createElement('div');
+        noApplicationsDiv.className = 'no-applications';
+        noApplicationsDiv.textContent = '신청 내역이 없습니다.';
+        cancelListEl.appendChild(noApplicationsDiv);
+        console.log('No user applications to display in cancel list');
+        return;
+    }
 
-            userApplications.forEach(application => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'cancel-item';
+    userApplications.forEach(application => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cancel-item';
 
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'cancel-info';
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'cancel-info';
 
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'cancel-day';
-                dayDiv.textContent = application.day;
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'cancel-day';
+        dayDiv.textContent = application.day;
 
-                const detailsDiv = document.createElement('div');
-                detailsDiv.className = 'cancel-details';
-                const dateParts = application.actualDate.split('-');
-                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-                detailsDiv.textContent = `${dateString} • ${application.zone}`;
+        const detailsDiv = document.createElement('div');
+        detailsDiv.className = 'cancel-details';
+        // actualDate를 UTC 기준으로 파싱하고 KST로 표시
+        const dateParts = application.actualDate.split('-');
+        const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
+        const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+        detailsDiv.textContent = `${dateString} • ${application.zone}`;
 
-                infoDiv.appendChild(dayDiv);
-                infoDiv.appendChild(detailsDiv);
+        infoDiv.appendChild(dayDiv);
+        infoDiv.appendChild(detailsDiv);
 
-                const cancelBtn = document.createElement('button');
-                cancelBtn.className = 'btn danger';
-                cancelBtn.textContent = '취소';
-                cancelBtn.onclick = () => confirmCancelApplication(application);
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'btn danger';
+        cancelBtn.textContent = '취소';
+        cancelBtn.onclick = () => confirmCancelApplication(application);
 
-                itemDiv.appendChild(infoDiv);
-                itemDiv.appendChild(cancelBtn);
-                cancelListEl.appendChild(itemDiv);
-            });
-            console.log('User cancel list updated with', userApplications.length, 'items');
-        }
+        itemDiv.appendChild(infoDiv);
+        itemDiv.appendChild(cancelBtn);
+        cancelListEl.appendChild(itemDiv);
+    });
+    console.log('User cancel list updated with', userApplications.length, 'items');
+}
 
         // 신청 취소 확인
         function confirmCancelApplication(application) {
