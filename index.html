@@ -554,13 +554,14 @@
     </div>
 
     <script>
-        // 신청자 데이터를 저장할 객체 (요일 > 구역 > 신청자 배열)
+        // 전역 변수들
         const applicants = {};
         const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
         const zones = ['1구역', '2구역', '3구역', '4구역'];
         const maxCapacity = 4;
         let currentUser = '';
-        let userApplications = []; // 현재 사용자의 신청 내역
+        let userApplications = [];
+        let allApplicationsData = [];
 
         // 초기 데이터 구조 생성
         days.forEach(day => {
@@ -581,25 +582,124 @@
                     login();
                 }
             });
+
+            // 요일 선택 이벤트 추가
+            addDaySelectionEvents();
+            
+            // 폼 제출 이벤트 추가
+            addFormSubmitEvent();
+            
+            // 모달 외부 클릭 이벤트 추가
+            addModalEvents();
         };
 
-        // Firestore에서 데이터 로드 (현재 주 데이터만)
+        // 요일 선택 이벤트 추가
+        function addDaySelectionEvents() {
+            document.querySelectorAll('input[name="day"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const zoneContainer = document.getElementById('zoneSelectionContainer');
+                    if (this.checked) {
+                        zoneContainer.classList.add('show');
+                        updateZoneDisplay(this.value);
+                        // 구역 선택 초기화
+                        document.querySelectorAll('input[name="zone"]').forEach(zoneRadio => {
+                            zoneRadio.checked = false;
+                        });
+                    }
+                });
+            });
+        }
+
+        // 폼 제출 이벤트 추가
+        function addFormSubmitEvent() {
+            document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const selectedDay = document.querySelector('input[name="day"]:checked');
+                const selectedZone = document.querySelector('input[name="zone"]:checked');
+                
+                if (!selectedDay) {
+                    showMessage('요일을 선택해주세요.', 'error');
+                    return;
+                }
+
+                if (!selectedZone) {
+                    showMessage('구역을 선택해주세요.', 'error');
+                    return;
+                }
+                
+                const dayValue = selectedDay.value;
+                const zoneValue = selectedZone.value;
+                
+                // 정원 체크
+                if (applicants[dayValue][zoneValue].length >= maxCapacity) {
+                    showMessage(`${dayValue} ${zoneValue}은 마감되었습니다.`, 'error');
+                    return;
+                }
+                
+                // 중복 신청 체크 (같은 요일 다른 구역 포함)
+                let isDuplicate = false;
+                zones.forEach(zone => {
+                    if (applicants[dayValue][zone].includes(currentUser)) {
+                        isDuplicate = true;
+                    }
+                });
+                
+                if (isDuplicate) {
+                    showMessage(`${dayValue}에 이미 신청하셨습니다.`, 'error');
+                    return;
+                }
+                
+                // Firestore에 저장
+                const saved = await saveToFirestore(currentUser, dayValue, zoneValue);
+                
+                if (saved) {
+                    showMessage(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`, 'success');
+                    closeRegistrationModal();
+                }
+            });
+        }
+
+        // 모달 이벤트 추가
+        function addModalEvents() {
+            window.onclick = function(event) {
+                const registrationModal = document.getElementById('registrationModal');
+                const cancelModal = document.getElementById('cancelModal');
+                
+                if (event.target == registrationModal) {
+                    closeRegistrationModal();
+                }
+                if (event.target == cancelModal) {
+                    closeCancelModal();
+                }
+            }
+
+            // 마감된 구역 클릭 방지
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('zone-label') && e.target.previousElementSibling.disabled) {
+                    e.preventDefault();
+                    const selectedDay = document.querySelector('input[name="day"]:checked');
+                    if (selectedDay) {
+                        showMessage(`${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.`, 'error');
+                    }
+                }
+            });
+        }
+
+        // Firestore에서 데이터 로드
         async function loadDataFromFirestore() {
             try {
                 const { collection, onSnapshot, query, where } = window.firestoreFunctions;
                 const applicantsRef = collection(window.db, 'applicants');
                 
-                // 현재 주의 날짜 범위 계산
                 const currentWeekDates = getCurrentWeekDates();
                 
-                // 현재 주 데이터만 쿼리
                 const weekQuery = query(
                     applicantsRef,
                     where('actualDate', '>=', currentWeekDates.start),
                     where('actualDate', '<=', currentWeekDates.end)
                 );
                 
-                // 실시간 데이터 감지
                 onSnapshot(weekQuery, (querySnapshot) => {
                     // 데이터 초기화
                     days.forEach(day => {
@@ -608,26 +708,23 @@
                         });
                     });
                     
-                    userApplications = []; // 사용자 신청 내역 초기화
+                    allApplicationsData = [];
                     
-                    // Firestore에서 데이터 가져와서 로컬 객체에 저장
                     querySnapshot.forEach((doc) => {
                         const data = doc.data();
                         const { name, day, zone } = data;
                         
+                        allApplicationsData.push({
+                            id: doc.id,
+                            ...data
+                        });
+                        
                         if (applicants[day] && applicants[day][zone]) {
                             applicants[day][zone].push(name);
                         }
-                        
-                        // 현재 사용자의 신청 내역 저장
-                        if (name === currentUser) {
-                            userApplications.push({
-                                id: doc.id,
-                                ...data
-                            });
-                        }
                     });
                     
+                    updateUserApplications();
                     updateDisplay();
                 });
             } catch (error) {
@@ -636,7 +733,51 @@
             }
         }
 
-        // 현재 주의 날짜 범위 계산 (월요일~일요일)
+        // 현재 사용자의 신청 내역 업데이트
+        function updateUserApplications() {
+            userApplications = [];
+            
+            if (currentUser && allApplicationsData.length > 0) {
+                userApplications = allApplicationsData.filter(app => app.name === currentUser);
+                console.log(`${currentUser}의 신청 내역:`, userApplications);
+            }
+        }
+
+        // 현재 사용자의 신청 내역을 Firebase에서 직접 로드
+        async function loadUserApplications() {
+            if (!currentUser) return;
+            
+            try {
+                const { collection, getDocs, query, where } = window.firestoreFunctions;
+                const applicantsRef = collection(window.db, 'applicants');
+                
+                const currentWeekDates = getCurrentWeekDates();
+                
+                const userQuery = query(
+                    applicantsRef,
+                    where('name', '==', currentUser),
+                    where('actualDate', '>=', currentWeekDates.start),
+                    where('actualDate', '<=', currentWeekDates.end)
+                );
+                
+                const querySnapshot = await getDocs(userQuery);
+                userApplications = [];
+                
+                querySnapshot.forEach((doc) => {
+                    userApplications.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                console.log(`${currentUser}의 신청 내역 (직접 로드):`, userApplications);
+                
+            } catch (error) {
+                console.error('사용자 신청 내역 로드 오류:', error);
+            }
+        }
+
+        // 현재 주의 날짜 범위 계산
         function getCurrentWeekDates() {
             const today = new Date();
             const currentDay = today.getDay();
@@ -648,9 +789,52 @@
             sunday.setDate(monday.getDate() + 6);
             
             return {
-                start: monday.toISOString().split('T')[0], // YYYY-MM-DD
-                end: sunday.toISOString().split('T')[0]    // YYYY-MM-DD
+                start: monday.toISOString().split('T')[0],
+                end: sunday.toISOString().split('T')[0]
             };
+        }
+
+        // 로그인 함수
+        async function login() {
+            const name = document.getElementById('loginName').value.trim();
+            if (!name) {
+                showMessage('이름을 입력해주세요.', 'error');
+                return;
+            }
+            
+            currentUser = name;
+            document.getElementById('userInfo').textContent = `${currentUser}님 환영합니다!`;
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+            
+            // 로그인 후 해당 사용자의 신청 내역을 Firebase에서 직접 조회
+            await loadUserApplications();
+        }
+
+        // 신청 모달 열기
+        function openRegistrationModal() {
+            document.getElementById('registrationModal').style.display = 'block';
+            setCurrentWeekDates();
+            updateZoneDisplayForModal();
+        }
+
+        // 신청 모달 닫기
+        function closeRegistrationModal() {
+            document.getElementById('registrationModal').style.display = 'none';
+            document.getElementById('registrationForm').reset();
+            document.getElementById('zoneSelectionContainer').classList.remove('show');
+        }
+
+        // 신청 취소 모달 열기
+        async function openCancelModal() {
+            await loadUserApplications();
+            document.getElementById('cancelModal').style.display = 'block';
+            updateCancelList();
+        }
+
+        // 신청 취소 모달 닫기
+        function closeCancelModal() {
+            document.getElementById('cancelModal').style.display = 'none';
         }
 
         // Firestore에 데이터 저장
@@ -665,8 +849,8 @@
                     name: name,
                     day: day,
                     zone: zone,
-                    actualDate: actualDate, // 실제 날짜 (2025-08-11)
-                    timestamp: new Date()   // 신청 시간
+                    actualDate: actualDate,
+                    timestamp: new Date()
                 });
                 
                 return true;
@@ -688,48 +872,6 @@
                 alert('신청 취소 중 오류가 발생했습니다.');
                 return false;
             }
-        }
-
-        // 로그인 함수
-        function login() {
-            const name = document.getElementById('loginName').value.trim();
-            if (!name) {
-                showMessage('이름을 입력해주세요.', 'error');
-                return;
-            }
-            
-            currentUser = name;
-            document.getElementById('userInfo').textContent = `${currentUser}님 환영합니다!`;
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('mainPage').style.display = 'block';
-            
-            // 로그인 후 사용자 신청 내역 업데이트
-            updateUserApplications();
-        }
-
-        // 신청 모달 열기
-        function openRegistrationModal() {
-            document.getElementById('registrationModal').style.display = 'block';
-            setCurrentWeekDates();
-            updateZoneDisplayForModal();
-        }
-
-        // 신청 모달 닫기
-        function closeRegistrationModal() {
-            document.getElementById('registrationModal').style.display = 'none';
-            document.getElementById('registrationForm').reset();
-            document.getElementById('zoneSelectionContainer').classList.remove('show');
-        }
-
-        // 신청 취소 모달 열기
-        function openCancelModal() {
-            document.getElementById('cancelModal').style.display = 'block';
-            updateCancelList();
-        }
-
-        // 신청 취소 모달 닫기
-        function closeCancelModal() {
-            document.getElementById('cancelModal').style.display = 'none';
         }
 
         // 신청 취소 목록 업데이트
@@ -804,14 +946,12 @@
         // 현재 주의 각 요일 날짜 설정
         function setCurrentWeekDates() {
             const today = new Date();
-            const currentDay = today.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+            const currentDay = today.getDay();
             
-            // 이번 주 월요일 찾기
             const monday = new Date(today);
-            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay; // 일요일인 경우 -6, 그 외는 1-현재요일
+            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
             monday.setDate(today.getDate() + daysFromMonday);
             
-            // 각 요일의 날짜 설정
             const dayElements = [
                 { id: 'monday-date', offset: 0 },
                 { id: 'tuesday-date', offset: 1 },
@@ -833,72 +973,6 @@
             });
         }
 
-        // 요일 선택 시 구역 선택 영역 표시
-        document.querySelectorAll('input[name="day"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const zoneContainer = document.getElementById('zoneSelectionContainer');
-                if (this.checked) {
-                    zoneContainer.classList.add('show');
-                    updateZoneDisplay(this.value);
-                    // 구역 선택 초기화
-                    document.querySelectorAll('input[name="zone"]').forEach(zoneRadio => {
-                        zoneRadio.checked = false;
-                    });
-                }
-            });
-        });
-
-        // 폼 제출 이벤트 처리
-        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const selectedDay = document.querySelector('input[name="day"]:checked');
-            const selectedZone = document.querySelector('input[name="zone"]:checked');
-            
-            if (!selectedDay) {
-                showMessage('요일을 선택해주세요.', 'error');
-                return;
-            }
-
-            if (!selectedZone) {
-                showMessage('구역을 선택해주세요.', 'error');
-                return;
-            }
-            
-            const dayValue = selectedDay.value;
-            const zoneValue = selectedZone.value;
-            
-            // 정원 체크
-            if (applicants[dayValue][zoneValue].length >= maxCapacity) {
-                showMessage(`${dayValue} ${zoneValue}은 마감되었습니다.`, 'error');
-                return;
-            }
-            
-            // 중복 신청 체크 (같은 요일 다른 구역 포함)
-            let isDuplicate = false;
-            zones.forEach(zone => {
-                if (applicants[dayValue][zone].includes(currentUser)) {
-                    isDuplicate = true;
-                }
-            });
-            
-            if (isDuplicate) {
-                showMessage(`${dayValue}에 이미 신청하셨습니다.`, 'error');
-                return;
-            }
-            
-            // Firestore에 저장
-            const saved = await saveToFirestore(currentUser, dayValue, zoneValue);
-            
-            if (saved) {
-                // 성공 메시지 표시
-                showMessage(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`, 'success');
-                
-                // 모달 닫기
-                closeRegistrationModal();
-            }
-        });
-
         // 특정 요일의 실제 날짜 계산
         function getActualDateForDay(dayName) {
             const today = new Date();
@@ -915,7 +989,7 @@
             const targetDate = new Date(monday);
             targetDate.setDate(monday.getDate() + dayMap[dayName]);
             
-            return targetDate.toISOString().split('T')[0]; // YYYY-MM-DD 형태
+            return targetDate.toISOString().split('T')[0];
         }
 
         // 메시지 표시 함수
@@ -934,7 +1008,6 @@
 
         // 모달에서 구역 표시 업데이트
         function updateZoneDisplayForModal() {
-            // 모달이 열릴 때 초기화
             document.querySelectorAll('.zone-label').forEach(label => {
                 label.style.background = '';
                 label.style.color = '';
@@ -963,7 +1036,6 @@
                     label.style.cursor = 'not-allowed';
                     radioInput.disabled = true;
                 } else {
-                    // 선택되지 않은 상태로 초기화
                     if (!radioInput.checked) {
                         label.style.background = '';
                         label.style.color = '';
@@ -987,7 +1059,6 @@
                 const dayTitleDiv = document.createElement('div');
                 dayTitleDiv.className = 'day-title';
                 
-                // 해당 요일의 날짜 가져오기
                 const dayDate = getDateForDay(day);
                 dayTitleDiv.textContent = `${day} (${dayDate})`;
                 dayDiv.appendChild(dayTitleDiv);
@@ -1016,7 +1087,7 @@
             });
         }
 
-        // 특정 요일의 날짜 가져오기 (2025/8/4 형식)
+        // 특정 요일의 날짜 가져오기
         function getDateForDay(dayName) {
             const today = new Date();
             const currentDay = today.getDay();
@@ -1033,30 +1104,6 @@
             targetDate.setDate(monday.getDate() + dayMap[dayName]);
             
             return `${targetDate.getFullYear()}/${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
-        }
-
-        // 마감된 구역 클릭 방지
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('zone-label') && e.target.previousElementSibling.disabled) {
-                e.preventDefault();
-                const selectedDay = document.querySelector('input[name="day"]:checked');
-                if (selectedDay) {
-                    showMessage(`${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.`, 'error');
-                }
-            }
-        });
-
-        // 모달 외부 클릭 시 닫기
-        window.onclick = function(event) {
-            const registrationModal = document.getElementById('registrationModal');
-            const cancelModal = document.getElementById('cancelModal');
-            
-            if (event.target == registrationModal) {
-                closeRegistrationModal();
-            }
-            if (event.target == cancelModal) {
-                closeCancelModal();
-            }
         }
     </script>
 </body>
