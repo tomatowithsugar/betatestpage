@@ -608,7 +608,7 @@
                         });
                     });
                     
-                    userApplications = []; // 사용자 신청 내역 초기화
+                    userApplications = []; // 사용자 신청 내역 초기화는 제거 (별도 조회하므로)
                     
                     // Firestore에서 데이터 가져와서 로컬 객체에 저장
                     querySnapshot.forEach((doc) => {
@@ -617,14 +617,6 @@
                         
                         if (applicants[day] && applicants[day][zone]) {
                             applicants[day][zone].push(name);
-                        }
-                        
-                        // 현재 사용자의 신청 내역 저장
-                        if (name === currentUser) {
-                            userApplications.push({
-                                id: doc.id,
-                                ...data
-                            });
                         }
                     });
                     
@@ -718,9 +710,50 @@
             document.getElementById('zoneSelectionContainer').classList.remove('show');
         }
 
+        // 현재 사용자의 신청 내역만 별도로 조회
+        async function loadUserApplications() {
+            try {
+                const { collection, query, where, getDocs } = window.firestoreFunctions;
+                const applicantsRef = collection(window.db, 'applicants');
+                
+                // 현재 주의 날짜 범위 계산
+                const currentWeekDates = getCurrentWeekDates();
+                
+                // 현재 사용자의 현재 주 데이터만 쿼리
+                const userQuery = query(
+                    applicantsRef,
+                    where('name', '==', currentUser),
+                    where('actualDate', '>=', currentWeekDates.start),
+                    where('actualDate', '<=', currentWeekDates.end)
+                );
+                
+                const querySnapshot = await getDocs(userQuery);
+                userApplications = [];
+                
+                querySnapshot.forEach((doc) => {
+                    userApplications.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                return true;
+            } catch (error) {
+                console.error('사용자 신청 내역 조회 오류:', error);
+                alert('신청 내역을 불러오는 중 오류가 발생했습니다.');
+                return false;
+            }
+        }
+
         // 신청 취소 모달 열기
-        function openCancelModal() {
+        async function openCancelModal() {
             document.getElementById('cancelModal').style.display = 'block';
+            // 로딩 상태 표시
+            const cancelListEl = document.getElementById('cancelList');
+            cancelListEl.innerHTML = '<div class="no-applications">신청 내역을 불러오는 중...</div>';
+            
+            // 현재 사용자의 신청 내역 실시간 조회
+            await loadUserApplications();
             updateCancelList();
         }
 
