@@ -554,6 +554,9 @@
     </div>
 
     <script>
+        // 허용된 사용자 목록 (하드코딩)
+        const allowedUsers = ['양진우', '테스트'];
+        
         // 신청자 데이터를 저장할 객체 (요일 > 구역 > 신청자 배열)
         const applicants = {};
         const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
@@ -701,11 +704,18 @@
             }
         }
 
-        // 로그인 함수
+        // 로그인 함수 (사용자 제한 기능 추가)
         function login() {
             const name = document.getElementById('loginName').value.trim();
             if (!name) {
-                showMessage('이름을 입력해주세요.', 'error');
+                alert('이름을 입력해주세요.');
+                return;
+            }
+            
+            // 허용된 사용자 검사
+            if (!allowedUsers.includes(name)) {
+                alert('등록되지 않은 전도인입니다.');
+                document.getElementById('loginName').value = ''; // 입력란 초기화
                 return;
             }
             
@@ -882,12 +892,12 @@
             const selectedZone = document.querySelector('input[name="zone"]:checked');
             
             if (!selectedDay) {
-                showMessage('요일을 선택해주세요.', 'error');
+                alert('요일을 선택해주세요.');
                 return;
             }
 
             if (!selectedZone) {
-                showMessage('구역을 선택해주세요.', 'error');
+                alert('구역을 선택해주세요.');
                 return;
             }
             
@@ -896,7 +906,7 @@
             
             // 정원 체크
             if (applicants[dayValue][zoneValue].length >= maxCapacity) {
-                showMessage(`${dayValue} ${zoneValue}은 마감되었습니다.`, 'error');
+                alert(`${dayValue} ${zoneValue}은 마감되었습니다.`);
                 return;
             }
             
@@ -909,7 +919,7 @@
             });
             
             if (isDuplicate) {
-                showMessage(`${dayValue}에 이미 신청하셨습니다.`, 'error');
+                alert(`${dayValue}에 이미 신청하셨습니다.`);
                 return;
             }
             
@@ -918,7 +928,7 @@
             
             if (saved) {
                 // 성공 메시지 표시
-                showMessage(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`, 'success');
+                alert(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`);
                 
                 // 모달 닫기
                 closeRegistrationModal();
@@ -942,15 +952,6 @@
             targetDate.setDate(monday.getDate() + dayMap[dayName]);
             
             return targetDate.toISOString().split('T')[0]; // YYYY-MM-DD 형태
-        }
-
-        // 메시지 표시 함수
-        function showMessage(text, type) {
-            if (type === 'success') {
-                alert(text);
-            } else {
-                alert(text);
-            }
         }
 
         // 화면 업데이트 함수
@@ -1067,7 +1068,7 @@
                 e.preventDefault();
                 const selectedDay = document.querySelector('input[name="day"]:checked');
                 if (selectedDay) {
-                    showMessage(`${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.`, 'error');
+                    alert(`${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.`);
                 }
             }
         });
