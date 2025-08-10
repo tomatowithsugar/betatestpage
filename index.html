@@ -8,7 +8,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
         // Firebase 설정
         const firebaseConfig = {
@@ -34,7 +34,9 @@
             getDocs,
             query,
             where,
-            onSnapshot
+            onSnapshot,
+            deleteDoc,
+            doc
         };
 
         // DOM이 로드된 후 실행
@@ -137,6 +139,14 @@
         .btn.secondary {
             background: #6c757d;
             background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            padding: 8px 16px;
+            width: auto;
+            font-size: 14px;
+            margin: 0;
         }
 
         .btn:disabled {
@@ -352,6 +362,46 @@
             font-size: 24px;
             font-weight: 700;
         }
+
+        /* 신청 취소 모달 스타일 */
+        .cancel-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .cancel-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e1e5e9;
+        }
+
+        .cancel-info {
+            flex: 1;
+        }
+
+        .cancel-day {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        .cancel-details {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .no-applications {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 40px;
+        }
     </style>
 </head>
 <body>
@@ -377,7 +427,7 @@
             
             <div class="action-buttons">
                 <button type="button" class="btn" onclick="openRegistrationModal()">전시대 봉사 신청</button>
-                <button type="button" class="btn secondary" onclick="cancelRegistration()">신청 취소</button>
+                <button type="button" class="btn secondary" onclick="openCancelModal()">신청 취소</button>
             </div>
         </div>
 
@@ -491,6 +541,18 @@
         </div>
     </div>
 
+    <!-- 신청 취소 모달 -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCancelModal()">&times;</span>
+            <h2>신청 취소</h2>
+            
+            <div id="cancelList" class="cancel-list">
+                <!-- 신청 내역이 여기에 표시됩니다 -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // 신청자 데이터를 저장할 객체 (요일 > 구역 > 신청자 배열)
         const applicants = {};
@@ -498,6 +560,7 @@
         const zones = ['1구역', '2구역', '3구역', '4구역'];
         const maxCapacity = 4;
         let currentUser = '';
+        let userApplications = []; // 현재 사용자의 신청 내역
 
         // 초기 데이터 구조 생성
         days.forEach(day => {
@@ -545,12 +608,23 @@
                         });
                     });
                     
+                    userApplications = []; // 사용자 신청 내역 초기화
+                    
                     // Firestore에서 데이터 가져와서 로컬 객체에 저장
                     querySnapshot.forEach((doc) => {
                         const data = doc.data();
                         const { name, day, zone } = data;
+                        
                         if (applicants[day] && applicants[day][zone]) {
                             applicants[day][zone].push(name);
+                        }
+                        
+                        // 현재 사용자의 신청 내역 저장
+                        if (name === currentUser) {
+                            userApplications.push({
+                                id: doc.id,
+                                ...data
+                            });
                         }
                     });
                     
@@ -603,6 +677,19 @@
             }
         }
 
+        // Firestore에서 데이터 삭제
+        async function deleteFromFirestore(docId) {
+            try {
+                const { deleteDoc, doc } = window.firestoreFunctions;
+                await deleteDoc(doc(window.db, 'applicants', docId));
+                return true;
+            } catch (error) {
+                console.error('삭제 오류:', error);
+                alert('신청 취소 중 오류가 발생했습니다.');
+                return false;
+            }
+        }
+
         // 로그인 함수
         function login() {
             const name = document.getElementById('loginName').value.trim();
@@ -631,9 +718,84 @@
             document.getElementById('zoneSelectionContainer').classList.remove('show');
         }
 
-        // 신청 취소 함수 (현재는 메시지만 표시)
-        function cancelRegistration() {
-            showMessage('신청 취소 기능은 준비 중입니다.', 'error');
+        // 신청 취소 모달 열기
+        function openCancelModal() {
+            document.getElementById('cancelModal').style.display = 'block';
+            updateCancelList();
+        }
+
+        // 신청 취소 모달 닫기
+        function closeCancelModal() {
+            document.getElementById('cancelModal').style.display = 'none';
+        }
+
+        // 신청 취소 목록 업데이트
+        function updateCancelList() {
+            const cancelListEl = document.getElementById('cancelList');
+            cancelListEl.innerHTML = '';
+
+            if (userApplications.length === 0) {
+                const noApplicationsDiv = document.createElement('div');
+                noApplicationsDiv.className = 'no-applications';
+                noApplicationsDiv.textContent = '신청 내역이 없습니다.';
+                cancelListEl.appendChild(noApplicationsDiv);
+                return;
+            }
+
+            userApplications.forEach(application => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cancel-item';
+
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'cancel-info';
+
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'cancel-day';
+                dayDiv.textContent = application.day;
+
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'cancel-details';
+                
+                const date = new Date(application.actualDate);
+                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                detailsDiv.textContent = `${dateString} • ${application.zone}`;
+
+                infoDiv.appendChild(dayDiv);
+                infoDiv.appendChild(detailsDiv);
+
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'btn danger';
+                cancelBtn.textContent = '취소';
+                cancelBtn.onclick = () => confirmCancelApplication(application);
+
+                itemDiv.appendChild(infoDiv);
+                itemDiv.appendChild(cancelBtn);
+                cancelListEl.appendChild(itemDiv);
+            });
+        }
+
+        // 신청 취소 확인
+        function confirmCancelApplication(application) {
+            const date = new Date(application.actualDate);
+            const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+            
+            const confirmMessage = `${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?`;
+            
+            if (confirm(confirmMessage)) {
+                cancelApplication(application.id, application);
+            }
+        }
+
+        // 신청 취소 실행
+        async function cancelApplication(docId, application) {
+            const deleted = await deleteFromFirestore(docId);
+            
+            if (deleted) {
+                const date = new Date(application.actualDate);
+                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                alert(`${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.`);
+                closeCancelModal();
+            }
         }
 
         // 현재 주의 각 요일 날짜 설정
@@ -883,9 +1045,14 @@
 
         // 모달 외부 클릭 시 닫기
         window.onclick = function(event) {
-            const modal = document.getElementById('registrationModal');
-            if (event.target == modal) {
+            const registrationModal = document.getElementById('registrationModal');
+            const cancelModal = document.getElementById('cancelModal');
+            
+            if (event.target == registrationModal) {
                 closeRegistrationModal();
+            }
+            if (event.target == cancelModal) {
+                closeCancelModal();
             }
         }
     </script>
