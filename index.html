@@ -428,6 +428,7 @@
             <div class="action-buttons">
                 <button type="button" class="btn" onclick="openRegistrationModal()">전시대 봉사 신청</button>
                 <button type="button" class="btn secondary" onclick="openCancelModal()">신청 취소</button>
+                <button type="button" class="btn secondary" onclick="openMyApplicationsModal()">나의 신청 내역</button>
             </div>
         </div>
 
@@ -552,6 +553,15 @@
             </div>
         </div>
     </div>
+
+    <!-- 신청 내역 모달 -->
+    <div id="myApplicationsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeMyApplicationsModal()">&times;</span>
+        <h2>나의 이번 주 신청 내역</h2>
+        <div id="myApplicationsList" class="cancel-list"></div>
+    </div>
+</div>
 
     <script>
         // 허용된 사용자 목록 (하드코딩)
@@ -762,6 +772,34 @@
             filterUserApplications();
             updateCancelList();
         }
+        function openMyApplicationsModal() {
+        updateMyApplicationsList();
+        document.getElementById('myApplicationsModal').style.display = 'block';
+    }
+
+    function closeMyApplicationsModal() {
+        document.getElementById('myApplicationsModal').style.display = 'none';
+    }
+
+    function updateMyApplicationsList() {
+        const listContainer = document.getElementById('myApplicationsList');
+        listContainer.innerHTML = '';
+
+        if (userApplications.length === 0) {
+            listContainer.innerHTML = `<div class="no-applications">이번 주 신청 내역이 없습니다.</div>`;
+            return;
+        }
+
+        userApplications.forEach(app => {
+            const item = document.createElement('div');
+            item.className = 'cancel-item';
+            item.innerHTML = `
+                <div class="cancel-day">${app.day}</div>
+                <div>${app.zone} (${app.actualDate})</div>
+            `;
+            listContainer.appendChild(item);
+        });
+    }
 
         // 신청 취소 모달 닫기
         function closeCancelModal() {
