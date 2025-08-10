@@ -555,7 +555,7 @@
 
     <script>
         // 허용된 사용자 목록 (하드코딩)
-        const allowedUsers = ['양진우', '테스트1', '테스트2', '테스트3', '테스트4', '테스트5'];
+        const allowedUsers = ['양진우', '테스트'];
         
         // 신청자 데이터를 저장할 객체 (요일 > 구역 > 신청자 배열)
         const applicants = {};
@@ -720,7 +720,7 @@
             }
             
             currentUser = name;
-            document.getElementById('userInfo').textContent = ${currentUser}님 환영합니다!;
+            document.getElementById('userInfo').textContent = `${currentUser}님 환영합니다!`;
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('mainPage').style.display = 'block';
 
@@ -796,8 +796,8 @@
                 detailsDiv.className = 'cancel-details';
                 
                 const date = new Date(application.actualDate);
-                const dateString = ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()};
-                detailsDiv.textContent = ${dateString} • ${application.zone};
+                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                detailsDiv.textContent = `${dateString} • ${application.zone}`;
 
                 infoDiv.appendChild(dayDiv);
                 infoDiv.appendChild(detailsDiv);
@@ -816,9 +816,9 @@
         // 신청 취소 확인
         function confirmCancelApplication(application) {
             const date = new Date(application.actualDate);
-            const dateString = ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()};
+            const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
             
-            const confirmMessage = ${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?;
+            const confirmMessage = `${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?`;
             
             if (confirm(confirmMessage)) {
                 cancelApplication(application.id, application);
@@ -831,8 +831,8 @@
             
             if (deleted) {
                 const date = new Date(application.actualDate);
-                const dateString = ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()};
-                alert(${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.);
+                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                alert(`${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.`);
                 closeCancelModal();
             }
         }
@@ -861,7 +861,7 @@
             dayElements.forEach(day => {
                 const date = new Date(monday);
                 date.setDate(monday.getDate() + day.offset);
-                const dateString = ${date.getMonth() + 1}/${date.getDate()};
+                const dateString = `${date.getMonth() + 1}/${date.getDate()}`;
                 const element = document.getElementById(day.id);
                 if (element) {
                     element.textContent = dateString;
@@ -906,7 +906,7 @@
             
             // 정원 체크
             if (applicants[dayValue][zoneValue].length >= maxCapacity) {
-                alert(${dayValue} ${zoneValue}은 마감되었습니다.);
+                alert(`${dayValue} ${zoneValue}은 마감되었습니다.`);
                 return;
             }
             
@@ -919,7 +919,7 @@
             });
             
             if (isDuplicate) {
-                alert(${dayValue}에 이미 신청하셨습니다.);
+                alert(`${dayValue}에 이미 신청하셨습니다.`);
                 return;
             }
             
@@ -928,7 +928,7 @@
             
             if (saved) {
                 // 성공 메시지 표시
-                alert(${dayValue} ${zoneValue} 신청이 완료되었습니다!);
+                alert(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`);
                 
                 // 모달 닫기
                 closeRegistrationModal();
@@ -981,7 +981,7 @@
                 const capacityInfo = label.querySelector('.capacity-info');
                 const radioInput = label.previousElementSibling;
                 
-                capacityInfo.textContent = ${currentCount}/${maxCapacity};
+                capacityInfo.textContent = `${currentCount}/${maxCapacity}`;
                 
                 if (currentCount >= maxCapacity) {
                     label.style.background = '#ff6b6b';
@@ -1016,7 +1016,7 @@
                 
                 // 해당 요일의 날짜 가져오기
                 const dayDate = getDateForDay(day);
-                dayTitleDiv.textContent = ${day} (${dayDate});
+                dayTitleDiv.textContent = `${day} (${dayDate})`;
                 dayDiv.appendChild(dayTitleDiv);
                 
                 zones.forEach(zone => {
@@ -1027,7 +1027,7 @@
                     
                     const zoneNameDiv = document.createElement('div');
                     zoneNameDiv.className = 'zone-name';
-                    zoneNameDiv.textContent = ${zone} (${zoneApplicants.length}/${maxCapacity});
+                    zoneNameDiv.textContent = `${zone} (${zoneApplicants.length}/${maxCapacity})`;
                     
                     const applicantNamesDiv = document.createElement('div');
                     applicantNamesDiv.className = 'applicant-names';
@@ -1059,7 +1059,7 @@
             const targetDate = new Date(monday);
             targetDate.setDate(monday.getDate() + dayMap[dayName]);
             
-            return ${targetDate.getFullYear()}/${targetDate.getMonth() + 1}/${targetDate.getDate()};
+            return `${targetDate.getFullYear()}/${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
         }
 
         // 마감된 구역 클릭 방지
@@ -1068,7 +1068,7 @@
                 e.preventDefault();
                 const selectedDay = document.querySelector('input[name="day"]:checked');
                 if (selectedDay) {
-                    alert(${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.);
+                    alert(`${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.`);
                 }
             }
         });
