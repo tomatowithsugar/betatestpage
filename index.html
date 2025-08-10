@@ -492,13 +492,6 @@
                                 <div class="date-info" id="saturday-date"></div>
                             </label>
                         </div>
-                        <div class="day-option">
-                            <input type="radio" id="sunday" name="day" value="일요일">
-                            <label for="sunday" class="day-label" data-day="일요일">
-                                일요일
-                                <div class="date-info" id="sunday-date"></div>
-                            </label>
-                        </div>
                     </div>
                 </div>
 
@@ -561,7 +554,7 @@
         
         // 신청자 데이터를 저장할 객체 (요일 > 구역 > 신청자 배열)
         const applicants = {};
-        const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+        const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
         const zones = ['메트로 앞', '신한은행 앞', '알라딘문고 앞', '하나은행 앞'];
         const maxCapacity = 4;
         let currentUser = '';
@@ -641,7 +634,7 @@
                     updateDisplay();
                     
                     // 만약 취소 모달이 열려 있으면 취소 리스트 갱신
-                    const cancelModal = document.getElementById('cancelModal');
+                    const cancelidityModal = document.getElementById('cancelModal');
                     if (cancelModal.style.display === 'block') {
                         updateCancelList();
                     }
@@ -652,20 +645,20 @@
             }
         }
 
-        // 현재 주의 날짜 범위 계산 (월요일~일요일)
+        // 현재 주의 날짜 범위 계산 (일요일~토요일)
         function getCurrentWeekDates() {
             const today = new Date();
             const currentDay = today.getDay();
-            const monday = new Date(today);
-            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
-            monday.setDate(today.getDate() + daysFromMonday);
+            const sunday = new Date(today);
+            const daysFromSunday = currentDay; // 일요일은 0, 월요일은 1, ..., 토요일은 6
+            sunday.setDate(today.getDate() - daysFromSunday);
             
-            const sunday = new Date(monday);
-            sunday.setDate(monday.getDate() + 6);
+            const saturday = new Date(sunday);
+            saturday.setDate(sunday.getDate() + 6);
             
             return {
-                start: monday.toISOString().split('T')[0], // YYYY-MM-DD
-                end: sunday.toISOString().split('T')[0]    // YYYY-MM-DD
+                start: sunday.toISOString().split('T')[0], // YYYY-MM-DD
+                end: saturday.toISOString().split('T')[0]  // YYYY-MM-DD
             };
         }
 
@@ -842,27 +835,24 @@
         // 현재 주의 각 요일 날짜 설정
         function setCurrentWeekDates() {
             const today = new Date();
-            const currentDay = today.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+            const currentDay = today.getDay();
+            const sunday = new Date(today);
+            const daysFromSunday = currentDay; // 일요일은 0, 월요일은 1, ..., 토요일은 6
+            sunday.setDate(today.getDate() - daysFromSunday);
             
-            // 이번 주 월요일 찾기
-            const monday = new Date(today);
-            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay; // 일요일인 경우 -6, 그 외는 1-현재요일
-            monday.setDate(today.getDate() + daysFromMonday);
-            
-            // 각 요일의 날짜 설정
+            // 각 요일의 날짜 설정 (월요일부터 토요일까지)
             const dayElements = [
-                { id: 'monday-date', offset: 0 },
-                { id: 'tuesday-date', offset: 1 },
-                { id: 'wednesday-date', offset: 2 },
-                { id: 'thursday-date', offset: 3 },
-                { id: 'friday-date', offset: 4 },
-                { id: 'saturday-date', offset: 5 },
-                { id: 'sunday-date', offset: 6 }
+                { id: 'monday-date', offset: 1 },
+                { id: 'tuesday-date', offset: 2 },
+                { id: 'wednesday-date', offset: 3 },
+                { id: 'thursday-date', offset: 4 },
+                { id: 'friday-date', offset: 5 },
+                { id: 'saturday-date', offset: 6 }
             ];
             
             dayElements.forEach(day => {
-                const date = new Date(monday);
-                date.setDate(monday.getDate() + day.offset);
+                const date = new Date(sunday);
+                date.setDate(sunday.getDate() + day.offset);
                 const dateString = `${date.getMonth() + 1}/${date.getDate()}`;
                 const element = document.getElementById(day.id);
                 if (element) {
@@ -941,17 +931,17 @@
         function getActualDateForDay(dayName) {
             const today = new Date();
             const currentDay = today.getDay();
-            const monday = new Date(today);
-            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
-            monday.setDate(today.getDate() + daysFromMonday);
+            const sunday = new Date(today);
+            const daysFromSunday = currentDay;
+            sunday.setDate(today.getDate() - daysFromSunday);
             
             const dayMap = {
-                '월요일': 0, '화요일': 1, '수요일': 2, '목요일': 3,
-                '금요일': 4, '토요일': 5, '일요일': 6
+                '월요일': 1, '화요일': 2, '수요일': 3, '목요일': 4,
+                '금요일': 5, '토요일': 6
             };
             
-            const targetDate = new Date(monday);
-            targetDate.setDate(monday.getDate() + dayMap[dayName]);
+            const targetDate = new Date(sunday);
+            targetDate.setDate(sunday.getDate() + dayMap[dayName]);
             
             return targetDate.toISOString().split('T')[0]; // YYYY-MM-DD 형태
         }
@@ -1049,17 +1039,17 @@
         function getDateForDay(dayName) {
             const today = new Date();
             const currentDay = today.getDay();
-            const monday = new Date(today);
-            const daysFromMonday = currentDay === 0 ? -6 : 1 - currentDay;
-            monday.setDate(today.getDate() + daysFromMonday);
+            const sunday = new Date(today);
+            const daysFromSunday = currentDay;
+            sunday.setDate(today.getDate() - daysFromSunday);
             
             const dayMap = {
-                '월요일': 0, '화요일': 1, '수요일': 2, '목요일': 3,
-                '금요일': 4, '토요일': 5, '일요일': 6
+                '월요일': 1, '화요일': 2, '수요일': 3, '목요일': 4,
+                '금요일': 5, '토요일': 6
             };
             
-            const targetDate = new Date(monday);
-            targetDate.setDate(monday.getDate() + dayMap[dayName]);
+            const targetDate = new Date(sunday);
+            targetDate.setDate(sunday.getDate() + dayMap[dayName]);
             
             return `${targetDate.getFullYear()}/${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
         }
