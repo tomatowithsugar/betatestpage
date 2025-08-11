@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>불광서부회중 전시대 신청</title>
-    
+
     <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+    <script type="module">import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
         // Firebase 설정
@@ -42,9 +41,8 @@
         // DOM이 로드된 후 실행
         window.addEventListener('DOMContentLoaded', function() {
             window.initializeApp();
-        });
-    </script>
-    
+        });</script>
+
     <style>
         * {
             margin: 0;
@@ -113,10 +111,10 @@
             transition: border-color 0.3s ease;
         }
 
-        input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+            input[type="text"]:focus, select:focus {
+                outline: none;
+                border-color: #667eea;
+            }
 
         .btn {
             width: 100%;
@@ -132,46 +130,46 @@
             margin-bottom: 10px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-        }
+            .btn:hover {
+                transform: translateY(-2px);
+            }
 
-        .btn.secondary {
-            background: #6c757d;
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-        }
+            .btn.secondary {
+                background: #6c757d;
+                background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            }
 
-        .btn.danger {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            padding: 8px 16px;
-            width: auto;
-            font-size: 14px;
-            margin: 0;
-        }
+            .btn.danger {
+                background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+                padding: 8px 16px;
+                width: auto;
+                font-size: 14px;
+                margin: 0;
+            }
 
-        .btn.success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            padding: 12px 20px;
-            width: auto;
-            font-size: 16px;
-            margin: 0 5px;
-        }
+            .btn.success {
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                padding: 12px 20px;
+                width: auto;
+                font-size: 16px;
+                margin: 0 5px;
+            }
 
-        .btn.admin {
-            background: linear-gradient(135deg, #fd7e14 0%, #e63946 100%);
-        }
+            .btn.admin {
+                background: linear-gradient(135deg, #fd7e14 0%, #e63946 100%);
+            }
 
-        .btn.small {
-            padding: 12px 20px;
-            font-size: 16px;
-            width: auto;
-        }
+            .btn.small {
+                padding: 12px 20px;
+                font-size: 16px;
+                width: auto;
+            }
 
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
+            .btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+            }
 
         .user-info {
             text-align: center;
@@ -221,9 +219,9 @@
             position: relative;
         }
 
-        .day-option input[type="radio"], .zone-option input[type="radio"] {
-            display: none;
-        }
+            .day-option input[type="radio"], .zone-option input[type="radio"] {
+                display: none;
+            }
 
         .day-label, .zone-label {
             display: block;
@@ -284,10 +282,10 @@
             overflow-y: auto;
         }
 
-        .applicants-list h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
+            .applicants-list h3 {
+                margin-bottom: 15px;
+                color: #333;
+            }
 
         .day-section {
             margin-bottom: 20px;
@@ -326,9 +324,9 @@
             display: none;
         }
 
-        .zone-selection-container.show {
-            display: block;
-        }
+            .zone-selection-container.show {
+                display: block;
+            }
 
         /* 모달 스타일 */
         .modal {
@@ -354,9 +352,9 @@
             position: relative;
         }
 
-        .modal-content.large {
-            max-width: 800px;
-        }
+            .modal-content.large {
+                max-width: 800px;
+            }
 
         .close {
             position: absolute;
@@ -368,9 +366,9 @@
             cursor: pointer;
         }
 
-        .close:hover {
-            color: #000;
-        }
+            .close:hover {
+                color: #000;
+            }
 
         .modal h2 {
             text-align: center;
@@ -432,9 +430,9 @@
             margin-bottom: 15px;
         }
 
-        .form-row.full {
-            grid-template-columns: 1fr;
-        }
+            .form-row.full {
+                grid-template-columns: 1fr;
+            }
 
         .admin-action-buttons {
             display: flex;
@@ -468,9 +466,9 @@
             font-weight: bold;
         }
 
-        .month-nav-btn:hover {
-            background: #5a6fd8;
-        }
+            .month-nav-btn:hover {
+                background: #5a6fd8;
+            }
 
         .current-month {
             font-size: 18px;
@@ -558,7 +556,7 @@
         <!-- 로그인 페이지 -->
         <div class="login-page" id="loginPage">
             <h1>불광서부회중<br>전시대 봉사 신청</h1>
-            
+
             <div class="login-form">
                 <div class="form-group">
                     <label for="loginName">이름</label>
@@ -571,9 +569,9 @@
         <!-- 일반 사용자 메인 페이지 -->
         <div class="main-page" id="mainPage">
             <h1>불광서부회중<br>전시대 봉사 신청</h1>
-            
+
             <div class="user-info" id="userInfo"></div>
-            
+
             <div class="action-buttons">
                 <button type="button" class="btn" onclick="openRegistrationModal()">전시대 봉사 신청</button>
                 <button type="button" class="btn secondary" onclick="openCancelModal()">신청 취소</button>
@@ -583,9 +581,9 @@
         <!-- 관리자 페이지 -->
         <div class="admin-page" id="adminPage">
             <h1>관리자 모드</h1>
-            
+
             <div class="admin-info">관리자님 환영합니다!</div>
-            
+
             <div class="admin-actions">
                 <button type="button" class="btn admin" onclick="openAdminModal()">신청 관리</button>
                 <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>
@@ -604,7 +602,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeRegistrationModal()">&times;</span>
             <h2>전시대 봉사 신청</h2>
-            
+
             <form id="registrationForm">
                 <div class="form-group">
                     <label>요일 선택</label>
@@ -698,7 +696,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeCancelModal()">&times;</span>
             <h2>신청 취소</h2>
-            
+
             <div id="cancelList" class="cancel-list">
                 <!-- 신청 내역이 여기에 표시됩니다 -->
             </div>
@@ -710,7 +708,7 @@
         <div class="modal-content">
             <span class="close" onclick="closeAdminModal()">&times;</span>
             <h2>신청 관리</h2>
-            
+
             <div class="admin-form">
                 <div class="form-group">
                     <label for="adminUserSelect">사용자 선택</label>
@@ -719,7 +717,7 @@
                         <!-- 사용자 목록은 JS에서 동적으로 채워짐 -->
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="adminAction">작업</label>
                     <select id="adminAction">
@@ -829,7 +827,7 @@
         <div class="modal-content large">
             <span class="close" onclick="closeStatsModal()">&times;</span>
             <h2>데이터 통계</h2>
-            
+
             <div class="stats-header">
                 <div class="month-navigation">
                     <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
@@ -845,8 +843,7 @@
         </div>
     </div>
 
-    <script>
-        // 허용된 사용자 목록
+    <script>// 허용된 사용자 목록
         const allowedUsers = [
             '임종목', '강승희', '강승미', '조인순', '김귀녀', '권영미', '서광옥', '이종호',
             '권영숙', '변현숙', '강성임', '양동순', '이영재', '이희숙', '양지은', '양지예',
@@ -855,7 +852,7 @@
             '백경자', '이금덕', '이아영', '임애진', '이현석', '박원준', '김은석', '이지애',
             '정옥연', '김옥순B', '이경현', '정송은', '김영순', '이경순', '손귀선', '임현수'
         ];
-        
+
         // 신청자 데이터를 저장할 객체
         const applicants = {};
         const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
@@ -883,7 +880,7 @@
             setAdminWeekDates();
             loadDataFromFirestore();
             populateAdminUserSelect();
-            
+
             document.getElementById('loginName').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     login();
@@ -903,7 +900,7 @@
                     where('actualDate', '>=', currentWeekDates.start),
                     where('actualDate', '<=', currentWeekDates.end)
                 );
-                
+
                 onSnapshot(weekQuery, (querySnapshot) => {
                     console.log('Firestore snapshot received:', querySnapshot.size, 'documents');
                     days.forEach(day => {
@@ -911,10 +908,10 @@
                             applicants[day][zone] = [];
                         });
                     });
-                    
+
                     allApplications = [];
                     userApplications = [];
-                    
+
                     querySnapshot.forEach((docSnap) => {
                         const data = docSnap.data();
                         const { name, day, zone } = data;
@@ -926,7 +923,7 @@
                             ...data
                         });
                     });
-                    
+
                     console.log('All applications loaded:', allApplications);
                     filterUserApplications();
                     updateDisplay();
@@ -957,7 +954,7 @@
                 const { collection, addDoc } = window.firestoreFunctions;
                 const applicantsRef = collection(window.db, 'applicants');
                 const actualDate = getActualDateForDay(day);
-                
+
                 const docRef = await addDoc(applicantsRef, {
                     name: name,
                     day: day,
@@ -996,7 +993,7 @@
                 alert('이름을 입력해주세요.');
                 return;
             }
-            
+
             if (name === 'admin') {
                 currentUser = 'admin';
                 isAdmin = true;
@@ -1005,13 +1002,13 @@
                 console.log('Admin logged in');
                 return;
             }
-            
+
             if (!allowedUsers.includes(name)) {
                 alert('등록되지 않은 전도인입니다.');
                 document.getElementById('loginName').value = '';
                 return;
             }
-            
+
             currentUser = name;
             isAdmin = false;
             document.getElementById('userInfo').textContent = `${currentUser}님 환영합니다!`;
@@ -1117,7 +1114,7 @@
             const dayZoneRow = document.getElementById('adminDayZoneRow');
             const zoneContainer = document.getElementById('adminZoneSelectionContainer');
             const cancelList = document.getElementById('adminCancelList');
-            
+
             if (action === 'assign') {
                 dayZoneRow.style.display = 'block';
                 zoneContainer.style.display = 'none';
@@ -1159,104 +1156,57 @@
             console.log('Admin user selected:', this.value);
         });
 
-        // 신청 취소 목록 업데이트
-        function updateCancelList() {
-            const cancelListEl = document.getElementById('cancelList');
-            cancelListEl.innerHTML = '';
-
-            if (userApplications.length === 0) {
-                const noApplicationsDiv = document.createElement('div');
-                noApplicationsDiv.className = 'no-applications';
-                noApplicationsDiv.textContent = '신청 내역이 없습니다.';
-                cancelListEl.appendChild(noApplicationsDiv);
-                console.log('No user applications to display in cancel list');
-                return;
-            }
-
-            userApplications.forEach(application => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'cancel-item';
-
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'cancel-info';
-
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'cancel-day';
-                dayDiv.textContent = application.day;
-
-                const detailsDiv = document.createElement('div');
-                detailsDiv.className = 'cancel-details';
-                // actualDate를 UTC 기준으로 파싱하고 KST로 표시
-                const dateParts = application.actualDate.split('-');
-                const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
-                const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
-                detailsDiv.textContent = `${dateString} • ${application.zone}`;
-
-                infoDiv.appendChild(dayDiv);
-                infoDiv.appendChild(detailsDiv);
-
-                const cancelBtn = document.createElement('button');
-                cancelBtn.className = 'btn danger';
-                cancelBtn.textContent = '취소';
-                cancelBtn.onclick = () => confirmCancelApplication(application);
-
-                itemDiv.appendChild(infoDiv);
-                itemDiv.appendChild(cancelBtn);
-                cancelListEl.appendChild(itemDiv);
-            });
-            console.log('User cancel list updated with', userApplications.length, 'items');
-        }
-
         // 관리자 취소 리스트 업데이트
         function updateAdminCancelList() {
             const selectedUser = document.getElementById('adminUserSelect').value;
             const cancelOptionsEl = document.getElementById('adminCancelOptions');
             cancelOptionsEl.innerHTML = '';
-            
+
             if (!selectedUser) {
                 cancelOptionsEl.innerHTML = '<p style="color: #999; font-style: italic;">사용자를 먼저 선택하세요</p>';
                 console.log('No user selected for cancel list');
                 return;
             }
-            
+
             const userApps = allApplications.filter(a => a.name === selectedUser);
-            
+
             if (userApps.length === 0) {
                 cancelOptionsEl.innerHTML = '<p style="color: #999; font-style: italic;">해당 사용자의 신청 내역이 없습니다</p>';
                 console.log('No applications found for user:', selectedUser);
                 return;
             }
-            
+
             userApps.forEach((app, index) => {
                 console.log('Processing application:', app);
                 const dateParts = app.actualDate.split('-');
-                const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
-                const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
-                
+                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                console.log('Parsed date:', date, 'from actualDate:', app.actualDate);
+                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+
                 const optionDiv = document.createElement('div');
                 optionDiv.className = 'cancel-item';
-                
+
                 const radio = document.createElement('input');
                 radio.type = 'radio';
                 radio.name = 'adminCancelOption';
                 radio.value = app.id;
                 radio.id = `adminCancel_${index}`;
-                
+
                 const label = document.createElement('label');
                 label.setAttribute('for', `adminCancel_${index}`);
                 label.style.cursor = 'pointer';
-                
+
                 const infoDiv = document.createElement('div');
                 infoDiv.className = 'cancel-info';
-                
+
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'cancel-day';
                 dayDiv.textContent = app.day;
-                
+
                 const detailsDiv = document.createElement('div');
                 detailsDiv.className = 'cancel-details';
                 detailsDiv.textContent = `${dateString} • ${app.zone}`;
-                
+
                 infoDiv.appendChild(dayDiv);
                 infoDiv.appendChild(detailsDiv);
                 optionDiv.appendChild(radio);
@@ -1271,45 +1221,45 @@
         async function executeAdminAction() {
             const selectedUser = document.getElementById('adminUserSelect').value;
             const action = document.getElementById('adminAction').value;
-            
+
             if (!selectedUser || !action) {
                 alert('사용자와 작업을 선택해주세요.');
                 console.log('Execute action failed: Missing user or action');
                 return;
             }
-            
+
             if (action === 'assign') {
                 const selectedDay = document.querySelector('input[name="admin-day"]:checked');
                 const selectedZone = document.querySelector('input[name="admin-zone"]:checked');
-                
+
                 if (!selectedDay || !selectedZone) {
                     alert('요일과 구역을 선택해주세요.');
                     console.log('Execute assign failed: Missing day or zone');
                     return;
                 }
-                
+
                 const day = selectedDay.value;
                 const zone = selectedZone.value;
-                
+
                 if (applicants[day][zone].length >= maxCapacity) {
                     alert(`${day} ${zone}은 마감되었습니다.`);
                     console.log('Execute assign failed: Zone at max capacity');
                     return;
                 }
-                
+
                 let isDuplicate = false;
                 zones.forEach(z => {
                     if (applicants[day][z].includes(selectedUser)) {
                         isDuplicate = true;
                     }
                 });
-                
+
                 if (isDuplicate) {
                     alert(`${selectedUser}님은 ${day}에 이미 신청되어 있습니다.`);
                     console.log('Execute assign failed: Duplicate application');
                     return;
                 }
-                
+
                 const saved = await saveToFirestore(selectedUser, day, zone);
                 if (saved) {
                     alert(`${selectedUser}님이 ${day} ${zone}으로 배정되었습니다.`);
@@ -1318,26 +1268,26 @@
                 }
             } else if (action === 'cancel') {
                 const selectedCancel = document.querySelector('input[name="adminCancelOption"]:checked');
-                
+
                 if (!selectedCancel) {
                     alert('취소할 신청을 선택해주세요.');
                     console.log('Execute cancel failed: No application selected');
                     return;
                 }
-                
+
                 const docId = selectedCancel.value;
                 const application = allApplications.find(a => a.id === docId);
-                
+
                 if (!application) {
                     alert('선택한 신청을 찾을 수 없습니다.');
                     console.log('Execute cancel failed: Application not found for ID:', docId);
                     return;
                 }
-                
+
                 const dateParts = application.actualDate.split('-');
-                const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
-                const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
-                
+                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+
                 if (confirm(`${application.name}님의 ${application.day}(${dateString}) ${application.zone} 신청을 취소하시겠습니까?`)) {
                     const deleted = await deleteFromFirestore(docId);
                     if (deleted) {
@@ -1359,23 +1309,23 @@
                 const applicantsRef = collection(window.db, 'applicants');
                 const startDate = new Date(currentStatsYear, currentStatsMonth - 1, 1);
                 const endDate = new Date(currentStatsYear, currentStatsMonth, 0);
-                const startDateStr = startDate.toISOString().split('T')[0];
-                const endDateStr = endDate.toISOString().split('T')[0];
-                
+                const startDateStr = getLocalDateString(startDate);
+                const endDateStr = getLocalDateString(endDate);
+
                 const monthQuery = query(
                     applicantsRef,
                     where('actualDate', '>=', startDateStr),
                     where('actualDate', '<=', endDateStr)
                 );
-                
+
                 const querySnapshot = await getDocs(monthQuery);
                 const monthlyData = [];
                 const zoneStats = {};
                 const dayStats = {};
-                
+
                 zones.forEach(zone => zoneStats[zone] = 0);
                 days.forEach(day => dayStats[day] = 0);
-                
+
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     monthlyData.push(data);
@@ -1386,7 +1336,7 @@
                         dayStats[data.day]++;
                     }
                 });
-                
+
                 displayMonthlyStats(monthlyData, zoneStats, dayStats);
             } catch (error) {
                 console.error('통계 데이터 로드 오류:', error);
@@ -1394,20 +1344,25 @@
             }
         }
 
+        // 로컬 날짜 문자열 생성 함수
+        function getLocalDateString(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
         // 월간 통계 화면에 표시
         function displayMonthlyStats(data, zoneStats, dayStats) {
             document.getElementById('currentMonth').textContent = `${currentStatsYear}년 ${currentStatsMonth}월`;
-            
+
             const summaryEl = document.getElementById('statsSummary');
             const totalApplications = data.length;
             const uniqueUsers = new Set(data.map(d => d.name)).size;
-            
+
             const zoneCounts = Object.values(zoneStats);
             const mean = totalApplications / zones.length;
             const variance = zoneCounts.reduce((acc, count) => acc + Math.pow(count - mean, 2), 0) / zones.length;
             const stdDev = Math.sqrt(variance);
             const imbalanceRate = mean > 0 ? (stdDev / mean) * 100 : 0;
-            
+
             summaryEl.innerHTML = `
                 <div class="stat-card">
                     <div class="stat-number">${totalApplications}</div>
@@ -1422,10 +1377,10 @@
                     <div class="stat-label">불균형률</div>
                 </div>
             `;
-            
+
             const zoneStatsEl = document.getElementById('zoneStats');
             const maxZoneCount = Math.max(...Object.values(zoneStats));
-            
+
             zoneStatsEl.innerHTML = '';
             Object.entries(zoneStats).forEach(([zone, count]) => {
                 const percentage = maxZoneCount > 0 ? (count / maxZoneCount) * 100 : 0;
@@ -1466,8 +1421,8 @@
             const saturday = new Date(sunday);
             saturday.setDate(sunday.getDate() + 6);
             return {
-                start: sunday.toISOString().split('T')[0],
-                end: saturday.toISOString().split('T')[0]
+                start: getLocalDateString(sunday),
+                end: getLocalDateString(saturday)
             };
         }
 
@@ -1483,7 +1438,7 @@
             };
             const targetDate = new Date(sunday);
             targetDate.setDate(sunday.getDate() + dayMap[dayName]);
-            return targetDate.toISOString().split('T')[0];
+            return getLocalDateString(targetDate);
         }
 
         // 현재 주의 각 요일 날짜 설정
@@ -1548,13 +1503,60 @@
             console.log('Filtered user applications:', userApplications);
         }
 
+        // 신청 취소 목록 업데이트
+        function updateCancelList() {
+            const cancelListEl = document.getElementById('cancelList');
+            cancelListEl.innerHTML = '';
+
+            if (userApplications.length === 0) {
+                const noApplicationsDiv = document.createElement('div');
+                noApplicationsDiv.className = 'no-applications';
+                noApplicationsDiv.textContent = '신청 내역이 없습니다.';
+                cancelListEl.appendChild(noApplicationsDiv);
+                console.log('No user applications to display in cancel list');
+                return;
+            }
+
+            userApplications.forEach(application => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'cancel-item';
+
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'cancel-info';
+
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'cancel-day';
+                dayDiv.textContent = application.day;
+
+                const detailsDiv = document.createElement('div');
+                detailsDiv.className = 'cancel-details';
+                const dateParts = application.actualDate.split('-');
+                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                detailsDiv.textContent = `${dateString} • ${application.zone}`;
+
+                infoDiv.appendChild(dayDiv);
+                infoDiv.appendChild(detailsDiv);
+
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'btn danger';
+                cancelBtn.textContent = '취소';
+                cancelBtn.onclick = () => confirmCancelApplication(application);
+
+                itemDiv.appendChild(infoDiv);
+                itemDiv.appendChild(cancelBtn);
+                cancelListEl.appendChild(itemDiv);
+            });
+            console.log('User cancel list updated with', userApplications.length, 'items');
+        }
+
         // 신청 취소 확인
         function confirmCancelApplication(application) {
             const dateParts = application.actualDate.split('-');
-            const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
-            const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+            const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+            const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
             const confirmMessage = `${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?`;
-            
+
             if (confirm(confirmMessage)) {
                 cancelApplication(application.id, application);
             }
@@ -1565,8 +1567,8 @@
             const deleted = await deleteFromFirestore(docId);
             if (deleted) {
                 const dateParts = application.actualDate.split('-');
-                const date = new Date(Date.UTC(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2])));
-                const dateString = `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
                 alert(`${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.`);
                 closeCancelModal();
             }
@@ -1592,9 +1594,9 @@
                 const currentCount = applicants[selectedDay][zone].length;
                 const capacityInfo = label.querySelector('.capacity-info');
                 const radioInput = label.previousElementSibling;
-                
+
                 capacityInfo.textContent = `${currentCount}/${maxCapacity}`;
-                
+
                 if (currentCount >= maxCapacity) {
                     label.style.background = '#ff6b6b';
                     label.style.color = 'white';
@@ -1622,9 +1624,9 @@
                 const currentCount = selectedDay ? applicants[selectedDay][zone].length : 0;
                 const capacityInfo = label.querySelector('.capacity-info');
                 const radioInput = label.previousElementSibling;
-                
+
                 capacityInfo.textContent = `${currentCount}/${maxCapacity}`;
-                
+
                 if (selectedDay && currentCount >= maxCapacity) {
                     label.style.background = '#ff6b6b';
                     label.style.color = 'white';
@@ -1648,36 +1650,36 @@
         function updateDisplay() {
             const applicantsListEl = document.getElementById('applicantsList');
             applicantsListEl.innerHTML = '';
-            
+
             days.forEach(day => {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'day-section';
-                
+
                 const dayTitleDiv = document.createElement('div');
                 dayTitleDiv.className = 'day-title';
                 const dayDate = getDateForDay(day);
                 dayTitleDiv.textContent = `${day} (${dayDate})`;
                 dayDiv.appendChild(dayTitleDiv);
-                
+
                 zones.forEach(zone => {
                     const zoneApplicants = applicants[day][zone];
                     const zoneDiv = document.createElement('div');
                     zoneDiv.className = 'zone-applicants';
-                    
+
                     const zoneNameDiv = document.createElement('div');
                     zoneNameDiv.className = 'zone-name';
                     zoneNameDiv.textContent = `${zone} (${zoneApplicants.length}/${maxCapacity})`;
-                    
+
                     const applicantNamesDiv = document.createElement('div');
                     applicantNamesDiv.className = 'applicant-names';
-                    applicantNamesDiv.textContent = zoneApplicants.length > 0 ? 
+                    applicantNamesDiv.textContent = zoneApplicants.length > 0 ?
                         zoneApplicants.join(', ') : '신청자 없음';
-                    
+
                     zoneDiv.appendChild(zoneNameDiv);
                     zoneDiv.appendChild(applicantNamesDiv);
                     dayDiv.appendChild(zoneDiv);
                 });
-                
+
                 applicantsListEl.appendChild(dayDiv);
             });
             console.log('Applicants list updated');
@@ -1718,7 +1720,7 @@
             e.preventDefault();
             const selectedDay = document.querySelector('input[name="day"]:checked');
             const selectedZone = document.querySelector('input[name="zone"]:checked');
-            
+
             if (!selectedDay) {
                 alert('요일을 선택해주세요.');
                 console.log('Form submission failed: No day selected');
@@ -1729,29 +1731,29 @@
                 console.log('Form submission failed: No zone selected');
                 return;
             }
-            
+
             const dayValue = selectedDay.value;
             const zoneValue = selectedZone.value;
-            
+
             if (applicants[dayValue][zoneValue].length >= maxCapacity) {
                 alert(`${dayValue} ${zoneValue}은 마감되었습니다.`);
                 console.log('Form submission failed: Zone at max capacity');
                 return;
             }
-            
+
             let isDuplicate = false;
             zones.forEach(zone => {
                 if (applicants[dayValue][zone].includes(currentUser)) {
                     isDuplicate = true;
                 }
             });
-            
+
             if (isDuplicate) {
                 alert(`${dayValue}에 이미 신청하셨습니다.`);
                 console.log('Form submission failed: Duplicate application');
                 return;
             }
-            
+
             const saved = await saveToFirestore(currentUser, dayValue, zoneValue);
             if (saved) {
                 alert(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`);
@@ -1776,7 +1778,7 @@
             const cancelModal = document.getElementById('cancelModal');
             const adminModal = document.getElementById('adminModal');
             const statsModal = document.getElementById('statsModal');
-            
+
             if (event.target === registrationModal) {
                 closeRegistrationModal();
             }
@@ -1789,7 +1791,6 @@
             if (event.target === statsModal) {
                 closeStatsModal();
             }
-        };
-    </script>
+        };</script>
 </body>
 </html>
