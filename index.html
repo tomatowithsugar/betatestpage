@@ -6,9 +6,8 @@
     <title>불광서부회중 전시대 신청</title>
 
     <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc, enablePersistence } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+    <script type="module">import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
         // Firebase 설정
         const firebaseConfig = {
@@ -24,18 +23,6 @@
         // Firebase 초기화
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
-        // Firestore 오프라인 캐싱 활성화
-        enablePersistence(db).then(() => {
-            console.log('Firestore offline persistence enabled');
-        }).catch((err) => {
-            console.error('Offline persistence error:', err);
-            if (err.code === 'failed-precondition') {
-                console.warn('Multiple tabs open, persistence can only be enabled in one tab at a time.');
-            } else if (err.code === 'unimplemented') {
-                console.warn('The current browser does not support offline persistence.');
-            }
-        });
 
         // 전역에서 사용할 수 있도록 window 객체에 저장
         window.firebaseApp = app;
@@ -54,11 +41,9 @@
         // DOM이 로드된 후 실행
         window.addEventListener('DOMContentLoaded', function () {
             window.initializeApp();
-        });
-    </script>
+        });</script>
 
     <style>
-        /* 기존 스타일 유지, 새로운 스타일 추가 */
         * {
             margin: 0;
             padding: 0;
@@ -126,10 +111,10 @@
             transition: border-color 0.3s ease;
         }
 
-        input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+            input[type="text"]:focus, select:focus {
+                outline: none;
+                border-color: #667eea;
+            }
 
         .btn {
             width: 100%;
@@ -145,46 +130,46 @@
             margin-bottom: 10px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-        }
+            .btn:hover {
+                transform: translateY(-2px);
+            }
 
-        .btn.secondary {
-            background: #6c757d;
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-        }
+            .btn.secondary {
+                background: #6c757d;
+                background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            }
 
-        .btn.danger {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            padding: 8px 16px;
-            width: auto;
-            font-size: 14px;
-            margin: 0;
-        }
+            .btn.danger {
+                background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+                padding: 8px 16px;
+                width: auto;
+                font-size: 14px;
+                margin: 0;
+            }
 
-        .btn.success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            padding: 12px 20px;
-            width: auto;
-            font-size: 16px;
-            margin: 0 5px;
-        }
+            .btn.success {
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                padding: 12px 20px;
+                width: auto;
+                font-size: 16px;
+                margin: 0 5px;
+            }
 
-        .btn.admin {
-            background: linear-gradient(135deg, #fd7e14 0%, #e63946 100%);
-        }
+            .btn.admin {
+                background: linear-gradient(135deg, #fd7e14 0%, #e63946 100%);
+            }
 
-        .btn.small {
-            padding: 12px 20px;
-            font-size: 16px;
-            width: auto;
-        }
+            .btn.small {
+                padding: 12px 20px;
+                font-size: 16px;
+                width: auto;
+            }
 
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
+            .btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+            }
 
         .user-info {
             text-align: center;
@@ -234,9 +219,9 @@
             position: relative;
         }
 
-        .day-option input[type="radio"], .zone-option input[type="radio"] {
-            display: none;
-        }
+            .day-option input[type="radio"], .zone-option input[type="radio"] {
+                display: none;
+            }
 
         .day-label, .zone-label {
             display: block;
@@ -297,10 +282,10 @@
             overflow-y: auto;
         }
 
-        .applicants-list h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
+            .applicants-list h3 {
+                margin-bottom: 15px;
+                color: #333;
+            }
 
         .day-section {
             margin-bottom: 20px;
@@ -339,10 +324,11 @@
             display: none;
         }
 
-        .zone-selection-container.show {
-            display: block;
-        }
+            .zone-selection-container.show {
+                display: block;
+            }
 
+        /* 모달 스타일 */
         .modal {
             display: none;
             position: fixed;
@@ -366,9 +352,9 @@
             position: relative;
         }
 
-        .modal-content.large {
-            max-width: 800px;
-        }
+            .modal-content.large {
+                max-width: 800px;
+            }
 
         .close {
             position: absolute;
@@ -380,9 +366,9 @@
             cursor: pointer;
         }
 
-        .close:hover {
-            color: #000;
-        }
+            .close:hover {
+                color: #000;
+            }
 
         .modal h2 {
             text-align: center;
@@ -392,6 +378,7 @@
             font-weight: 700;
         }
 
+        /* 신청 취소 모달 스타일 */
         .cancel-list {
             max-height: 400px;
             overflow-y: auto;
@@ -431,6 +418,7 @@
             padding: 40px;
         }
 
+        /* 관리자 모달 스타일 */
         .admin-form {
             margin-bottom: 20px;
         }
@@ -442,9 +430,9 @@
             margin-bottom: 15px;
         }
 
-        .form-row.full {
-            grid-template-columns: 1fr;
-        }
+            .form-row.full {
+                grid-template-columns: 1fr;
+            }
 
         .admin-action-buttons {
             display: flex;
@@ -452,6 +440,7 @@
             justify-content: center;
         }
 
+        /* 데이터 통계 스타일 */
         .stats-header {
             display: flex;
             justify-content: space-between;
@@ -477,9 +466,9 @@
             font-weight: bold;
         }
 
-        .month-nav-btn:hover {
-            background: #5a6fd8;
-        }
+            .month-nav-btn:hover {
+                background: #5a6fd8;
+            }
 
         .current-month {
             font-size: 18px;
@@ -598,7 +587,6 @@
             <div class="admin-actions">
                 <button type="button" class="btn admin" onclick="openAdminModal()">신청 관리</button>
                 <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>
-                <button type="button" class="btn admin" onclick="openUserManagementModal()">사용자 관리</button>
             </div>
         </div>
 
@@ -834,23 +822,6 @@
         </div>
     </div>
 
-    <!-- 사용자 관리 모달 -->
-    <div id="userManagementModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeUserManagementModal()">&times;</span>
-            <h2>사용자 관리</h2>
-            <div class="form-group">
-                <label for="newUserName">새 사용자 추가</label>
-                <input type="text" id="newUserName" placeholder="이름 입력">
-                <button type="button" class="btn success small" onclick="addNewUser()">추가</button>
-            </div>
-            <div class="applicants-list">
-                <h3>등록된 사용자</h3>
-                <div id="userList"></div>
-            </div>
-        </div>
-    </div>
-
     <!-- 데이터 통계 모달 -->
     <div id="statsModal" class="modal">
         <div class="modal-content large">
@@ -872,9 +843,17 @@
         </div>
     </div>
 
-    <script>
-        // 동적 사용자 목록
-        let allowedUsers = [];
+    <script>// 허용된 사용자 목록
+        const allowedUsers = [
+            '임종목', '강승희', '강승미', '조인순', '김귀녀', '권영미', '서광옥', '이종호',
+            '권영숙', '변현숙', '강성임', '양동순', '이영재', '이희숙', '양지은', '양지예',
+            '김인기', '전필용', '김기권', '이화숙', '유순지', '유민지', '시예지', '박선아',
+            '최명숙', '이금자', '김경애', '김인희', '김정숙', '정진수', '권수진', '박현숙',
+            '백경자', '이금덕', '이아영', '임애진', '이현석', '박원준', '김은석', '이지애',
+            '정옥연', '김옥순B', '이경현', '정송은', '김영순', '이경순', '손귀선', '임현수'
+        ];
+
+        // 신청자 데이터를 저장할 객체
         const applicants = {};
         const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
         const zones = ['메트로 앞', '신한은행 앞', '알라딘문고 앞', '하나은행 앞'];
@@ -899,7 +878,6 @@
             console.log('Initializing application...');
             setCurrentWeekDates();
             setAdminWeekDates();
-            loadUsersFromFirestore();
             loadDataFromFirestore();
             populateAdminUserSelect();
 
@@ -909,42 +887,6 @@
                 }
             });
         };
-
-        // Firestore에서 사용자 목록 로드
-        async function loadUsersFromFirestore() {
-            const cachedUsers = localStorage.getItem('allowedUsers');
-            if (cachedUsers) {
-                allowedUsers = JSON.parse(cachedUsers);
-                populateAdminUserSelect();
-                console.log('Loaded users from localStorage:', allowedUsers);
-            }
-
-            const { collection, getDocs, onSnapshot } = window.firestoreFunctions;
-            const usersRef = collection(window.db, 'users');
-            try {
-                const snapshot = await getDocs(usersRef);
-                allowedUsers = [];
-                snapshot.forEach(doc => {
-                    allowedUsers.push(doc.data().name);
-                });
-                localStorage.setItem('allowedUsers', JSON.stringify(allowedUsers));
-                console.log('Initial users loaded:', allowedUsers);
-                populateAdminUserSelect();
-
-                onSnapshot(usersRef, (querySnapshot) => {
-                    allowedUsers = [];
-                    querySnapshot.forEach(doc => {
-                        allowedUsers.push(doc.data().name);
-                    });
-                    localStorage.setItem('allowedUsers', JSON.stringify(allowedUsers));
-                    console.log('Users updated:', allowedUsers);
-                    populateAdminUserSelect();
-                });
-            } catch (error) {
-                console.error('Users load error:', error);
-                alert('사용자 목록을 불러오는 데 실패했습니다.');
-            }
-        }
 
         // Firestore에서 데이터 로드
         async function loadDataFromFirestore() {
@@ -1044,70 +986,11 @@
             }
         }
 
-        // Firestore에 사용자 추가
-        async function addNewUser() {
-            const newName = document.getElementById('newUserName').value.trim();
-            if (!newName) {
-                alert('이름을 입력해주세요.');
-                return;
-            }
-            if (allowedUsers.includes(newName)) {
-                alert('이미 등록된 사용자입니다.');
-                return;
-            }
-
-            const { collection, addDoc } = window.firestoreFunctions;
-            const usersRef = collection(window.db, 'users');
-            try {
-                await addDoc(usersRef, { name: newName });
-                document.getElementById('newUserName').value = '';
-                alert(`${newName}님이 추가되었습니다.`);
-            } catch (error) {
-                console.error('Add user error:', error);
-                alert('사용자 추가 실패.');
-            }
-        }
-
-        // Firestore에서 사용자 제거
-        async function removeUser(userName) {
-            if (!confirm(`${userName}님을 제거하시겠습니까?`)) return;
-
-            const { collection, getDocs, query, where, deleteDoc, doc } = window.firestoreFunctions;
-            const usersRef = collection(window.db, 'users');
-            const q = query(usersRef, where('name', '==', userName));
-            try {
-                const querySnapshot = await getDocs(q);
-                if (querySnapshot.empty) {
-                    alert('사용자를 찾을 수 없습니다.');
-                    return;
-                }
-                const userDoc = querySnapshot.docs[0];
-                await deleteDoc(doc(window.db, 'users', userDoc.id));
-                alert(`${userName}님이 제거되었습니다.`);
-            } catch (error) {
-                console.error('Remove user error:', error);
-                alert('사용자 제거 실패.');
-            }
-        }
-
         // 로그인 함수
         function login() {
             const name = document.getElementById('loginName').value.trim();
-            const loginButton = document.querySelector('.login-form .btn');
-            loginButton.disabled = true;
-            loginButton.textContent = '로딩 중...';
-
             if (!name) {
                 alert('이름을 입력해주세요.');
-                loginButton.disabled = false;
-                loginButton.textContent = '확인';
-                return;
-            }
-
-            if (allowedUsers.length === 0) {
-                alert('사용자 목록을 불러오는 중입니다. 잠시 후 다시 시도해주세요.');
-                loginButton.disabled = false;
-                loginButton.textContent = '확인';
                 return;
             }
 
@@ -1116,8 +999,6 @@
                 isAdmin = true;
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('adminPage').style.display = 'block';
-                loginButton.disabled = false;
-                loginButton.textContent = '확인';
                 console.log('Admin logged in');
                 return;
             }
@@ -1125,8 +1006,6 @@
             if (!allowedUsers.includes(name)) {
                 alert('등록되지 않은 전도인입니다.');
                 document.getElementById('loginName').value = '';
-                loginButton.disabled = false;
-                loginButton.textContent = '확인';
                 return;
             }
 
@@ -1138,8 +1017,6 @@
             filterUserApplications();
             updateCancelList();
             updateDisplay();
-            loginButton.disabled = false;
-            loginButton.textContent = '확인';
             console.log('User logged in:', currentUser);
         }
 
@@ -1156,40 +1033,6 @@
                 select.appendChild(option);
             });
             console.log('Admin user select populated');
-        }
-
-        // 사용자 관리 모달 열기/닫기
-        function openUserManagementModal() {
-            document.getElementById('userManagementModal').style.display = 'block';
-            updateUserListDisplay();
-            console.log('User management modal opened');
-        }
-
-        function closeUserManagementModal() {
-            document.getElementById('userManagementModal').style.display = 'none';
-            console.log('User management modal closed');
-        }
-
-        // 사용자 목록 UI 업데이트
-        function updateUserListDisplay() {
-            const userListEl = document.getElementById('userList');
-            userListEl.innerHTML = '';
-            if (allowedUsers.length === 0) {
-                userListEl.innerHTML = '<p style="color: #999; font-style: italic;">등록된 사용자가 없습니다.</p>';
-                return;
-            }
-            allowedUsers.forEach(user => {
-                const userItem = document.createElement('div');
-                userItem.className = 'cancel-item';
-                userItem.innerHTML = `
-                    <div class="cancel-info">
-                        <div class="cancel-day">${user}</div>
-                    </div>
-                    <button class="btn danger" onclick="removeUser('${user}')">제거</button>
-                `;
-                userListEl.appendChild(userItem);
-            });
-            console.log('User list updated with', allowedUsers.length, 'users');
         }
 
         // 신청 모달 열기
@@ -1521,19 +1364,19 @@
             const imbalanceRate = mean > 0 ? (stdDev / mean) * 100 : 0;
 
             summaryEl.innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-number">${totalApplications}</div>
-                    <div class="stat-label">총 신청 건수</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${uniqueUsers}</div>
-                    <div class="stat-label">참여 인원</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
-                    <div class="stat-label">불균형률</div>
-                </div>
-            `;
+                        <div class="stat-card">
+                            <div class="stat-number">${totalApplications}</div>
+                            <div class="stat-label">총 신청 건수</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${uniqueUsers}</div>
+                            <div class="stat-label">참여 인원</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
+                            <div class="stat-label">불균형률</div>
+                        </div>
+                    `;
 
             const zoneStatsEl = document.getElementById('zoneStats');
             const maxZoneCount = Math.max(...Object.values(zoneStats));
@@ -1544,12 +1387,12 @@
                 const zoneCard = document.createElement('div');
                 zoneCard.className = 'zone-stat-card';
                 zoneCard.innerHTML = `
-                    <div class="zone-stat-title">${zone}</div>
-                    <div class="zone-stat-bar">
-                        <div class="zone-stat-fill" style="width: ${percentage}%"></div>
-                    </div>
-                    <div class="zone-stat-text">${count}건 신청</div>
-                `;
+                            <div class="zone-stat-title">${zone}</div>
+                            <div class="zone-stat-bar">
+                                <div class="zone-stat-fill" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class="zone-stat-text">${count}건 신청</div>
+                        `;
                 zoneStatsEl.appendChild(zoneCard);
             });
             console.log('Monthly stats displayed:', data.length, 'applications');
@@ -1935,7 +1778,6 @@
             const cancelModal = document.getElementById('cancelModal');
             const adminModal = document.getElementById('adminModal');
             const statsModal = document.getElementById('statsModal');
-            const userManagementModal = document.getElementById('userManagementModal');
 
             if (event.target === registrationModal) {
                 closeRegistrationModal();
@@ -1949,10 +1791,6 @@
             if (event.target === statsModal) {
                 closeStatsModal();
             }
-            if (event.target === userManagementModal) {
-                closeUserManagementModal();
-            }
-        };
-    </script>
+        };</script>
 </body>
 </html>
