@@ -551,6 +551,37 @@
             font-size: 14px;
             color: #666;
         }
+
+        /* 사용자 관리 스타일 */
+        .user-list {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+            .user-list h3 {
+                margin-bottom: 15px;
+                color: #333;
+            }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e1e5e9;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -589,6 +620,13 @@
             <div class="admin-actions">
                 <button type="button" class="btn admin" onclick="openAdminModal()">신청 관리</button>
                 <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>
+                <button type="button" class="btn admin" onclick="openUserManagementModal()">사용자 관리</button>
+            </div>
+
+            <!-- 사용자 목록 (관리자 페이지에 추가) -->
+            <div class="user-list" id="userListSection" style="display: none;">
+                <h3>등록된 사용자 목록</h3>
+                <div id="userList"></div>
             </div>
         </div>
 
@@ -824,6 +862,25 @@
         </div>
     </div>
 
+    <!-- 사용자 관리 모달 -->
+    <div id="userManagementModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserManagementModal()">&times;</span>
+            <h2>사용자 관리</h2>
+
+            <div class="form-group">
+                <label for="newUserName">새 사용자 추가</label>
+                <input type="text" id="newUserName" placeholder="이름을 입력하세요" required>
+                <button type="button" class="btn success small" onclick="addNewUser()" style="margin-top: 10px;">추가</button>
+            </div>
+
+            <div class="user-list">
+                <h3>등록된 사용자</h3>
+                <div id="userManagementList"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- 데이터 통계 모달 -->
     <div id="statsModal" class="modal">
         <div class="modal-content large">
@@ -845,17 +902,7 @@
         </div>
     </div>
 
-    <script>// 허용된 사용자 목록
-        const allowedUsers = [
-            '임종목', '강승희', '강승미', '조인순', '김귀녀', '권영미', '서광옥', '이종호',
-            '권영숙', '변현숙', '강성임', '양동순', '이영재', '이희숙', '양지은', '양지예',
-            '김인기', '전필용', '김기권', '이화숙', '유순지', '유민지', '시예지', '박선아',
-            '최명숙', '이금자', '김경애', '김인희', '김정숙', '정진수', '권수진', '박현숙',
-            '백경자', '이금덕', '이아영', '임애진', '이현석', '박원준', '김은석', '이지애',
-            '정옥연', '김옥순B', '이경현', '정송은', '김영순', '이경순', '손귀선', '임현수'
-        ];
-
-        // 신청자 데이터를 저장할 객체
+    <script>// 신청자 데이터를 저장할 객체
         const applicants = {};
         const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
         const zones = ['메트로 앞', '신한은행 앞', '알라딘문고 앞', '하나은행 앞'];
@@ -866,6 +913,7 @@
         let allApplications = [];
         let currentStatsYear = new Date().getFullYear();
         let currentStatsMonth = new Date().getMonth() + 1;
+        let allowedUsers = []; // 서버에서 로드될 배열
 
         // 초기 데이터 구조 생성
         days.forEach(day => {
@@ -881,6 +929,7 @@
             setCurrentWeekDates();
             setAdminWeekDates();
             loadDataFromFirestore();
+            loadUsersFromFirestore(); // 사용자 목록 로드
             populateAdminUserSelect();
 
             document.getElementById('loginName').addEventListener('keypress', function (e) {
@@ -890,122 +939,153 @@
             });
         };
 
+        // Firestore에서 사용자 목록 로드
+        async function loadUsersFromFirestore() {
+            try {
+                const { collection, getDocs } = window.firestoreFunctions;
+                const usersRef = collection(window.db, 'users');
+                const querySnapshot = await getDocs(usersRef);
+                allowedUsers = [];
+                querySnapshot.forEach((doc) => {
+                    allowedUsers.push(doc.data().name);
+                });
+                console.log('Loaded users from Firestore:', allowedUsers);
+                populateAdminUserSelect(); // 사용자 선택 업데이트
+            } catch (error) {
+                console.error('사용자 로드 오류:', error);
+                alert('사용자 목록을 불러오는 중 오류가 발생했습니다.');
+            }
+        }
+
         // Firestore에서 데이터 로드
         async function loadDataFromFirestore() {
-          try {
-            const { collection, onSnapshot, query, where, getDocs } = window.firestoreFunctions;
-            const applicantsRef = collection(window.db, 'applicants');
-            const currentWeekDates = getCurrentWeekDates();
-            const weekQuery = query(
-              applicantsRef,
-              where('__name__', '>=', currentWeekDates.start),
-              where('__name__', '<=', currentWeekDates.end)
-            );
+            try {
+                console.log('Loading data from Firestore...');
+                const { collection, onSnapshot, query, where } = window.firestoreFunctions;
+                const applicantsRef = collection(window.db, 'applicants');
+                const currentWeekDates = getCurrentWeekDates();
+                const weekQuery = query(
+                    applicantsRef,
+                    where('actualDate', '>=', currentWeekDates.start),
+                    where('actualDate', '<=', currentWeekDates.end)
+                );
 
-            onSnapshot(weekQuery, async (querySnapshot) => {
-              days.forEach(day => {
-                zones.forEach(zone => {
-                  applicants[day][zone] = [];
-                });
-              });
-
-              allApplications = [];
-              userApplications = [];
-
-              for (const docSnap of querySnapshot.docs) {
-                const docId = docSnap.id; // 예: "2025-08-13_월요일"
-                const [actualDate] = docId.split('_');
-                const day = docId.split('_')[1];
-        
-                zones.forEach(async zone => {
-                  const zoneRef = collection(docSnap.ref, zone);
-                  const zoneSnapshot = await getDocs(zoneRef);
-                  zoneSnapshot.forEach(zoneDoc => {
-                    const data = zoneDoc.data();
-                    const docKey = zoneDoc.id; // 예: "김인기_2025-08-13T13:38:00Z"
-                    const name = docKey.split('_')[0];
-                    applicants[day][zone].push(name);
-                    allApplications.push({
-                      name: name,
-                      day: day,
-                      zone: zone,
-                      actualDate: actualDate,
-                      timestamp: data.timestamp
+                onSnapshot(weekQuery, (querySnapshot) => {
+                    console.log('Firestore snapshot received:', querySnapshot.size, 'documents');
+                    days.forEach(day => {
+                        zones.forEach(zone => {
+                            applicants[day][zone] = [];
+                        });
                     });
-                  });
-                });
-              }
 
-              filterUserApplications();
-              updateDisplay();
-              if (document.getElementById('cancelModal').style.display === 'block') {
-                updateCancelList();
-              }
-              if (document.getElementById('adminModal').style.display === 'block') {
-                updateAdminZoneDisplay();
-                updateAdminCancelList();
-              }
-              if (document.getElementById('statsModal').style.display === 'block') {
-                loadMonthlyStats();
-              }
-            }, (error) => {
-              console.error('Firestore snapshot error:', error);
-              alert('데이터베이스 연결에 실패했습니다.');
-            });
-          } catch (error) {
-            console.error('Firebase 연결 오류:', error);
-            alert('데이터베이스 연결에 실패했습니다.');
-          }
+                    allApplications = [];
+                    userApplications = [];
+
+                    querySnapshot.forEach((docSnap) => {
+                        const data = docSnap.data();
+                        const { name, day, zone } = data;
+                        if (applicants[day] && applicants[day][zone]) {
+                            applicants[day][zone].push(name);
+                        }
+                        allApplications.push({
+                            id: docSnap.id,
+                            ...data
+                        });
+                    });
+
+                    console.log('All applications loaded:', allApplications);
+                    filterUserApplications();
+                    updateDisplay();
+                    if (document.getElementById('cancelModal').style.display === 'block') {
+                        updateCancelList();
+                    }
+                    if (document.getElementById('adminModal').style.display === 'block') {
+                        updateAdminZoneDisplay();
+                        updateAdminCancelList();
+                    }
+                    if (document.getElementById('statsModal').style.display === 'block') {
+                        loadMonthlyStats();
+                    }
+                }, (error) => {
+                    console.error('Firestore snapshot error:', error);
+                    alert('데이터베이스 연결에 실패했습니다.');
+                });
+            } catch (error) {
+                console.error('Firebase 연결 오류:', error);
+                alert('데이터베이스 연결에 실패했습니다.');
+            }
         }
 
         // Firestore에 데이터 저장
         async function saveToFirestore(name, day, zone) {
-          try {
-            const actualDate = getActualDateForDay(day);
-            const docId = `${actualDate}_${day}`; // 예: "2025-08-13_월요일"
-            const { collection, doc, setDoc } = window.firestoreFunctions;
-            const dayRef = doc(window.db, 'applicants', docId);
-            const zoneRef = collection(dayRef, zone);
+            try {
+                console.log(`Saving to Firestore: ${name}, ${day}, ${zone}`);
+                const { collection, addDoc } = window.firestoreFunctions;
+                const applicantsRef = collection(window.db, 'applicants');
+                const actualDate = getActualDateForDay(day);
 
-    // name과 timestamp를 기반으로 고유성을 보장 (중복 체크 필요)
-            const timestampKey = new Date().toISOString(); // 예: "2025-08-13T13:38:00Z"
-            const dataRef = doc(zoneRef, name + '_' + timestampKey); // 예: "김인기_2025-08-13T13:38:00Z"
-
-            await setDoc(dataRef, {
-              name: name,
-              timestamp: new Date()
-            });
-            console.log(`Application saved for ${day}, ${zone} with name: ${name}`);
-            return true;
-          } catch (error) {
-            console.error('저장 오류:', error);
-            alert('신청 저장 중 오류가 발생했습니다.');
-            return false;
-          }
+                const docRef = await addDoc(applicantsRef, {
+                    name: name,
+                    day: day,
+                    zone: zone,
+                    actualDate: actualDate,
+                    timestamp: new Date()
+                });
+                console.log('Document saved with ID:', docRef.id);
+                return true;
+            } catch (error) {
+                console.error('저장 오류:', error);
+                alert('신청 저장 중 오류가 발생했습니다.');
+                return false;
+            }
         }
 
         // Firestore에서 데이터 삭제
-        async function deleteFromFirestore(name, day, zone, actualDate) {
-          try {
-            const docId = `${actualDate}_${day}`;
-            const { deleteDoc, doc } = window.firestoreFunctions;
-            const timestampKey = allApplications.find(a => a.name === name && a.day === day && a.zone === zone && a.actualDate === actualDate)?.timestamp?.toISOString();
-            if (!timestampKey) {
-              throw new Error('삭제할 신청을 찾을 수 없습니다.');
+        async function deleteFromFirestore(docId) {
+            try {
+                console.log('Deleting document with ID:', docId);
+                const { deleteDoc, doc } = window.firestoreFunctions;
+                await deleteDoc(doc(window.db, 'applicants', docId));
+                console.log('Document deleted successfully');
+                return true;
+            } catch (error) {
+                console.error('삭제 오류:', error);
+                alert('신청 취소 중 오류가 발생했습니다: ' + error.message);
+                return false;
             }
-            const dataRef = doc(window.db, 'applicants', docId, zone, name + '_' + timestampKey);
-            await deleteDoc(dataRef);
-            console.log('Application deleted successfully');
-            return true;
-          } catch (error) {
-            console.error('삭제 오류:', error);
-            alert('신청 취소 중 오류가 발생했습니다: ' + error.message);
-            return false;
-          }
+        }
+
+        // Firestore에 사용자 추가
+        async function addUserToFirestore(name) {
+            try {
+                const { collection, addDoc } = window.firestoreFunctions;
+                const usersRef = collection(window.db, 'users');
+                await addDoc(usersRef, { name: name });
+                console.log('User added:', name);
+                return true;
+            } catch (error) {
+                console.error('사용자 추가 오류:', error);
+                alert('사용자 추가 중 오류가 발생했습니다.');
+                return false;
+            }
+        }
+
+        // Firestore에서 사용자 삭제
+        async function deleteUserFromFirestore(docId) {
+            try {
+                const { deleteDoc, doc } = window.firestoreFunctions;
+                await deleteDoc(doc(window.db, 'users', docId));
+                console.log('User deleted with ID:', docId);
+                return true;
+            } catch (error) {
+                console.error('사용자 삭제 오류:', error);
+                alert('사용자 삭제 중 오류가 발생했습니다.');
+                return false;
+            }
         }
 
         // 로그인 함수
-        function login() {
+        async function login() {
             const name = document.getElementById('loginName').value.trim();
             if (!name) {
                 alert('이름을 입력해주세요.');
@@ -1017,11 +1097,19 @@
                 isAdmin = true;
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('adminPage').style.display = 'block';
+                document.getElementById('userListSection').style.display = 'block';
+                loadAndDisplayUsers(); // 관리자 로그인 시 사용자 목록 표시
                 console.log('Admin logged in');
                 return;
             }
 
-            if (!allowedUsers.includes(name)) {
+            // 서버에서 사용자 확인
+            const { collection, getDocs, query, where } = window.firestoreFunctions;
+            const usersRef = collection(window.db, 'users');
+            const q = query(usersRef, where("name", "==", name));
+            const querySnapshot = await getDocs(q);
+
+            if (querySnapshot.empty) {
                 alert('등록되지 않은 전도인입니다.');
                 document.getElementById('loginName').value = '';
                 return;
@@ -1039,11 +1127,10 @@
         }
 
         // 관리자 사용자 선택 목록 채우기
-        function populateAdminUserSelect() {
+        async function populateAdminUserSelect() {
             const select = document.getElementById('adminUserSelect');
-            while (select.children.length > 1) {
-                select.removeChild(select.lastChild);
-            }
+            select.innerHTML = '<option value="">사용자를 선택하세요</option>'; // 초기화
+            await loadUsersFromFirestore(); // 최신 사용자 목록 로드
             allowedUsers.forEach(user => {
                 const option = document.createElement('option');
                 option.value = user;
@@ -1051,6 +1138,85 @@
                 select.appendChild(option);
             });
             console.log('Admin user select populated');
+        }
+
+        // 사용자 목록 로드 및 표시 (관리자 페이지 및 모달)
+        async function loadAndDisplayUsers() {
+            const userListEl = document.getElementById('userList');
+            const userManagementListEl = document.getElementById('userManagementList');
+            userListEl.innerHTML = '';
+            userManagementListEl.innerHTML = '';
+
+            const { collection, getDocs } = window.firestoreFunctions;
+            const usersRef = collection(window.db, 'users');
+            const querySnapshot = await getDocs(usersRef);
+
+            if (querySnapshot.empty) {
+                userListEl.innerHTML = '<p>등록된 사용자가 없습니다.</p>';
+                userManagementListEl.innerHTML = '<p>등록된 사용자가 없습니다.</p>';
+                return;
+            }
+
+            querySnapshot.forEach((docSnap) => {
+                const userData = docSnap.data();
+                const userName = userData.name;
+                const docId = docSnap.id;
+
+                // 관리자 페이지 목록
+                const userItem = document.createElement('div');
+                userItem.className = 'user-item';
+                userItem.innerHTML = `
+                    <div class="user-name">${userName}</div>
+                    <button class="btn danger small" onclick="deleteUser('${docId}', '${userName}')">삭제</button>
+                `;
+                userListEl.appendChild(userItem);
+
+                // 사용자 관리 모달 목록
+                const managementItem = userItem.cloneNode(true);
+                userManagementListEl.appendChild(managementItem);
+            });
+        }
+
+        // 새 사용자 추가
+        async function addNewUser() {
+            const name = document.getElementById('newUserName').value.trim();
+            if (!name) {
+                alert('이름을 입력해주세요.');
+                return;
+            }
+
+            // 중복 확인
+            const { collection, getDocs, query, where } = window.firestoreFunctions;
+            const usersRef = collection(window.db, 'users');
+            const q = query(usersRef, where("name", "==", name));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                alert('이미 등록된 사용자입니다.');
+                return;
+            }
+
+            const added = await addUserToFirestore(name);
+            if (added) {
+                alert(`${name}님이 추가되었습니다.`);
+                document.getElementById('newUserName').value = '';
+                loadUsersFromFirestore();
+                populateAdminUserSelect();
+                loadAndDisplayUsers();
+            }
+        }
+
+        // 사용자 삭제
+        async function deleteUser(docId, userName) {
+            if (confirm(`${userName}님을 삭제하시겠습니까?`)) {
+                const deleted = await deleteUserFromFirestore(docId);
+                if (deleted) {
+                    alert(`${userName}님이 삭제되었습니다.`);
+                    loadUsersFromFirestore();
+                    populateAdminUserSelect();
+                    loadAndDisplayUsers();
+                }
+            }
         }
 
         // 신청 모달 열기
@@ -1098,6 +1264,19 @@
             document.getElementById('adminModal').style.display = 'none';
             resetAdminForm();
             console.log('Admin modal closed');
+        }
+
+        // 사용자 관리 모달 열기
+        function openUserManagementModal() {
+            document.getElementById('userManagementModal').style.display = 'block';
+            loadAndDisplayUsers(); // 모달 열릴 때 사용자 목록 로드
+            console.log('User management modal opened');
+        }
+
+        // 사용자 관리 모달 닫기
+        function closeUserManagementModal() {
+            document.getElementById('userManagementModal').style.display = 'none';
+            console.log('User management modal closed');
         }
 
         // 데이터 통계 모달 열기
@@ -1321,52 +1500,45 @@
 
         // 월간 통계 로드
         async function loadMonthlyStats() {
-          try {
-            const { collection, getDocs, query, where } = window.firestoreFunctions;
-            const applicantsRef = collection(window.db, 'applicants');
-            const startDate = new Date(currentStatsYear, currentStatsMonth - 1, 1);
-            const endDate = new Date(currentStatsYear, currentStatsMonth, 0);
-            const startDateStr = getLocalDateString(startDate);
-            const endDateStr = getLocalDateString(endDate);
+            try {
+                console.log('Loading monthly stats for:', currentStatsYear, currentStatsMonth);
+                const { collection, getDocs, query, where } = window.firestoreFunctions;
+                const applicantsRef = collection(window.db, 'applicants');
+                const startDate = new Date(currentStatsYear, currentStatsMonth - 1, 1);
+                const endDate = new Date(currentStatsYear, currentStatsMonth, 0);
+                const startDateStr = getLocalDateString(startDate);
+                const endDateStr = getLocalDateString(endDate);
 
-            const monthQuery = query(
-              applicantsRef,
-              where('__name__', '>=', startDateStr),
-              where('__name__', '<=', endDateStr)
-            );
+                const monthQuery = query(
+                    applicantsRef,
+                    where('actualDate', '>=', startDateStr),
+                    where('actualDate', '<=', endDateStr)
+                );
 
-            const querySnapshot = await getDocs(monthQuery);
-            const monthlyData = [];
-            const zoneStats = {};
-            const dayStats = {};
+                const querySnapshot = await getDocs(monthQuery);
+                const monthlyData = [];
+                const zoneStats = {};
+                const dayStats = {};
 
-            zones.forEach(zone => zoneStats[zone] = 0);
-            days.forEach(day => dayStats[day] = 0);
+                zones.forEach(zone => zoneStats[zone] = 0);
+                days.forEach(day => dayStats[day] = 0);
 
-            for (const docSnap of querySnapshot.docs) {
-              const docId = docSnap.id;
-              const [actualDate] = docId.split('_');
-              const day = docId.split('_')[1];
-
-              zones.forEach(async zone => {
-                const zoneRef = collection(docSnap.ref, zone);
-                const zoneSnapshot = await getDocs(zoneRef);
-                zoneSnapshot.forEach(zoneDoc => {
-                  const data = zoneDoc.data();
-                  const docKey = zoneDoc.id;
-                  const name = docKey.split('_')[0];
-                  monthlyData.push({ name, day, zone, actualDate, timestamp: data.timestamp });
-                  zoneStats[zone]++;
-                  dayStats[day]++;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    monthlyData.push(data);
+                    if (zoneStats[data.zone] !== undefined) {
+                        zoneStats[data.zone]++;
+                    }
+                    if (dayStats[data.day] !== undefined) {
+                        dayStats[data.day]++;
+                    }
                 });
-              });
-            }
 
-            displayMonthlyStats(monthlyData, zoneStats, dayStats);
-          } catch (error) {
-            console.error('통계 데이터 로드 오류:', error);
-            alert('통계 데이터를 불러오는 중 오류가 발생했습니다.');
-          }
+                displayMonthlyStats(monthlyData, zoneStats, dayStats);
+            } catch (error) {
+                console.error('통계 데이터 로드 오류:', error);
+                alert('통계 데이터를 불러오는 중 오류가 발생했습니다.');
+            }
         }
 
         // 로컬 날짜 문자열 생성 함수
@@ -1802,6 +1974,7 @@
             const registrationModal = document.getElementById('registrationModal');
             const cancelModal = document.getElementById('cancelModal');
             const adminModal = document.getElementById('adminModal');
+            const userManagementModal = document.getElementById('userManagementModal');
             const statsModal = document.getElementById('statsModal');
 
             if (event.target === registrationModal) {
@@ -1812,6 +1985,9 @@
             }
             if (event.target === adminModal) {
                 closeAdminModal();
+            }
+            if (event.target === userManagementModal) {
+                closeUserManagementModal();
             }
             if (event.target === statsModal) {
                 closeStatsModal();
