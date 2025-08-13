@@ -620,7 +620,7 @@
             <div class="admin-actions">
                 <button type="button" class="btn admin" onclick="openUserManagementModal()">사용자 관리</button>
                 <button type="button" class="btn admin" onclick="openZoneManagementModal()">구역 관리</button>
-                <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>              
+                <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>
             </div>
 
         </div>
@@ -877,7 +877,7 @@
         let currentStatsYear = new Date().getFullYear();
         let currentStatsMonth = new Date().getMonth() + 1;
         let allowedUsers = []; // 서버에서 로드될 배열
-
+        let usersLoaded = false; // 사용자 데이터 로드 여부 확인 (추가)
         // 초기 데이터 구조 생성
         function initializeApplicants() {
             days.forEach(day => {
@@ -894,7 +894,6 @@
             setCurrentWeekDates();
             setAdminWeekDates();
             loadZonesFromFirestore(); // 구역 먼저 로드
-            loadUsersFromFirestore(); // 사용자 목록 로드
             populateAdminUserSelect();
             loadDataFromFirestore();
 
@@ -940,12 +939,12 @@
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'zone-option';
                     optionDiv.innerHTML = `
-                        <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
-                        <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
-                            ${zone.name}
-                            <div class="capacity-info">0/${zone.maxCapacity}</div>
-                        </label>
-                    `;
+                            <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
+                            <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
+                                ${zone.name}
+                                <div class="capacity-info">0/${zone.maxCapacity}</div>
+                            </label>
+                        `;
                     zoneSelection.appendChild(optionDiv);
                 });
             }
@@ -958,12 +957,12 @@
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'zone-option';
                     optionDiv.innerHTML = `
-                        <input type="radio" id="admin-zone${index}" name="admin-zone" value="${zone.name}">
-                        <label for="admin-zone${index}" class="zone-label" data-zone="${zone.name}">
-                            ${zone.name}
-                            <div class="capacity-info">0/${zone.maxCapacity}</div>
-                        </label>
-                    `;
+                            <input type="radio" id="admin-zone${index}" name="admin-zone" value="${zone.name}">
+                            <label for="admin-zone${index}" class="zone-label" data-zone="${zone.name}">
+                                ${zone.name}
+                                <div class="capacity-info">0/${zone.maxCapacity}</div>
+                            </label>
+                        `;
                     adminZoneSelection.appendChild(optionDiv);
                 });
             }
@@ -972,7 +971,14 @@
 
         // Firestore에서 사용자 목록 로드
         async function loadUsersFromFirestore() {
+            // 이미 로드되었으면 다시 로드하지 않음
+            if (usersLoaded) {
+                console.log('Users already loaded, using cache');
+                return;
+            }
+            
             try {
+                console.log('Loading users from Firestore...');
                 const { collection, getDocs } = window.firestoreFunctions;
                 const usersRef = collection(window.db, 'users');
                 const querySnapshot = await getDocs(usersRef);
@@ -980,12 +986,17 @@
                 querySnapshot.forEach((doc) => {
                     allowedUsers.push(doc.data().name);
                 });
+                usersLoaded = true; // 로드 완료 플래그 설정
                 console.log('Loaded users from Firestore:', allowedUsers);
-                populateAdminUserSelect(); // 사용자 선택 업데이트
             } catch (error) {
                 console.error('사용자 로드 오류:', error);
                 alert('사용자 목록을 불러오는 중 오류가 발생했습니다.');
             }
+        }
+
+        function invalidateUsersCache() {
+            usersLoaded = false;
+            console.log('Users cache invalidated');
         }
 
         // Firestore에서 데이터 로드
@@ -1144,7 +1155,7 @@
                 return;
             }
 
-            if (name === 'bgsadmin') {
+            if (name === 'admin') {
                 currentUser = 'admin';
                 isAdmin = true;
                 document.getElementById('loginPage').style.display = 'none';
@@ -1179,19 +1190,26 @@
         // 관리자 사용자 선택 목록 채우기
         async function populateAdminUserSelect() {
             const select = document.getElementById('adminUserSelect');
-            select.innerHTML = '<option value="">사용자를 선택하세요</option>'; // 초기화
-            await loadUsersFromFirestore(); // 최신 사용자 목록 로드
+            if (!select) return;
+    
+            select.innerHTML = '<option value="">사용자를 선택하세요</option>';
+    
+            // 캐시된 데이터 사용 - DB 호출 최소화
+            if (!usersLoaded) {
+                await loadUsersFromFirestore();
+            }
+    
             allowedUsers.forEach(user => {
                 const option = document.createElement('option');
                 option.value = user;
                 option.textContent = user;
                 select.appendChild(option);
             });
-            console.log('Admin user select populated');
+            console.log('Admin user select populated from cache');
         }
 
         // 사용자 목록 로드 및 표시 (관리자 페이지 및 모달)
-         async function loadAndDisplayUsers() {
+        async function loadAndDisplayUsers() {
             const userManagementListEl = document.getElementById('userManagementList');
             userManagementListEl.innerHTML = '';
 
@@ -1219,9 +1237,9 @@
                 const userItem = document.createElement('div');
                 userItem.className = 'user-item';
                 userItem.innerHTML = `
-                    <div class="user-name">${userName}</div>
-                    <button class="btn danger small" onclick="deleteUser('${docId}', '${userName}')">삭제</button>
-                `;
+                        <div class="user-name">${userName}</div>
+                        <button class="btn danger small" onclick="deleteUser('${docId}', '${userName}')">삭제</button>
+                    `;
                 userManagementListEl.appendChild(userItem);
             });
         }
@@ -1249,6 +1267,7 @@
             if (added) {
                 alert(`${name}님이 추가되었습니다.`);
                 document.getElementById('newUserName').value = '';
+                invalidateUsersCache();
                 loadUsersFromFirestore();
                 populateAdminUserSelect();
                 loadAndDisplayUsers();
@@ -1261,6 +1280,7 @@
                 const deleted = await deleteUserFromFirestore(docId);
                 if (deleted) {
                     alert(`${userName}님이 삭제되었습니다.`);
+                    invalidateUsersCache();
                     loadUsersFromFirestore();
                     populateAdminUserSelect();
                     loadAndDisplayUsers();
@@ -1291,9 +1311,9 @@
                 const zoneItem = document.createElement('div');
                 zoneItem.className = 'user-item';
                 zoneItem.innerHTML = `
-                    <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
-                    <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
-                `;
+                        <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
+                        <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
+                    `;
                 zoneManagementListEl.appendChild(zoneItem);
             });
         }
@@ -1374,6 +1394,7 @@
         function openUserManagementModal() {
             document.getElementById('userManagementModal').style.display = 'block';
             loadAndDisplayUsers(); // 모달 열릴 때 사용자 목록 로드
+            populateAdminUserSelect(); // 여기서 한 번만 호출
             console.log('User management modal opened');
         }
 
@@ -1472,19 +1493,19 @@
             const imbalanceRate = mean > 0 ? (stdDev / mean) * 100 : 0;
 
             summaryEl.innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-number">${totalApplications}</div>
-                    <div class="stat-label">총 신청 건수</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${uniqueUsers}</div>
-                    <div class="stat-label">참여 인원</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
-                    <div class="stat-label">불균형률</div>
-                </div>
-            `;
+                    <div class="stat-card">
+                        <div class="stat-number">${totalApplications}</div>
+                        <div class="stat-label">총 신청 건수</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${uniqueUsers}</div>
+                        <div class="stat-label">참여 인원</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
+                        <div class="stat-label">불균형률</div>
+                    </div>
+                `;
 
             const zoneStatsEl = document.getElementById('zoneStats');
             const maxZoneCount = Math.max(...Object.values(zoneStats));
@@ -1496,12 +1517,12 @@
                 const zoneCard = document.createElement('div');
                 zoneCard.className = 'zone-stat-card';
                 zoneCard.innerHTML = `
-                    <div class="zone-stat-title">${zone.name}</div>
-                    <div class="zone-stat-bar">
-                        <div class="zone-stat-fill" style="width: ${percentage}%"></div>
-                    </div>
-                    <div class="zone-stat-text">${count}건 신청</div>
-                `;
+                        <div class="zone-stat-title">${zone.name}</div>
+                        <div class="zone-stat-bar">
+                            <div class="zone-stat-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <div class="zone-stat-text">${count}건 신청</div>
+                    `;
                 zoneStatsEl.appendChild(zoneCard);
             });
             console.log('Monthly stats displayed:', data.length, 'applications');
@@ -1899,7 +1920,6 @@
         function resetAdminForm() {
             // 구현 필요
             alert('폼 초기화 (구현 필요)');
-        }
-    </script>
+        }</script>
 </body>
 </html>
