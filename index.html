@@ -916,16 +916,17 @@
                 const docId = docSnap.id; // 예: "2025-08-13_월요일"
                 const [actualDate] = docId.split('_');
                 const day = docId.split('_')[1];
-
+        
                 zones.forEach(async zone => {
                   const zoneRef = collection(docSnap.ref, zone);
                   const zoneSnapshot = await getDocs(zoneRef);
                   zoneSnapshot.forEach(zoneDoc => {
                     const data = zoneDoc.data();
-                    applicants[day][zone].push(data.name);
+                    const docKey = zoneDoc.id; // 예: "김인기_2025-08-13T13:38:00Z"
+                    const name = docKey.split('_')[0];
+                    applicants[day][zone].push(name);
                     allApplications.push({
-                      id: zoneDoc.id,
-                      name: data.name,
+                      name: name,
                       day: day,
                       zone: zone,
                       actualDate: actualDate,
@@ -962,15 +963,19 @@
           try {
             const actualDate = getActualDateForDay(day);
             const docId = `${actualDate}_${day}`; // 예: "2025-08-13_월요일"
-            const { collection, addDoc, doc } = window.firestoreFunctions;
+            const { collection, doc, setDoc } = window.firestoreFunctions;
             const dayRef = doc(window.db, 'applicants', docId);
             const zoneRef = collection(dayRef, zone);
 
-            const docRef = await addDoc(zoneRef, {
+    // name과 timestamp를 기반으로 고유성을 보장 (중복 체크 필요)
+            const timestampKey = new Date().toISOString(); // 예: "2025-08-13T13:38:00Z"
+            const dataRef = doc(zoneRef, name + '_' + timestampKey); // 예: "김인기_2025-08-13T13:38:00Z"
+
+            await setDoc(dataRef, {
               name: name,
               timestamp: new Date()
             });
-            console.log(`Application saved with ID: ${docRef.id} for ${day}, ${zone}`);
+            console.log(`Application saved for ${day}, ${zone} with name: ${name}`);
             return true;
           } catch (error) {
             console.error('저장 오류:', error);
@@ -980,13 +985,17 @@
         }
 
         // Firestore에서 데이터 삭제
-        async function deleteFromFirestore(docId, day, zone, actualDate) {
+        async function deleteFromFirestore(name, day, zone, actualDate) {
           try {
-            const docIdFull = `${actualDate}_${day}`;
+            const docId = `${actualDate}_${day}`;
             const { deleteDoc, doc } = window.firestoreFunctions;
-            const zoneDocRef = doc(window.db, 'applicants', docIdFull, zone, docId);
-            await deleteDoc(zoneDocRef);
-            console.log('Document deleted successfully');
+            const timestampKey = allApplications.find(a => a.name === name && a.day === day && a.zone === zone && a.actualDate === actualDate)?.timestamp?.toISOString();
+            if (!timestampKey) {
+              throw new Error('삭제할 신청을 찾을 수 없습니다.');
+            }
+            const dataRef = doc(window.db, 'applicants', docId, zone, name + '_' + timestampKey);
+            await deleteDoc(dataRef);
+            console.log('Application deleted successfully');
             return true;
           } catch (error) {
             console.error('삭제 오류:', error);
@@ -1344,7 +1353,9 @@
                 const zoneSnapshot = await getDocs(zoneRef);
                 zoneSnapshot.forEach(zoneDoc => {
                   const data = zoneDoc.data();
-                  monthlyData.push({ ...data, day, zone, actualDate });
+                  const docKey = zoneDoc.id;
+                  const name = docKey.split('_')[0];
+                  monthlyData.push({ name, day, zone, actualDate, timestamp: data.timestamp });
                   zoneStats[zone]++;
                   dayStats[day]++;
                 });
