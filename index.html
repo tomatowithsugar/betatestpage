@@ -892,115 +892,108 @@
 
         // Firestore에서 데이터 로드
         async function loadDataFromFirestore() {
-            try {
-                console.log('Loading data from Firestore...');
-                const { collection, onSnapshot, query, where } = window.firestoreFunctions;
-                const applicantsRef = collection(window.db, 'applicants');
-                const currentWeekDates = getCurrentWeekDates();
-                const weekQuery = query(
-                    applicantsRef,
-                    where('actualDate', '>=', currentWeekDates.start),
-                    where('actualDate', '<=', currentWeekDates.end)
-                );
+          try {
+            const { collection, onSnapshot, query, where, getDocs } = window.firestoreFunctions;
+            const applicantsRef = collection(window.db, 'applicants');
+            const currentWeekDates = getCurrentWeekDates();
+            const weekQuery = query(
+              applicantsRef,
+              where('__name__', '>=', currentWeekDates.start),
+              where('__name__', '<=', currentWeekDates.end)
+            );
 
-                // 기존 loadDataFromFirestore 함수를 다음과 같이 완전히 교체
-async function loadDataFromFirestore() {
-    try {
-        console.log('Loading data from Firestore...');
-        const { collection, getDocs } = window.firestoreFunctions;
-        const currentWeekDates = getCurrentWeekDates();
-        
-        // 초기화
-        days.forEach(day => {
-            zones.forEach(zone => {
-                applicants[day][zone] = [];
-            });
-        });
-        allApplications = [];
-        userApplications = [];
-
-        // 현재 주의 각 날짜별로 데이터 로드
-        const startDate = new Date(currentWeekDates.start);
-        const endDate = new Date(currentWeekDates.end);
-        
-        for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
-            const dateStr = getLocalDateString(date);
-            try {
-                const dateCollectionRef = collection(window.db, 'applicants', dateStr, 'documents');
-                const querySnapshot = await getDocs(dateCollectionRef);
-                
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const { name, day, zone } = data;
-                    if (applicants[day] && applicants[day][zone]) {
-                        applicants[day][zone].push(name);
-                    }
-                    allApplications.push({
-                        id: docSnap.id,
-                        ...data
-                    });
+            onSnapshot(weekQuery, async (querySnapshot) => {
+              days.forEach(day => {
+                zones.forEach(zone => {
+                  applicants[day][zone] = [];
                 });
-            } catch (error) {
-                // 해당 날짜의 컬렉션이 없으면 무시
-                console.log('No data for date:', dateStr);
-            }
+              });
+
+              allApplications = [];
+              userApplications = [];
+
+              for (const docSnap of querySnapshot.docs) {
+                const docId = docSnap.id; // 예: "2025-08-13_월요일"
+                const [actualDate] = docId.split('_');
+                const day = docId.split('_')[1];
+
+                zones.forEach(async zone => {
+                  const zoneRef = collection(docSnap.ref, zone);
+                  const zoneSnapshot = await getDocs(zoneRef);
+                  zoneSnapshot.forEach(zoneDoc => {
+                    const data = zoneDoc.data();
+                    applicants[day][zone].push(data.name);
+                    allApplications.push({
+                      id: zoneDoc.id,
+                      name: data.name,
+                      day: day,
+                      zone: zone,
+                      actualDate: actualDate,
+                      timestamp: data.timestamp
+                    });
+                  });
+                });
+              }
+
+              filterUserApplications();
+              updateDisplay();
+              if (document.getElementById('cancelModal').style.display === 'block') {
+                updateCancelList();
+              }
+              if (document.getElementById('adminModal').style.display === 'block') {
+                updateAdminZoneDisplay();
+                updateAdminCancelList();
+              }
+              if (document.getElementById('statsModal').style.display === 'block') {
+                loadMonthlyStats();
+              }
+            }, (error) => {
+              console.error('Firestore snapshot error:', error);
+              alert('데이터베이스 연결에 실패했습니다.');
+            });
+          } catch (error) {
+            console.error('Firebase 연결 오류:', error);
+            alert('데이터베이스 연결에 실패했습니다.');
+          }
         }
 
-        console.log('All applications loaded:', allApplications);
-        filterUserApplications();
-        updateDisplay();
-        
-        // 실시간 업데이트를 위해 주기적으로 다시 로드 (선택사항)
-        // setInterval(loadDataFromFirestore, 30000); // 30초마다 새로고침
-        
-    } catch (error) {
-        console.error('Firebase 연결 오류:', error);
-        alert('데이터베이스 연결에 실패했습니다.');
-    }
-}
-
         // Firestore에 데이터 저장
-        // 기존 saveToFirestore 함수를 다음과 같이 수정
-async function saveToFirestore(name, day, zone) {
-    try {
-        console.log(`Saving to Firestore: ${name}, ${day}, ${zone}`);
-        const { collection, addDoc } = window.firestoreFunctions;
-        const actualDate = getActualDateForDay(day);
-        
-        // 날짜별 하위 컬렉션으로 변경
-        const dateCollectionRef = collection(window.db, 'applicants', actualDate, 'documents');
+        async function saveToFirestore(name, day, zone) {
+          try {
+            const actualDate = getActualDateForDay(day);
+            const docId = `${actualDate}_${day}`; // 예: "2025-08-13_월요일"
+            const { collection, addDoc, doc } = window.firestoreFunctions;
+            const dayRef = doc(window.db, 'applicants', docId);
+            const zoneRef = collection(dayRef, zone);
 
-        const docRef = await addDoc(dateCollectionRef, {
-            name: name,
-            day: day,
-            zone: zone,
-            actualDate: actualDate,
-            timestamp: new Date()
-        });
-        console.log('Document saved with ID:', docRef.id);
-        return true;
-    } catch (error) {
-        console.error('저장 오류:', error);
-        alert('신청 저장 중 오류가 발생했습니다.');
-        return false;
-    }
-}
+            const docRef = await addDoc(zoneRef, {
+              name: name,
+              timestamp: new Date()
+            });
+            console.log(`Application saved with ID: ${docRef.id} for ${day}, ${zone}`);
+            return true;
+          } catch (error) {
+            console.error('저장 오류:', error);
+            alert('신청 저장 중 오류가 발생했습니다.');
+            return false;
+          }
+        }
 
         // Firestore에서 데이터 삭제
-        // 기존 deleteFromFirestore 함수를 다음과 같이 수정
-async function deleteFromFirestore(docId, actualDate) {
-    try {
-        console.log('Deleting document with ID:', docId);
-        const { deleteDoc, doc } = window.firestoreFunctions;
-        await deleteDoc(doc(window.db, 'applicants', actualDate, 'documents', docId));
-        console.log('Document deleted successfully');
-        return true;
-    } catch (error) {
-        console.error('삭제 오류:', error);
-        alert('신청 취소 중 오류가 발생했습니다: ' + error.message);
-        return false;
-    }
-}
+        async function deleteFromFirestore(docId, day, zone, actualDate) {
+          try {
+            const docIdFull = `${actualDate}_${day}`;
+            const { deleteDoc, doc } = window.firestoreFunctions;
+            const zoneDocRef = doc(window.db, 'applicants', docIdFull, zone, docId);
+            await deleteDoc(zoneDocRef);
+            console.log('Document deleted successfully');
+            return true;
+          } catch (error) {
+            console.error('삭제 오류:', error);
+            alert('신청 취소 중 오류가 발생했습니다: ' + error.message);
+            return false;
+          }
+        }
 
         // 로그인 함수
         function login() {
@@ -1305,9 +1298,7 @@ async function deleteFromFirestore(docId, actualDate) {
                 const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 
                 if (confirm(`${application.name}님의 ${application.day}(${dateString}) ${application.zone} 신청을 취소하시겠습니까?`)) {
-                    // executeAdminAction 함수에서 취소 부분만 수정
-// 기존 코드에서 이 부분만 변경:
-                      const deleted = await deleteFromFirestore(docId, application.actualDate);
+                    const deleted = await deleteFromFirestore(docId);
                     if (deleted) {
                         alert(`${application.name}님의 ${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.`);
                         resetAdminForm();
@@ -1320,50 +1311,52 @@ async function deleteFromFirestore(docId, actualDate) {
         }
 
         // 월간 통계 로드
-        // loadMonthlyStats 함수를 다음과 같이 수정
-async function loadMonthlyStats() {
-    try {
-        console.log('Loading monthly stats for:', currentStatsYear, currentStatsMonth);
-        const { collection, getDocs } = window.firestoreFunctions;
-        const startDate = new Date(currentStatsYear, currentStatsMonth - 1, 1);
-        const endDate = new Date(currentStatsYear, currentStatsMonth, 0);
-        
-        const monthlyData = [];
-        const zoneStats = {};
-        const dayStats = {};
+        async function loadMonthlyStats() {
+          try {
+            const { collection, getDocs, query, where } = window.firestoreFunctions;
+            const applicantsRef = collection(window.db, 'applicants');
+            const startDate = new Date(currentStatsYear, currentStatsMonth - 1, 1);
+            const endDate = new Date(currentStatsYear, currentStatsMonth, 0);
+            const startDateStr = getLocalDateString(startDate);
+            const endDateStr = getLocalDateString(endDate);
 
-        zones.forEach(zone => zoneStats[zone] = 0);
-        days.forEach(day => dayStats[day] = 0);
+            const monthQuery = query(
+              applicantsRef,
+              where('__name__', '>=', startDateStr),
+              where('__name__', '<=', endDateStr)
+            );
 
-        // 해당 월의 모든 날짜를 순회하며 데이터 로드
-        for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
-            const dateStr = getLocalDateString(date);
-            try {
-                const dateCollectionRef = collection(window.db, 'applicants', dateStr, 'documents');
-                const querySnapshot = await getDocs(dateCollectionRef);
-                
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    monthlyData.push(data);
-                    if (zoneStats[data.zone] !== undefined) {
-                        zoneStats[data.zone]++;
-                    }
-                    if (dayStats[data.day] !== undefined) {
-                        dayStats[data.day]++;
-                    }
+            const querySnapshot = await getDocs(monthQuery);
+            const monthlyData = [];
+            const zoneStats = {};
+            const dayStats = {};
+
+            zones.forEach(zone => zoneStats[zone] = 0);
+            days.forEach(day => dayStats[day] = 0);
+
+            for (const docSnap of querySnapshot.docs) {
+              const docId = docSnap.id;
+              const [actualDate] = docId.split('_');
+              const day = docId.split('_')[1];
+
+              zones.forEach(async zone => {
+                const zoneRef = collection(docSnap.ref, zone);
+                const zoneSnapshot = await getDocs(zoneRef);
+                zoneSnapshot.forEach(zoneDoc => {
+                  const data = zoneDoc.data();
+                  monthlyData.push({ ...data, day, zone, actualDate });
+                  zoneStats[zone]++;
+                  dayStats[day]++;
                 });
-            } catch (error) {
-                // 해당 날짜의 컬렉션이 없으면 무시
-                console.log('No data for date:', dateStr);
+              });
             }
-        }
 
-        displayMonthlyStats(monthlyData, zoneStats, dayStats);
-    } catch (error) {
-        console.error('통계 데이터 로드 오류:', error);
-        alert('통계 데이터를 불러오는 중 오류가 발생했습니다.');
-    }
-}
+            displayMonthlyStats(monthlyData, zoneStats, dayStats);
+          } catch (error) {
+            console.error('통계 데이터 로드 오류:', error);
+            alert('통계 데이터를 불러오는 중 오류가 발생했습니다.');
+          }
+        }
 
         // 로컬 날짜 문자열 생성 함수
         function getLocalDateString(date) {
@@ -1572,31 +1565,16 @@ async function loadMonthlyStats() {
         }
 
         // 신청 취소 확인
-        // confirmCancelApplication 함수 수정 - actualDate 매개변수 추가
-function confirmCancelApplication(application) {
-    const dateParts = application.actualDate.split('-');
-    const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-    const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-    const confirmMessage = `${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?`;
+        function confirmCancelApplication(application) {
+            const dateParts = application.actualDate.split('-');
+            const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+            const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+            const confirmMessage = `${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?`;
 
-    if (confirm(confirmMessage)) {
-        cancelApplication(application.id, application);
-    }
-}
-
-// cancelApplication 함수 수정
-async function cancelApplication(docId, application) {
-    const deleted = await deleteFromFirestore(docId, application.actualDate);
-    if (deleted) {
-        const dateParts = application.actualDate.split('-');
-        const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-        const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-        alert(`${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.`);
-        closeCancelModal();
-        // 데이터 다시 로드
-        loadDataFromFirestore();
-    }
-}
+            if (confirm(confirmMessage)) {
+                cancelApplication(application.id, application);
+            }
+        }
 
         // 신청 취소 실행
         async function cancelApplication(docId, application) {
@@ -1830,4 +1808,3 @@ async function cancelApplication(docId, application) {
         };</script>
 </body>
 </html>
-
