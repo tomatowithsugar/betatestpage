@@ -619,6 +619,7 @@
 
             <div class="admin-actions">
                 <button type="button" class="btn admin" onclick="openUserManagementModal()">사용자 관리</button>
+                <button type="button" class="btn admin" onclick="openZoneManagementModal()">구역 관리</button>
                 <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>              
             </div>
 
@@ -689,34 +690,7 @@
                 <div class="form-group zone-selection-container" id="zoneSelectionContainer">
                     <label>구역 선택</label>
                     <div class="zone-selection" id="zoneSelection">
-                        <div class="zone-option">
-                            <input type="radio" id="zone1" name="zone" value="메트로 앞">
-                            <label for="zone1" class="zone-label" data-zone="메트로 앞">
-                                메트로 앞
-                                <div class="capacity-info">0/4</div>
-                            </label>
-                        </div>
-                        <div class="zone-option">
-                            <input type="radio" id="zone2" name="zone" value="신한은행 앞">
-                            <label for="zone2" class="zone-label" data-zone="신한은행 앞">
-                                신한은행 앞
-                                <div class="capacity-info">0/4</div>
-                            </label>
-                        </div>
-                        <div class="zone-option">
-                            <input type="radio" id="zone3" name="zone" value="알라딘문고 앞">
-                            <label for="zone3" class="zone-label" data-zone="알라딘문고 앞">
-                                알라딘문고 앞
-                                <div class="capacity-info">0/4</div>
-                            </label>
-                        </div>
-                        <div class="zone-option">
-                            <input type="radio" id="zone4" name="zone" value="하나은행 앞">
-                            <label for="zone4" class="zone-label" data-zone="하나은행 앞">
-                                하나은행 앞
-                                <div class="capacity-info">0/4</div>
-                            </label>
-                        </div>
+                        <!-- 동적으로 생성됨 -->
                     </div>
                 </div>
 
@@ -812,34 +786,7 @@
                 <div class="form-group zone-selection-container" id="adminZoneSelectionContainer" style="display: none;">
                     <label>구역 선택</label>
                     <div class="zone-selection" id="adminZoneSelection">
-                        <div class="zone-option">
-                            <input type="radio" id="admin-zone1" name="admin-zone" value="메트로 앞">
-                            <label for="admin-zone1" class="zone-label" data-zone="메트로 앞">
-                                메트로 앞
-                                <div class="capacity-info">0/4</div>
-                            </label>
-                        </div>
-                        <div class="zone-option">
-                            <input type="radio" id="admin-zone2" name="admin-zone" value="신한은행 앞">
-                            <label for="admin-zone2" class="zone-label" data-zone="신한은행 앞">
-                                신한은행 앞
-                                <div class="capacity-info">0/4</div>
-                            </label>
-                        </div>
-                        <div class="zone-option">
-                            <input type="radio" id="admin-zone3" name="admin-zone" value="알라딘문고 앞">
-                            <label for="admin-zone3" class="zone-label" data-zone="알라딘문고 앞">
-                                알라딘문고 앞
-                                <div class="capacity-info">0/4</div>
-                            </label>
-                        </div>
-                        <div class="zone-option">
-                            <input type="radio" id="admin-zone4" name="admin-zone" value="하나은행 앞">
-                            <label for="admin-zone4" class="zone-label" data-zone="하나은행 앞">
-                                하나은행 앞
-                                <div class="capacity-info">0/4</div>
-                            </label>
-                        </div>
+                        <!-- 동적으로 생성됨 -->
                     </div>
                 </div>
 
@@ -875,6 +822,29 @@
         </div>
     </div>
 
+    <!-- 구역 관리 모달 -->
+    <div id="zoneManagementModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeZoneManagementModal()">&times;</span>
+            <h2>구역 관리</h2>
+
+            <div class="form-group">
+                <label for="newZoneName">새 구역 추가</label>
+                <input type="text" id="newZoneName" placeholder="구역 이름을 입력하세요" required>
+            </div>
+            <div class="form-group">
+                <label for="newZoneCapacity">최대 용량</label>
+                <input type="number" id="newZoneCapacity" placeholder="최대 용량 (기본 4)" value="4" min="1" required>
+                <button type="button" class="btn success small" onclick="addNewZone()" style="margin-top: 10px;">추가</button>
+            </div>
+
+            <div class="user-list">
+                <h3>등록된 구역</h3>
+                <div id="zoneManagementList"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- 데이터 통계 모달 -->
     <div id="statsModal" class="modal">
         <div class="modal-content large">
@@ -899,8 +869,7 @@
     <script>// 신청자 데이터를 저장할 객체
         const applicants = {};
         const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-        const zones = ['메트로 앞', '신한은행 앞', '알라딘문고 앞', '하나은행 앞'];
-        const maxCapacity = 4;
+        let zones = []; // 동적으로 로드
         let currentUser = '';
         let isAdmin = false;
         let userApplications = [];
@@ -910,21 +879,24 @@
         let allowedUsers = []; // 서버에서 로드될 배열
 
         // 초기 데이터 구조 생성
-        days.forEach(day => {
-            applicants[day] = {};
-            zones.forEach(zone => {
-                applicants[day][zone] = [];
+        function initializeApplicants() {
+            days.forEach(day => {
+                applicants[day] = {};
+                zones.forEach(zone => {
+                    applicants[day][zone.name] = [];
+                });
             });
-        });
+        }
 
         // 페이지 로드 시 초기화
         window.initializeApp = function () {
             console.log('Initializing application...');
             setCurrentWeekDates();
             setAdminWeekDates();
-            loadDataFromFirestore();
+            loadZonesFromFirestore(); // 구역 먼저 로드
             loadUsersFromFirestore(); // 사용자 목록 로드
             populateAdminUserSelect();
+            loadDataFromFirestore();
 
             document.getElementById('loginName').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
@@ -932,6 +904,71 @@
                 }
             });
         };
+
+        // Firestore에서 구역 목록 로드
+        async function loadZonesFromFirestore() {
+            try {
+                const { collection, getDocs } = window.firestoreFunctions;
+                const zonesRef = collection(window.db, 'zones');
+                const querySnapshot = await getDocs(zonesRef);
+                zones = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    zones.push({
+                        id: doc.id,
+                        name: data.name,
+                        maxCapacity: data.maxCapacity || 4
+                    });
+                });
+                console.log('Loaded zones from Firestore:', zones);
+                initializeApplicants(); // zones 로드 후 applicants 초기화
+                updateZoneUI(); // UI 업데이트
+                updateDisplay(); // 신청 현황 업데이트
+            } catch (error) {
+                console.error('구역 로드 오류:', error);
+                alert('구역 목록을 불러오는 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 구역 UI 동적 업데이트 (모달 등)
+        function updateZoneUI() {
+            // 사용자 신청 모달
+            const zoneSelection = document.getElementById('zoneSelection');
+            if (zoneSelection) {
+                zoneSelection.innerHTML = '';
+                zones.forEach((zone, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'zone-option';
+                    optionDiv.innerHTML = `
+                        <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
+                        <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
+                            ${zone.name}
+                            <div class="capacity-info">0/${zone.maxCapacity}</div>
+                        </label>
+                    `;
+                    zoneSelection.appendChild(optionDiv);
+                });
+            }
+
+            // 관리자 모달
+            const adminZoneSelection = document.getElementById('adminZoneSelection');
+            if (adminZoneSelection) {
+                adminZoneSelection.innerHTML = '';
+                zones.forEach((zone, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'zone-option';
+                    optionDiv.innerHTML = `
+                        <input type="radio" id="admin-zone${index}" name="admin-zone" value="${zone.name}">
+                        <label for="admin-zone${index}" class="zone-label" data-zone="${zone.name}">
+                            ${zone.name}
+                            <div class="capacity-info">0/${zone.maxCapacity}</div>
+                        </label>
+                    `;
+                    adminZoneSelection.appendChild(optionDiv);
+                });
+            }
+            console.log('Zone UI updated');
+        }
 
         // Firestore에서 사용자 목록 로드
         async function loadUsersFromFirestore() {
@@ -966,11 +1003,7 @@
 
                 onSnapshot(weekQuery, (querySnapshot) => {
                     console.log('Firestore snapshot received:', querySnapshot.size, 'documents');
-                    days.forEach(day => {
-                        zones.forEach(zone => {
-                            applicants[day][zone] = [];
-                        });
-                    });
+                    initializeApplicants(); // 초기화
 
                     allApplications = [];
                     userApplications = [];
@@ -1070,6 +1103,35 @@
             } catch (error) {
                 console.error('사용자 삭제 오류:', error);
                 alert('사용자 삭제 중 오류가 발생했습니다.');
+                return false;
+            }
+        }
+
+        // Firestore에 구역 추가
+        async function addZoneToFirestore(name, maxCapacity) {
+            try {
+                const { collection, addDoc } = window.firestoreFunctions;
+                const zonesRef = collection(window.db, 'zones');
+                await addDoc(zonesRef, { name: name, maxCapacity: parseInt(maxCapacity) });
+                console.log('Zone added:', name);
+                return true;
+            } catch (error) {
+                console.error('구역 추가 오류:', error);
+                alert('구역 추가 중 오류가 발생했습니다.');
+                return false;
+            }
+        }
+
+        // Firestore에서 구역 삭제
+        async function deleteZoneFromFirestore(docId) {
+            try {
+                const { deleteDoc, doc } = window.firestoreFunctions;
+                await deleteDoc(doc(window.db, 'zones', docId));
+                console.log('Zone deleted with ID:', docId);
+                return true;
+            } catch (error) {
+                console.error('구역 삭제 오류:', error);
+                alert('구역 삭제 중 오류가 발생했습니다.');
                 return false;
             }
         }
@@ -1199,6 +1261,78 @@
             }
         }
 
+        // 구역 목록 로드 및 표시 (관리자 모달)
+        async function loadAndDisplayZones() {
+            const zoneManagementListEl = document.getElementById('zoneManagementList');
+            zoneManagementListEl.innerHTML = '';
+
+            const { collection, getDocs } = window.firestoreFunctions;
+            const zonesRef = collection(window.db, 'zones');
+            const querySnapshot = await getDocs(zonesRef);
+
+            if (querySnapshot.empty) {
+                zoneManagementListEl.innerHTML = '<p>등록된 구역이 없습니다.</p>';
+                return;
+            }
+
+            querySnapshot.forEach((docSnap) => {
+                const zoneData = docSnap.data();
+                const zoneName = zoneData.name;
+                const maxCapacity = zoneData.maxCapacity;
+                const docId = docSnap.id;
+
+                const zoneItem = document.createElement('div');
+                zoneItem.className = 'user-item';
+                zoneItem.innerHTML = `
+                    <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
+                    <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
+                `;
+                zoneManagementListEl.appendChild(zoneItem);
+            });
+        }
+
+        // 새 구역 추가
+        async function addNewZone() {
+            const name = document.getElementById('newZoneName').value.trim();
+            const maxCapacity = document.getElementById('newZoneCapacity').value.trim();
+            if (!name || !maxCapacity) {
+                alert('구역 이름과 용량을 입력해주세요.');
+                return;
+            }
+
+            // 중복 확인
+            const { collection, getDocs, query, where } = window.firestoreFunctions;
+            const zonesRef = collection(window.db, 'zones');
+            const q = query(zonesRef, where("name", "==", name));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                alert('이미 등록된 구역입니다.');
+                return;
+            }
+
+            const added = await addZoneToFirestore(name, maxCapacity);
+            if (added) {
+                alert(`${name} 구역이 추가되었습니다.`);
+                document.getElementById('newZoneName').value = '';
+                document.getElementById('newZoneCapacity').value = '4';
+                loadZonesFromFirestore();
+                loadAndDisplayZones();
+            }
+        }
+
+        // 구역 삭제
+        async function deleteZone(docId, zoneName) {
+            if (confirm(`${zoneName} 구역을 삭제하시겠습니까?`)) {
+                const deleted = await deleteZoneFromFirestore(docId);
+                if (deleted) {
+                    alert(`${zoneName} 구역이 삭제되었습니다.`);
+                    loadZonesFromFirestore();
+                    loadAndDisplayZones();
+                }
+            }
+        }
+
         // 신청 모달 열기
         function openRegistrationModal() {
             document.getElementById('registrationModal').style.display = 'block';
@@ -1242,6 +1376,19 @@
             console.log('User management modal closed');
         }
 
+        // 구역 관리 모달 열기
+        function openZoneManagementModal() {
+            document.getElementById('zoneManagementModal').style.display = 'block';
+            loadAndDisplayZones(); // 모달 열릴 때 구역 목록 로드
+            console.log('Zone management modal opened');
+        }
+
+        // 구역 관리 모달 닫기
+        function closeZoneManagementModal() {
+            document.getElementById('zoneManagementModal').style.display = 'none';
+            console.log('Zone management modal closed');
+        }
+
         // 데이터 통계 모달 열기
         function openStatsModal() {
             document.getElementById('statsModal').style.display = 'block';
@@ -1277,7 +1424,7 @@
                 const zoneStats = {};
                 const dayStats = {};
 
-                zones.forEach(zone => zoneStats[zone] = 0);
+                zones.forEach(zone => zoneStats[zone.name] = 0);
                 days.forEach(day => dayStats[day] = 0);
 
                 querySnapshot.forEach((doc) => {
@@ -1318,35 +1465,36 @@
             const imbalanceRate = mean > 0 ? (stdDev / mean) * 100 : 0;
 
             summaryEl.innerHTML = `
-                        <div class="stat-card">
-                            <div class="stat-number">${totalApplications}</div>
-                            <div class="stat-label">총 신청 건수</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">${uniqueUsers}</div>
-                            <div class="stat-label">참여 인원</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
-                            <div class="stat-label">불균형률</div>
-                        </div>
-                    `;
+                <div class="stat-card">
+                    <div class="stat-number">${totalApplications}</div>
+                    <div class="stat-label">총 신청 건수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${uniqueUsers}</div>
+                    <div class="stat-label">참여 인원</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
+                    <div class="stat-label">불균형률</div>
+                </div>
+            `;
 
             const zoneStatsEl = document.getElementById('zoneStats');
             const maxZoneCount = Math.max(...Object.values(zoneStats));
 
             zoneStatsEl.innerHTML = '';
-            Object.entries(zoneStats).forEach(([zone, count]) => {
+            zones.forEach(zone => {
+                const count = zoneStats[zone.name] || 0;
                 const percentage = maxZoneCount > 0 ? (count / maxZoneCount) * 100 : 0;
                 const zoneCard = document.createElement('div');
                 zoneCard.className = 'zone-stat-card';
                 zoneCard.innerHTML = `
-                            <div class="zone-stat-title">${zone}</div>
-                            <div class="zone-stat-bar">
-                                <div class="zone-stat-fill" style="width: ${percentage}%"></div>
-                            </div>
-                            <div class="zone-stat-text">${count}건 신청</div>
-                        `;
+                    <div class="zone-stat-title">${zone.name}</div>
+                    <div class="zone-stat-bar">
+                        <div class="zone-stat-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="zone-stat-text">${count}건 신청</div>
+                `;
                 zoneStatsEl.appendChild(zoneCard);
             });
             console.log('Monthly stats displayed:', data.length, 'applications');
@@ -1544,8 +1692,10 @@
         function updateZoneDisplay(selectedDay) {
             const zoneLabels = document.querySelectorAll('#zoneSelection .zone-label');
             zoneLabels.forEach(label => {
-                const zone = label.dataset.zone;
-                const currentCount = applicants[selectedDay][zone].length;
+                const zoneName = label.dataset.zone;
+                const zoneObj = zones.find(z => z.name === zoneName);
+                const maxCapacity = zoneObj ? zoneObj.maxCapacity : 4;
+                const currentCount = applicants[selectedDay][zoneName].length;
                 const capacityInfo = label.querySelector('.capacity-info');
                 const radioInput = label.previousElementSibling;
 
@@ -1586,13 +1736,13 @@
                 dayDiv.appendChild(dayTitleDiv);
 
                 zones.forEach(zone => {
-                    const zoneApplicants = applicants[day][zone];
+                    const zoneApplicants = applicants[day][zone.name] || [];
                     const zoneDiv = document.createElement('div');
                     zoneDiv.className = 'zone-applicants';
 
                     const zoneNameDiv = document.createElement('div');
                     zoneNameDiv.className = 'zone-name';
-                    zoneNameDiv.textContent = `${zone} (${zoneApplicants.length}/${maxCapacity})`;
+                    zoneNameDiv.textContent = `${zone.name} (${zoneApplicants.length}/${zone.maxCapacity})`;
 
                     const applicantNamesDiv = document.createElement('div');
                     applicantNamesDiv.className = 'applicant-names';
@@ -1658,6 +1808,8 @@
 
             const dayValue = selectedDay.value;
             const zoneValue = selectedZone.value;
+            const zoneObj = zones.find(z => z.name === zoneValue);
+            const maxCapacity = zoneObj ? zoneObj.maxCapacity : 4;
 
             if (applicants[dayValue][zoneValue].length >= maxCapacity) {
                 alert(`${dayValue} ${zoneValue}은 마감되었습니다.`);
@@ -1667,7 +1819,7 @@
 
             let isDuplicate = false;
             zones.forEach(zone => {
-                if (applicants[dayValue][zone].includes(currentUser)) {
+                if (applicants[dayValue][zone.name].includes(currentUser)) {
                     isDuplicate = true;
                 }
             });
@@ -1702,6 +1854,7 @@
             const cancelModal = document.getElementById('cancelModal');
             const adminModal = document.getElementById('adminModal');
             const userManagementModal = document.getElementById('userManagementModal');
+            const zoneManagementModal = document.getElementById('zoneManagementModal');
             const statsModal = document.getElementById('statsModal');
 
             if (event.target === registrationModal) {
@@ -1716,9 +1869,30 @@
             if (event.target === userManagementModal) {
                 closeUserManagementModal();
             }
+            if (event.target === zoneManagementModal) {
+                closeZoneManagementModal();
+            }
             if (event.target === statsModal) {
                 closeStatsModal();
             }
-        };</script>
+        };
+
+        // 관리자 모달 닫기 (임의 배정/취소 모달)
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        // 관리자 액션 실행 (기존 코드, 필요 시 구현)
+        function executeAdminAction() {
+            // 구현 필요 (기존 로직)
+            alert('관리자 액션 실행 (구현 필요)');
+        }
+
+        // 관리자 폼 초기화
+        function resetAdminForm() {
+            // 구현 필요
+            alert('폼 초기화 (구현 필요)');
+        }
+    </script>
 </body>
 </html>
