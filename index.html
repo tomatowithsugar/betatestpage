@@ -618,9 +618,8 @@
             <div class="admin-info">관리자님 환영합니다!</div>
 
             <div class="admin-actions">
-                <button type="button" class="btn admin" onclick="openAdminModal()">신청 관리</button>
-                <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>
                 <button type="button" class="btn admin" onclick="openUserManagementModal()">사용자 관리</button>
+                <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>              
             </div>
 
             <!-- 사용자 목록 (관리자 페이지에 추가) -->
@@ -999,10 +998,6 @@
                     if (document.getElementById('cancelModal').style.display === 'block') {
                         updateCancelList();
                     }
-                    if (document.getElementById('adminModal').style.display === 'block') {
-                        updateAdminZoneDisplay();
-                        updateAdminCancelList();
-                    }
                     if (document.getElementById('statsModal').style.display === 'block') {
                         loadMonthlyStats();
                     }
@@ -1249,23 +1244,6 @@
             console.log('Cancel modal closed');
         }
 
-        // 관리자 모달 열기
-        function openAdminModal() {
-            document.getElementById('adminModal').style.display = 'block';
-            setAdminWeekDates();
-            resetAdminForm();
-            updateAdminZoneDisplay();
-            updateAdminCancelList();
-            console.log('Admin modal opened');
-        }
-
-        // 관리자 모달 닫기
-        function closeAdminModal() {
-            document.getElementById('adminModal').style.display = 'none';
-            resetAdminForm();
-            console.log('Admin modal closed');
-        }
-
         // 사용자 관리 모달 열기
         function openUserManagementModal() {
             document.getElementById('userManagementModal').style.display = 'block';
@@ -1290,212 +1268,6 @@
         function closeStatsModal() {
             document.getElementById('statsModal').style.display = 'none';
             console.log('Stats modal closed');
-        }
-
-        // 관리자 폼 초기화
-        function resetAdminForm() {
-            document.getElementById('adminUserSelect').value = '';
-            document.getElementById('adminAction').value = '';
-            document.querySelectorAll('input[name="admin-day"]').forEach(radio => radio.checked = false);
-            document.querySelectorAll('input[name="admin-zone"]').forEach(radio => radio.checked = false);
-            document.getElementById('adminDayZoneRow').style.display = 'none';
-            document.getElementById('adminZoneSelectionContainer').style.display = 'none';
-            document.getElementById('adminCancelList').style.display = 'none';
-            document.getElementById('adminCancelOptions').innerHTML = '';
-            console.log('Admin form reset');
-        }
-
-        // 관리자 액션 변경 시 처리
-        document.getElementById('adminAction').addEventListener('change', function () {
-            const action = this.value;
-            const dayZoneRow = document.getElementById('adminDayZoneRow');
-            const zoneContainer = document.getElementById('adminZoneSelectionContainer');
-            const cancelList = document.getElementById('adminCancelList');
-
-            if (action === 'assign') {
-                dayZoneRow.style.display = 'block';
-                zoneContainer.style.display = 'none';
-                cancelList.style.display = 'none';
-            } else if (action === 'cancel') {
-                dayZoneRow.style.display = 'none';
-                zoneContainer.style.display = 'none';
-                cancelList.style.display = 'block';
-                updateAdminCancelList();
-            } else {
-                dayZoneRow.style.display = 'none';
-                zoneContainer.style.display = 'none';
-                cancelList.style.display = 'none';
-            }
-            console.log('Admin action changed to:', action);
-        });
-
-        // 관리자 요일 선택 시 구역 선택 영역 표시
-        document.querySelectorAll('input[name="admin-day"]').forEach(radio => {
-            radio.addEventListener('change', function () {
-                const zoneContainer = document.getElementById('adminZoneSelectionContainer');
-                if (this.checked) {
-                    zoneContainer.style.display = 'block';
-                    updateAdminZoneDisplay(this.value);
-                    document.querySelectorAll('input[name="admin-zone"]').forEach(zoneRadio => {
-                        zoneRadio.checked = false;
-                    });
-                    console.log('Admin day selected:', this.value);
-                }
-            });
-        });
-
-        // 관리자 사용자 변경 시 취소 리스트 갱신
-        document.getElementById('adminUserSelect').addEventListener('change', function () {
-            const action = document.getElementById('adminAction').value;
-            if (action === 'cancel') {
-                updateAdminCancelList();
-            }
-            console.log('Admin user selected:', this.value);
-        });
-
-        // 관리자 취소 리스트 업데이트
-        function updateAdminCancelList() {
-            const selectedUser = document.getElementById('adminUserSelect').value;
-            const cancelOptionsEl = document.getElementById('adminCancelOptions');
-            cancelOptionsEl.innerHTML = '';
-
-            if (!selectedUser) {
-                cancelOptionsEl.innerHTML = '<p style="color: #999; font-style: italic;">사용자를 먼저 선택하세요</p>';
-                console.log('No user selected for cancel list');
-                return;
-            }
-
-            const userApps = allApplications.filter(a => a.name === selectedUser);
-
-            if (userApps.length === 0) {
-                cancelOptionsEl.innerHTML = '<p style="color: #999; font-style: italic;">해당 사용자의 신청 내역이 없습니다</p>';
-                console.log('No applications found for user:', selectedUser);
-                return;
-            }
-
-            userApps.forEach((app, index) => {
-                console.log('Processing application:', app);
-                const dateParts = app.actualDate.split('-');
-                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                console.log('Parsed date:', date, 'from actualDate:', app.actualDate);
-                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-
-                const optionDiv = document.createElement('div');
-                optionDiv.className = 'cancel-item';
-
-                const radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.name = 'adminCancelOption';
-                radio.value = app.id;
-                radio.id = `adminCancel_${index}`;
-
-                const label = document.createElement('label');
-                label.setAttribute('for', `adminCancel_${index}`);
-                label.style.cursor = 'pointer';
-
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'cancel-info';
-
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'cancel-day';
-                dayDiv.textContent = app.day;
-
-                const detailsDiv = document.createElement('div');
-                detailsDiv.className = 'cancel-details';
-                detailsDiv.textContent = `${dateString} • ${app.zone}`;
-
-                infoDiv.appendChild(dayDiv);
-                infoDiv.appendChild(detailsDiv);
-                optionDiv.appendChild(radio);
-                optionDiv.appendChild(label);
-                optionDiv.appendChild(infoDiv);
-                cancelOptionsEl.appendChild(optionDiv);
-            });
-            console.log('Cancel list updated for user:', selectedUser, 'with', userApps.length, 'applications');
-        }
-
-        // 관리자 액션 실행
-        async function executeAdminAction() {
-            const selectedUser = document.getElementById('adminUserSelect').value;
-            const action = document.getElementById('adminAction').value;
-
-            if (!selectedUser || !action) {
-                alert('사용자와 작업을 선택해주세요.');
-                console.log('Execute action failed: Missing user or action');
-                return;
-            }
-
-            if (action === 'assign') {
-                const selectedDay = document.querySelector('input[name="admin-day"]:checked');
-                const selectedZone = document.querySelector('input[name="admin-zone"]:checked');
-
-                if (!selectedDay || !selectedZone) {
-                    alert('요일과 구역을 선택해주세요.');
-                    console.log('Execute assign failed: Missing day or zone');
-                    return;
-                }
-
-                const day = selectedDay.value;
-                const zone = selectedZone.value;
-
-                if (applicants[day][zone].length >= maxCapacity) {
-                    alert(`${day} ${zone}은 마감되었습니다.`);
-                    console.log('Execute assign failed: Zone at max capacity');
-                    return;
-                }
-
-                let isDuplicate = false;
-                zones.forEach(z => {
-                    if (applicants[day][z].includes(selectedUser)) {
-                        isDuplicate = true;
-                    }
-                });
-
-                if (isDuplicate) {
-                    alert(`${selectedUser}님은 ${day}에 이미 신청되어 있습니다.`);
-                    console.log('Execute assign failed: Duplicate application');
-                    return;
-                }
-
-                const saved = await saveToFirestore(selectedUser, day, zone);
-                if (saved) {
-                    alert(`${selectedUser}님이 ${day} ${zone}으로 배정되었습니다.`);
-                    resetAdminForm();
-                    closeAdminModal();
-                }
-            } else if (action === 'cancel') {
-                const selectedCancel = document.querySelector('input[name="adminCancelOption"]:checked');
-
-                if (!selectedCancel) {
-                    alert('취소할 신청을 선택해주세요.');
-                    console.log('Execute cancel failed: No application selected');
-                    return;
-                }
-
-                const docId = selectedCancel.value;
-                const application = allApplications.find(a => a.id === docId);
-
-                if (!application) {
-                    alert('선택한 신청을 찾을 수 없습니다.');
-                    console.log('Execute cancel failed: Application not found for ID:', docId);
-                    return;
-                }
-
-                const dateParts = application.actualDate.split('-');
-                const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-
-                if (confirm(`${application.name}님의 ${application.day}(${dateString}) ${application.zone} 신청을 취소하시겠습니까?`)) {
-                    const deleted = await deleteFromFirestore(docId);
-                    if (deleted) {
-                        alert(`${application.name}님의 ${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.`);
-                        resetAdminForm();
-                        closeAdminModal();
-                    } else {
-                        alert('신청 취소에 실패했습니다. 다시 시도해주세요.');
-                    }
-                }
-            }
         }
 
         // 월간 통계 로드
@@ -1811,36 +1583,6 @@
                 }
             });
             console.log('Zone display updated for day:', selectedDay);
-        }
-
-        // 관리자 구역 표시 업데이트
-        function updateAdminZoneDisplay(selectedDay = null) {
-            const zoneLabels = document.querySelectorAll('#adminZoneSelection .zone-label');
-            zoneLabels.forEach(label => {
-                const zone = label.dataset.zone;
-                const currentCount = selectedDay ? applicants[selectedDay][zone].length : 0;
-                const capacityInfo = label.querySelector('.capacity-info');
-                const radioInput = label.previousElementSibling;
-
-                capacityInfo.textContent = `${currentCount}/${maxCapacity}`;
-
-                if (selectedDay && currentCount >= maxCapacity) {
-                    label.style.background = '#ff6b6b';
-                    label.style.color = 'white';
-                    label.style.borderColor = '#ff6b6b';
-                    label.style.cursor = 'not-allowed';
-                    radioInput.disabled = true;
-                } else {
-                    if (!radioInput.checked) {
-                        label.style.background = '';
-                        label.style.color = '';
-                        label.style.borderColor = '';
-                    }
-                    label.style.cursor = 'pointer';
-                    radioInput.disabled = false;
-                }
-            });
-            console.log('Admin zone display updated for day:', selectedDay);
         }
 
         // 신청자 목록 업데이트
