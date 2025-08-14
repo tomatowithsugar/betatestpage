@@ -362,8 +362,8 @@
 
         .close {
             position: sticky;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 3px;
             color: #aaa;
             font-size: 28px;
             font-weight: bold;
@@ -1717,7 +1717,10 @@
                 label.style.cursor = 'pointer';
                 label.previousElementSibling.disabled = false;
             });
-            zoneContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            modalContent.scrollTo({
+                top: zoneContainer.offsetTop - modalContent.offsetTop,
+                behavior: 'smooth'
+            });
             console.log('Zone display reset for modal');
         }
 
