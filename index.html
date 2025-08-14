@@ -1086,7 +1086,7 @@
                 const docId = `${actualDate}_${day}`;
                 const applicantsRef = doc(window.db, 'applicants', docId);
 
-                const docSnap = await getDoc(applicantsRef);
+                const docSnap = await window.firestoreFunctions.getDoc(applicantsRef);
                 if (docSnap.exists()) {
                     await updateDoc(applicantsRef, {
                         [`zones.${zone}`]: arrayUnion(name),
