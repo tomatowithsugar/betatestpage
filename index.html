@@ -1717,6 +1717,7 @@
                 label.style.cursor = 'pointer';
                 label.previousElementSibling.disabled = false;
             });
+            zoneContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
             console.log('Zone display reset for modal');
         }
 
