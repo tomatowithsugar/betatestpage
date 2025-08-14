@@ -1717,11 +1717,30 @@
                 label.style.cursor = 'pointer';
                 label.previousElementSibling.disabled = false;
             });
-            modalContent.scrollTo({
-                top: zoneContainer.offsetTop - modalContent.offsetTop,
-                behavior: 'smooth'
-            });
-            console.log('Zone display reset for modal');
+    
+    // 구역 선택 영역으로 부드럽게 스크롤
+            const modalContent = document.querySelector('#registrationModal .modal-content');
+            const zoneContainer = document.getElementById('zoneSelectionContainer');
+    
+            if (modalContent && zoneContainer) {
+        // 약간의 지연을 두어 DOM 업데이트 완료 후 스크롤
+                setTimeout(() => {
+                    const containerTop = zoneContainer.offsetTop;
+                    const modalScrollTop = modalContent.scrollTop;
+                    const modalHeight = modalContent.clientHeight;
+                    const containerHeight = zoneContainer.offsetHeight;
+            
+            // 구역 선택 영역이 모달 중앙에 오도록 계산
+                    const targetScrollTop = containerTop - (modalHeight / 2) + (containerHeight / 2);
+            
+                    modalContent.scrollTo({
+                        top: Math.max(0, targetScrollTop),
+                        behavior: 'smooth'
+                    });
+                }, 100);
+            }
+    
+            console.log('Zone display reset for modal and scrolled to zone selection');
         }
 
         // 특정 요일의 구역 표시 업데이트
@@ -1874,14 +1893,40 @@
         });
 
         // 마감된 구역 클릭 방지
-        document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('zone-label') && e.target.previousElementSibling.disabled) {
-                e.preventDefault();
-                const selectedDay = document.querySelector('input[name="day"]:checked') || document.querySelector('input[name="admin-day"]:checked');
-                if (selectedDay) {
-                    alert(`${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.`);
-                }
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+    // 기존의 요일 선택 이벤트 리스너를 업데이트
+            document.querySelectorAll('input[name="day"]').forEach(radio => {
+                radio.addEventListener('change', function () {
+                    const zoneContainer = document.getElementById('zoneSelectionContainer');
+                    if (this.checked) {
+                        zoneContainer.classList.add('show');
+                        updateZoneDisplay(this.value);
+                        document.querySelectorAll('input[name="zone"]').forEach(zoneRadio => {
+                            zoneRadio.checked = false;
+                        });
+                
+                // 구역 선택 영역으로 스크롤
+                        setTimeout(() => {
+                            const modalContent = document.querySelector('#registrationModal .modal-content');
+                            if (modalContent && zoneContainer) {
+                                const containerTop = zoneContainer.offsetTop;
+                                const modalHeight = modalContent.clientHeight;
+                                const containerHeight = zoneContainer.offsetHeight;
+                        
+                        // 구역 선택 영역이 보이도록 스크롤 위치 계산
+                                const targetScrollTop = containerTop - 20; // 20px 여백
+                        
+                                modalContent.scrollTo({
+                                    top: Math.max(0, targetScrollTop),
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }, 200); // DOM 업데이트 후 스크롤
+                
+                        console.log('Day selected and scrolled to zones:', this.value);
+                    }
+                });
+            });
         });
 
         // 모달 외부 클릭 시 닫기
