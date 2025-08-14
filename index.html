@@ -345,61 +345,31 @@
         .modal-content {
             background-color: white;
             margin: 5% auto;
-            padding: 0; /* 패딩 제거 */
+            padding: 40px;
             border-radius: 20px;
             width: 90%;
             max-width: 600px;
             max-height: 80vh;
-            overflow: hidden; /* 전체 모달의 오버플로우 숨김 */
+            overflow-y: auto;
             position: relative;
-            display: flex;
-            flex-direction: column;
         }
 
             .modal-content.large {
                 max-width: 800px;
             }
-        
-        .modal-header {
-            position: sticky;
-            top: 0;
-            background: white;
-            padding: 20px 20px 10px 20px;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            justify-content: flex-end;
-            z-index: 1001;
-            border-radius: 20px 20px 0 0;
-        }
-        
-        .modal-body {
-            padding: 20px 40px 40px 40px;
-            overflow-y: auto;
-            flex: 1;
-        }
 
         .close {
-            position: static; /* sticky 제거 */
+            position: absolute;
+            right: 20px;
+            top: 20px;
             color: #aaa;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            line-height: 1;
-            padding: 0;
-            background: none;
-            border: none;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
         }
 
             .close:hover {
                 color: #000;
-                background-color: #f5f5f5;
             }
 
         .modal h2 {
@@ -665,12 +635,8 @@
     <!-- 신청 모달 -->
     <div id="registrationModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <span class="close" onclick="closeRegistrationModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <h2>전시대 봉사 신청</h2>
-                <form id="registrationForm">
+            <span class="close" onclick="closeRegistrationModal()">&times;</span>
+            <h2>전시대 봉사 신청</h2>
 
             <form id="registrationForm">
                 <div class="form-group">
@@ -973,12 +939,12 @@
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'zone-option';
                     optionDiv.innerHTML = `
-                            <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
-                            <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
-                                ${zone.name}
-                                <div class="capacity-info">0/${zone.maxCapacity}</div>
-                            </label>
-                        `;
+                                <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
+                                <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
+                                    ${zone.name}
+                                    <div class="capacity-info">0/${zone.maxCapacity}</div>
+                                </label>
+                            `;
                     zoneSelection.appendChild(optionDiv);
                 });
             }
@@ -991,12 +957,12 @@
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'zone-option';
                     optionDiv.innerHTML = `
-                            <input type="radio" id="admin-zone${index}" name="admin-zone" value="${zone.name}">
-                            <label for="admin-zone${index}" class="zone-label" data-zone="${zone.name}">
-                                ${zone.name}
-                                <div class="capacity-info">0/${zone.maxCapacity}</div>
-                            </label>
-                        `;
+                                <input type="radio" id="admin-zone${index}" name="admin-zone" value="${zone.name}">
+                                <label for="admin-zone${index}" class="zone-label" data-zone="${zone.name}">
+                                    ${zone.name}
+                                    <div class="capacity-info">0/${zone.maxCapacity}</div>
+                                </label>
+                            `;
                     adminZoneSelection.appendChild(optionDiv);
                 });
             }
@@ -1010,7 +976,7 @@
                 console.log('Users already loaded, using cache');
                 return;
             }
-            
+
             try {
                 console.log('Loading users from Firestore...');
                 const { collection, getDocs } = window.firestoreFunctions;
@@ -1225,14 +1191,14 @@
         async function populateAdminUserSelect() {
             const select = document.getElementById('adminUserSelect');
             if (!select) return;
-    
+
             select.innerHTML = '<option value="">사용자를 선택하세요</option>';
-    
+
             // 캐시된 데이터 사용 - DB 호출 최소화
             if (!usersLoaded) {
                 await loadUsersFromFirestore();
             }
-    
+
             allowedUsers.forEach(user => {
                 const option = document.createElement('option');
                 option.value = user;
@@ -1271,9 +1237,9 @@
                 const userItem = document.createElement('div');
                 userItem.className = 'user-item';
                 userItem.innerHTML = `
-                        <div class="user-name">${userName}</div>
-                        <button class="btn danger small" onclick="deleteUser('${docId}', '${userName}')">삭제</button>
-                    `;
+                            <div class="user-name">${userName}</div>
+                            <button class="btn danger small" onclick="deleteUser('${docId}', '${userName}')">삭제</button>
+                        `;
                 userManagementListEl.appendChild(userItem);
             });
         }
@@ -1345,9 +1311,9 @@
                 const zoneItem = document.createElement('div');
                 zoneItem.className = 'user-item';
                 zoneItem.innerHTML = `
-                        <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
-                        <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
-                    `;
+                            <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
+                            <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
+                        `;
                 zoneManagementListEl.appendChild(zoneItem);
             });
         }
@@ -1527,19 +1493,19 @@
             const imbalanceRate = mean > 0 ? (stdDev / mean) * 100 : 0;
 
             summaryEl.innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-number">${totalApplications}</div>
-                        <div class="stat-label">총 신청 건수</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${uniqueUsers}</div>
-                        <div class="stat-label">참여 인원</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
-                        <div class="stat-label">불균형률</div>
-                    </div>
-                `;
+                        <div class="stat-card">
+                            <div class="stat-number">${totalApplications}</div>
+                            <div class="stat-label">총 신청 건수</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${uniqueUsers}</div>
+                            <div class="stat-label">참여 인원</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
+                            <div class="stat-label">불균형률</div>
+                        </div>
+                    `;
 
             const zoneStatsEl = document.getElementById('zoneStats');
             const maxZoneCount = Math.max(...Object.values(zoneStats));
@@ -1551,12 +1517,12 @@
                 const zoneCard = document.createElement('div');
                 zoneCard.className = 'zone-stat-card';
                 zoneCard.innerHTML = `
-                        <div class="zone-stat-title">${zone.name}</div>
-                        <div class="zone-stat-bar">
-                            <div class="zone-stat-fill" style="width: ${percentage}%"></div>
-                        </div>
-                        <div class="zone-stat-text">${count}건 신청</div>
-                    `;
+                            <div class="zone-stat-title">${zone.name}</div>
+                            <div class="zone-stat-bar">
+                                <div class="zone-stat-fill" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class="zone-stat-text">${count}건 신청</div>
+                        `;
                 zoneStatsEl.appendChild(zoneCard);
             });
             console.log('Monthly stats displayed:', data.length, 'applications');
@@ -1747,30 +1713,7 @@
                 label.style.cursor = 'pointer';
                 label.previousElementSibling.disabled = false;
             });
-    
-    // 구역 선택 영역으로 부드럽게 스크롤
-            const modalContent = document.querySelector('#registrationModal .modal-content');
-            const zoneContainer = document.getElementById('zoneSelectionContainer');
-    
-            if (modalContent && zoneContainer) {
-        // 약간의 지연을 두어 DOM 업데이트 완료 후 스크롤
-                setTimeout(() => {
-                    const containerTop = zoneContainer.offsetTop;
-                    const modalScrollTop = modalContent.scrollTop;
-                    const modalHeight = modalContent.clientHeight;
-                    const containerHeight = zoneContainer.offsetHeight;
-            
-            // 구역 선택 영역이 모달 중앙에 오도록 계산
-                    const targetScrollTop = containerTop - (modalHeight / 2) + (containerHeight / 2);
-            
-                    modalContent.scrollTo({
-                        top: Math.max(0, targetScrollTop),
-                        behavior: 'smooth'
-                    });
-                }, 100);
-            }
-    
-            console.log('Zone display reset for modal and scrolled to zone selection');
+            console.log('Zone display reset for modal');
         }
 
         // 특정 요일의 구역 표시 업데이트
@@ -1870,6 +1813,7 @@
                         zoneRadio.checked = false;
                     });
                     console.log('Day selected:', this.value);
+                    zoneContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
@@ -1923,40 +1867,14 @@
         });
 
         // 마감된 구역 클릭 방지
-        document.addEventListener('DOMContentLoaded', function() {
-    // 기존의 요일 선택 이벤트 리스너를 업데이트
-            document.querySelectorAll('input[name="day"]').forEach(radio => {
-                radio.addEventListener('change', function () {
-                    const zoneContainer = document.getElementById('zoneSelectionContainer');
-                    if (this.checked) {
-                        zoneContainer.classList.add('show');
-                        updateZoneDisplay(this.value);
-                        document.querySelectorAll('input[name="zone"]').forEach(zoneRadio => {
-                            zoneRadio.checked = false;
-                        });
-                
-                // 구역 선택 영역으로 스크롤
-                        setTimeout(() => {
-                            const modalContent = document.querySelector('#registrationModal .modal-content');
-                            if (modalContent && zoneContainer) {
-                                const containerTop = zoneContainer.offsetTop;
-                                const modalHeight = modalContent.clientHeight;
-                                const containerHeight = zoneContainer.offsetHeight;
-                        
-                        // 구역 선택 영역이 보이도록 스크롤 위치 계산
-                                const targetScrollTop = containerTop - 20; // 20px 여백
-                        
-                                modalContent.scrollTo({
-                                    top: Math.max(0, targetScrollTop),
-                                    behavior: 'smooth'
-                                });
-                            }
-                        }, 200); // DOM 업데이트 후 스크롤
-                
-                        console.log('Day selected and scrolled to zones:', this.value);
-                    }
-                });
-            });
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('zone-label') && e.target.previousElementSibling.disabled) {
+                e.preventDefault();
+                const selectedDay = document.querySelector('input[name="day"]:checked') || document.querySelector('input[name="admin-day"]:checked');
+                if (selectedDay) {
+                    alert(`${selectedDay.value} ${e.target.dataset.zone}은 마감되었습니다.`);
+                }
+            }
         });
 
         // 모달 외부 클릭 시 닫기
