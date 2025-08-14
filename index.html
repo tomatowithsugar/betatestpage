@@ -317,6 +317,22 @@
             margin-bottom: 5px;
         }
 
+        .name-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            margin: 2px 4px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .applicant-names {
+            line-height: 1.8;
+        }
+
         .applicant-names {
             color: #666;
             font-size: 14px;
@@ -939,12 +955,12 @@
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'zone-option';
                     optionDiv.innerHTML = `
-                                <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
-                                <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
-                                    ${zone.name}
-                                    <div class="capacity-info">0/${zone.maxCapacity}</div>
-                                </label>
-                            `;
+                                        <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
+                                        <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
+                                            ${zone.name}
+                                            <div class="capacity-info">0/${zone.maxCapacity}</div>
+                                        </label>
+                                    `;
                     zoneSelection.appendChild(optionDiv);
                 });
             }
@@ -957,12 +973,12 @@
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'zone-option';
                     optionDiv.innerHTML = `
-                                <input type="radio" id="admin-zone${index}" name="admin-zone" value="${zone.name}">
-                                <label for="admin-zone${index}" class="zone-label" data-zone="${zone.name}">
-                                    ${zone.name}
-                                    <div class="capacity-info">0/${zone.maxCapacity}</div>
-                                </label>
-                            `;
+                                        <input type="radio" id="admin-zone${index}" name="admin-zone" value="${zone.name}">
+                                        <label for="admin-zone${index}" class="zone-label" data-zone="${zone.name}">
+                                            ${zone.name}
+                                            <div class="capacity-info">0/${zone.maxCapacity}</div>
+                                        </label>
+                                    `;
                     adminZoneSelection.appendChild(optionDiv);
                 });
             }
@@ -1237,9 +1253,9 @@
                 const userItem = document.createElement('div');
                 userItem.className = 'user-item';
                 userItem.innerHTML = `
-                            <div class="user-name">${userName}</div>
-                            <button class="btn danger small" onclick="deleteUser('${docId}', '${userName}')">삭제</button>
-                        `;
+                                    <div class="user-name">${userName}</div>
+                                    <button class="btn danger small" onclick="deleteUser('${docId}', '${userName}')">삭제</button>
+                                `;
                 userManagementListEl.appendChild(userItem);
             });
         }
@@ -1311,9 +1327,9 @@
                 const zoneItem = document.createElement('div');
                 zoneItem.className = 'user-item';
                 zoneItem.innerHTML = `
-                            <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
-                            <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
-                        `;
+                                    <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
+                                    <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
+                                `;
                 zoneManagementListEl.appendChild(zoneItem);
             });
         }
@@ -1493,19 +1509,19 @@
             const imbalanceRate = mean > 0 ? (stdDev / mean) * 100 : 0;
 
             summaryEl.innerHTML = `
-                        <div class="stat-card">
-                            <div class="stat-number">${totalApplications}</div>
-                            <div class="stat-label">총 신청 건수</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">${uniqueUsers}</div>
-                            <div class="stat-label">참여 인원</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
-                            <div class="stat-label">불균형률</div>
-                        </div>
-                    `;
+                                <div class="stat-card">
+                                    <div class="stat-number">${totalApplications}</div>
+                                    <div class="stat-label">총 신청 건수</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">${uniqueUsers}</div>
+                                    <div class="stat-label">참여 인원</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
+                                    <div class="stat-label">불균형률</div>
+                                </div>
+                            `;
 
             const zoneStatsEl = document.getElementById('zoneStats');
             const maxZoneCount = Math.max(...Object.values(zoneStats));
@@ -1517,12 +1533,12 @@
                 const zoneCard = document.createElement('div');
                 zoneCard.className = 'zone-stat-card';
                 zoneCard.innerHTML = `
-                            <div class="zone-stat-title">${zone.name}</div>
-                            <div class="zone-stat-bar">
-                                <div class="zone-stat-fill" style="width: ${percentage}%"></div>
-                            </div>
-                            <div class="zone-stat-text">${count}건 신청</div>
-                        `;
+                                    <div class="zone-stat-title">${zone.name}</div>
+                                    <div class="zone-stat-bar">
+                                        <div class="zone-stat-fill" style="width: ${percentage}%"></div>
+                                    </div>
+                                    <div class="zone-stat-text">${count}건 신청</div>
+                                `;
                 zoneStatsEl.appendChild(zoneCard);
             });
             console.log('Monthly stats displayed:', data.length, 'applications');
@@ -1774,8 +1790,13 @@
 
                     const applicantNamesDiv = document.createElement('div');
                     applicantNamesDiv.className = 'applicant-names';
-                    applicantNamesDiv.textContent = zoneApplicants.length > 0 ?
-                        zoneApplicants.join(', ') : '신청자 없음';
+                    if (zoneApplicants.length > 0) {
+                        applicantNamesDiv.innerHTML = zoneApplicants
+                            .map(name => `<span class="name-tag">${name}</span>`)
+                            .join('');
+                    } else {
+                        applicantNamesDiv.textContent = '신청자 없음';
+                    }
 
                     zoneDiv.appendChild(zoneNameDiv);
                     zoneDiv.appendChild(applicantNamesDiv);
