@@ -3,26 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>불광서부회중 전시대 신청</title>
+    <title>불광동부회중 전시대 신청</title>
     <link rel="apple-touch-icon" href="apple-touch-icon_v3.png">
     <link rel="icon" type="image/png" href="favicon-512x512_v3.png">
 
     <!-- Firebase SDK -->
-    <script type="module">        
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+    <script type="module">import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc, setDoc, updateDoc, arrayUnion, arrayRemove, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
 
         // Firebase 설정
-        const firebaseConfig = {
-            apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
-            authDomain: "cart-witnessing-404c0.firebaseapp.com",
-            projectId: "cart-witnessing-404c0",
-            storageBucket: "cart-witnessing-404c0.firebasestorage.app",
-            messagingSenderId: "616001042576",
-            appId: "1:616001042576:web:314fe2268c8fffe82a8015",
-            measurementId: "G-HT3T8YS1MW"
-        };
+             const firebaseConfig = {
+                    apiKey: "AIzaSyCmX3np9Fk86BcKDKz1XQ6izbxGDt2QsYY",
+                    authDomain: "carts-68026.firebaseapp.com",
+                  projectId: "carts-68026",
+                  storageBucket: "carts-68026.firebasestorage.app",
+                  messagingSenderId: "52580537476",
+                  appId: "1:52580537476:web:c60bc822909fa687675ed1",
+                  measurementId: "G-ZG0H2C2BZ6"
+             };
 
         // Firebase 초기화
         const app = initializeApp(firebaseConfig);
@@ -600,7 +599,7 @@
     <div class="container">
         <!-- 로그인 페이지 -->
         <div class="login-page" id="loginPage">
-            <h1>불광서부회중<br>전시대 봉사 신청</h1>
+            <h1>불광동부회중<br>전시대 봉사 신청</h1>
 
             <div class="login-form">
                 <div class="form-group">
@@ -613,7 +612,7 @@
 
         <!-- 일반 사용자 메인 페이지 -->
         <div class="main-page" id="mainPage">
-            <h1>불광서부회중<br>전시대 봉사 신청</h1>
+            <h1>불광동부회중<br>전시대 봉사 신청</h1>
 
             <div class="user-info" id="userInfo"></div>
 
@@ -951,12 +950,12 @@
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'zone-option';
                     optionDiv.innerHTML = `
-                        <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
-                        <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
-                            ${zone.name}
-                            <div class="capacity-info">0/${zone.maxCapacity}</div>
-                        </label>
-                    `;
+                            <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
+                            <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
+                                ${zone.name}
+                                <div class="capacity-info">0/${zone.maxCapacity}</div>
+                            </label>
+                        `;
                     zoneSelection.appendChild(optionDiv);
                 });
             }
@@ -968,12 +967,12 @@
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'zone-option';
                     optionDiv.innerHTML = `
-                        <input type="radio" id="admin-zone${index}" name="admin-zone" value="${zone.name}">
-                        <label for="admin-zone${index}" class="zone-label" data-zone="${zone.name}">
-                            ${zone.name}
-                            <div class="capacity-info">0/${zone.maxCapacity}</div>
-                        </label>
-                    `;
+                            <input type="radio" id="admin-zone${index}" name="admin-zone" value="${zone.name}">
+                            <label for="admin-zone${index}" class="zone-label" data-zone="${zone.name}">
+                                ${zone.name}
+                                <div class="capacity-info">0/${zone.maxCapacity}</div>
+                            </label>
+                        `;
                     adminZoneSelection.appendChild(optionDiv);
                 });
             }
@@ -1269,9 +1268,9 @@
                 const userItem = document.createElement('div');
                 userItem.className = 'user-item';
                 userItem.innerHTML = `
-                    <div class="user-name">${userName}</div>
-                    <button class="btn danger small" onclick="deleteUser('${docId}', '${userName}')">삭제</button>
-                `;
+                        <div class="user-name">${userName}</div>
+                        <button class="btn danger small" onclick="deleteUser('${docId}', '${userName}')">삭제</button>
+                    `;
                 userManagementListEl.appendChild(userItem);
             });
         }
@@ -1342,9 +1341,9 @@
                 const zoneItem = document.createElement('div');
                 zoneItem.className = 'user-item';
                 zoneItem.innerHTML = `
-                    <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
-                    <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
-                `;
+                        <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
+                        <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
+                    `;
                 zoneManagementListEl.appendChild(zoneItem);
             });
         }
@@ -1529,19 +1528,19 @@
             const imbalanceRate = mean > 0 ? (stdDev / mean) * 100 : 0;
 
             summaryEl.innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-number">${totalApplications}</div>
-                    <div class="stat-label">총 신청 건수</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${uniqueUsers}</div>
-                    <div class="stat-label">참여 인원</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
-                    <div class="stat-label">불균형률</div>
-                </div>
-            `;
+                    <div class="stat-card">
+                        <div class="stat-number">${totalApplications}</div>
+                        <div class="stat-label">총 신청 건수</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${uniqueUsers}</div>
+                        <div class="stat-label">참여 인원</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
+                        <div class="stat-label">불균형률</div>
+                    </div>
+                `;
 
             const zoneStatsEl = document.getElementById('zoneStats');
             const maxZoneCount = Math.max(...Object.values(zoneStats));
@@ -1553,12 +1552,12 @@
                 const zoneCard = document.createElement('div');
                 zoneCard.className = 'zone-stat-card';
                 zoneCard.innerHTML = `
-                    <div class="zone-stat-title">${zone.name}</div>
-                    <div class="zone-stat-bar">
-                        <div class="zone-stat-fill" style="width: ${percentage}%"></div>
-                    </div>
-                    <div class="zone-stat-text">${count}건 신청</div>
-                `;
+                        <div class="zone-stat-title">${zone.name}</div>
+                        <div class="zone-stat-bar">
+                            <div class="zone-stat-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <div class="zone-stat-text">${count}건 신청</div>
+                    `;
                 zoneStatsEl.appendChild(zoneCard);
             });
             console.log('Monthly stats displayed:', data.length, 'applications');
@@ -1960,7 +1959,6 @@
         // 관리자 폼 초기화
         function resetAdminForm() {
             alert('폼 초기화 (구현 필요)');
-        }
-        </script>
+        }</script>
 </body>
 </html>
