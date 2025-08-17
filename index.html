@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>불광동부회중 전시대 신청</title>
+    <title>불광서부회중 전시대 신청</title>
     <link rel="apple-touch-icon" href="apple-touch-icon_v3.png">
     <link rel="icon" type="image/png" href="favicon-512x512_v3.png">
 
@@ -13,15 +13,16 @@
 
 
         // Firebase 설정
-             const firebaseConfig = {
-                    apiKey: "AIzaSyCmX3np9Fk86BcKDKz1XQ6izbxGDt2QsYY",
-                    authDomain: "carts-68026.firebaseapp.com",
-                  projectId: "carts-68026",
-                  storageBucket: "carts-68026.firebasestorage.app",
-                  messagingSenderId: "52580537476",
-                  appId: "1:52580537476:web:c60bc822909fa687675ed1",
-                  measurementId: "G-ZG0H2C2BZ6"
-             };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
+            authDomain: "cart-witnessing-404c0.firebaseapp.com",
+            projectId: "cart-witnessing-404c0",
+            storageBucket: "cart-witnessing-404c0.firebasestorage.app",
+            messagingSenderId: "616001042576",
+            appId: "1:616001042576:web:314fe2268c8fffe82a8015",
+            measurementId: "G-HT3T8YS1MW"
+        };
+
 
         // Firebase 초기화
         const app = initializeApp(firebaseConfig);
@@ -593,13 +594,93 @@
             font-weight: 600;
             color: #333;
         }
+
+        .version-info {
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            margin-top: 20px;
+            font-weight: 400;
+        }
+        /* 공지사항 관련 스타일 */
+.notice-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.notice-button.active {
+    background: #667eea;
+    color: white;
+}
+
+.notice-button.inactive {
+    background: #ccc;
+    color: #666;
+}
+
+.notice-button:hover {
+    transform: scale(1.1);
+}
+
+.notice-badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 12px;
+    height: 12px;
+    background: #ff4444;
+    border-radius: 50%;
+    display: none;
+}
+
+/* 공지사항 모달 스타일 */
+.notice-modal-content h2.important {
+    color: #e63946;
+}
+
+.notice-modal-content h2.normal {
+    color: #667eea;
+}
+
+.notice-date {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.important-notice-checkbox {
+    margin-bottom: 15px;
+}
+
+.important-notice-checkbox input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.important-notice-checkbox label {
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
     <div class="container">
         <!-- 로그인 페이지 -->
         <div class="login-page" id="loginPage">
-            <h1>불광동부회중<br>전시대 봉사 신청</h1>
+            <h1>불광서부회중<br>전시대 봉사 신청</h1>
 
             <div class="login-form">
                 <div class="form-group">
@@ -612,7 +693,7 @@
 
         <!-- 일반 사용자 메인 페이지 -->
         <div class="main-page" id="mainPage">
-            <h1>불광동부회중<br>전시대 봉사 신청</h1>
+            <h1>불광서부회중<br>전시대 봉사 신청</h1>
 
             <div class="user-info" id="userInfo"></div>
 
@@ -631,9 +712,9 @@
             <div class="admin-actions">
                 <button type="button" class="btn admin" onclick="openUserManagementModal()">사용자 관리</button>
                 <button type="button" class="btn admin" onclick="openZoneManagementModal()">구역 관리</button>
+                <button type="button" class="btn admin" onclick="openNoticeManagementModal()">공지사항 관리</button>
                 <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>
             </div>
-
         </div>
 
         <!-- 신청 현황 -->
@@ -641,7 +722,13 @@
             <h3>신청 현황</h3>
             <div id="applicantsList"></div>
         </div>
+        <div class="version-info">v2.0</div>
     </div>
+    <!-- 고정 공지 버튼 -->
+<button id="noticeButton" class="notice-button inactive" onclick="handleNoticeButtonClick()" style="display: none;">
+    📢
+    <div id="noticeBadge" class="notice-badge"></div>
+</button>
 
     <!-- 신청 모달 -->
     <div id="registrationModal" class="modal">
@@ -876,6 +963,52 @@
             </div>
         </div>
     </div>
+    <!-- 공지사항 관리 모달 -->
+<div id="noticeManagementModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeNoticeManagementModal()">&times;</span>
+        <h2>공지사항 관리</h2>
+
+        <div class="form-group">
+            <label for="noticeContent">공지 내용</label>
+            <textarea id="noticeContent" rows="5" placeholder="공지사항을 입력하세요..." style="width: 100%; padding: 15px; border: 2px solid #e1e5e9; border-radius: 10px; font-size: 16px; resize: vertical; min-height: 120px;"></textarea>
+        </div>
+
+        <div class="important-notice-checkbox">
+            <input type="checkbox" id="isImportantNotice">
+            <label for="isImportantNotice">중요 공지 (로그인 시 자동 표시)</label>
+        </div>
+
+        <div style="text-align: right; margin-bottom: 20px; color: #999; font-size: 14px;">
+            글자수: <span id="noticeCharCount">0</span>/300
+        </div>
+
+        <div class="admin-action-buttons">
+            <button type="button" class="btn success small" onclick="saveNotice()">공지 저장</button>
+            <button type="button" class="btn danger small" onclick="deleteNotice()">공지 삭제</button>
+            <button type="button" class="btn secondary small" onclick="cancelNoticeEdit()">취소</button>
+        </div>
+    </div>
+</div>
+<!-- 공지사항 확인 모달 -->
+<div id="noticeViewModal" class="modal">
+    <div class="modal-content notice-modal-content">
+        <span class="close" onclick="closeNoticeViewModal()">&times;</span>
+        <h2 id="noticeViewTitle">📢 공지사항</h2>
+        
+        <div id="noticeViewContent" style="margin: 20px 0; line-height: 1.6; font-size: 16px;">
+            <!-- 공지 내용이 여기에 표시됩니다 -->
+        </div>
+        
+        <div id="noticeViewDate" class="notice-date">
+            <!-- 등록 날짜가 여기에 표시됩니다 -->
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button type="button" class="btn" onclick="closeNoticeViewModal()">확인</button>
+        </div>
+    </div>
+</div>
 
     <script>// 신청자 데이터를 저장할 객체
         const applicants = {};
@@ -889,6 +1022,9 @@
         let currentStatsMonth = new Date().getMonth() + 1;
         let allowedUsers = []; // 서버에서 로드될 배열
         let usersLoaded = false; // 사용자 데이터 로드 여부 확인
+        // 공지사항 관련 변수
+        let currentNotice = null;
+        let originalNoticeContent = '';
 
         // 초기 데이터 구조 생성
         function initializeApplicants() {
@@ -908,6 +1044,7 @@
             loadZonesFromFirestore(); // 구역 먼저 로드
             populateAdminUserSelect();
             loadDataFromFirestore();
+            loadNoticeFromFirestore();
 
             document.getElementById('loginName').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
@@ -1197,6 +1334,7 @@
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('adminPage').style.display = 'block';
                 console.log('Admin logged in');
+                document.getElementById('noticeButton').style.display = 'block';
                 return;
             }
 
@@ -1216,9 +1354,24 @@
             document.getElementById('userInfo').textContent = `${currentUser}님 환영합니다!`;
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('mainPage').style.display = 'block';
+            document.getElementById('noticeButton').style.display = 'block';
             filterUserApplications();
             updateCancelList();
             updateDisplay();
+            console.log('User logged in:', currentUser);
+            // 일반 사용자 로그인 성공 시 (기존 코드 다음에 추가)
+            currentUser = name;
+            isAdmin = false;
+            document.getElementById('userInfo').textContent = `${currentUser}님 환영합니다!`;
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+            filterUserApplications();
+            updateCancelList();
+            updateDisplay();
+
+            // 공지사항 로드 추가
+            loadNoticeFromFirestore();
+
             console.log('User logged in:', currentUser);
         }
 
@@ -1841,6 +1994,216 @@
             targetDate.setDate(sunday.getDate() + dayMap[dayName]);
             return `${targetDate.getFullYear()}/${targetDate.getMonth() + 1}/${targetDate.getDate()}`;
         }
+        // ========== 공지사항 관련 함수들 ==========
+
+// Firestore에서 공지사항 로드
+async function loadNoticeFromFirestore() {
+    try {
+        const { doc, getDoc } = window.firestoreFunctions;
+        const noticeRef = doc(window.db, 'notices', 'current');
+        const noticeSnap = await getDoc(noticeRef);
+        
+        if (noticeSnap.exists()) {
+            currentNotice = noticeSnap.data();
+            console.log('Notice loaded:', currentNotice);
+        } else {
+            currentNotice = null;
+            console.log('No notice found');
+        }
+        
+        updateNoticeButton();
+        
+        // 중요공지이고 로그인된 사용자라면 모달 표시
+        if (currentNotice && currentNotice.isImportant && currentUser && !isAdmin) {
+            setTimeout(() => {
+                openNoticeViewModal();
+            }, 500); // 로그인 완료 후 잠깐 딜레이
+        }
+    } catch (error) {
+        console.error('공지사항 로드 오류:', error);
+    }
+}
+
+// 공지사항 저장
+async function saveNotice() {
+    const content = document.getElementById('noticeContent').value.trim();
+    const isImportant = document.getElementById('isImportantNotice').checked;
+    
+    if (!content) {
+        alert('공지 내용을 입력해주세요.');
+        return;
+    }
+    
+    if (content.length > 300) {
+        alert('공지사항은 300자 이내로 입력해주세요.');
+        return;
+    }
+    
+    try {
+        const { doc, setDoc } = window.firestoreFunctions;
+        const noticeRef = doc(window.db, 'notices', 'current');
+        
+        const noticeData = {
+            content: content,
+            isImportant: isImportant,
+            lastUpdated: new Date().toISOString(),
+            updatedBy: 'admin',
+            isActive: true
+        };
+        
+        await setDoc(noticeRef, noticeData);
+        
+        currentNotice = noticeData;
+        updateNoticeButton();
+        
+        alert('공지사항이 저장되었습니다.');
+        closeNoticeManagementModal();
+        
+        console.log('Notice saved:', noticeData);
+    } catch (error) {
+        console.error('공지사항 저장 오류:', error);
+        alert('공지사항 저장 중 오류가 발생했습니다.');
+    }
+}
+
+// 공지사항 삭제
+async function deleteNotice() {
+    if (!currentNotice) {
+        alert('삭제할 공지사항이 없습니다.');
+        return;
+    }
+    
+    if (!confirm('공지사항을 삭제하시겠습니까?')) {
+        return;
+    }
+    
+    try {
+        const { doc, deleteDoc } = window.firestoreFunctions;
+        const noticeRef = doc(window.db, 'notices', 'current');
+        
+        await deleteDoc(noticeRef);
+        
+        currentNotice = null;
+        updateNoticeButton();
+        
+        alert('공지사항이 삭제되었습니다.');
+        closeNoticeManagementModal();
+        
+        console.log('Notice deleted');
+    } catch (error) {
+        console.error('공지사항 삭제 오류:', error);
+        alert('공지사항 삭제 중 오류가 발생했습니다.');
+    }
+}
+
+// 공지 관리 모달 열기
+function openNoticeManagementModal() {
+    document.getElementById('noticeManagementModal').style.display = 'block';
+    
+    // 현재 공지사항 내용 로드
+    if (currentNotice) {
+        document.getElementById('noticeContent').value = currentNotice.content;
+        document.getElementById('isImportantNotice').checked = currentNotice.isImportant || false;
+        originalNoticeContent = currentNotice.content;
+    } else {
+        document.getElementById('noticeContent').value = '';
+        document.getElementById('isImportantNotice').checked = false;
+        originalNoticeContent = '';
+    }
+    
+    updateCharCount();
+    console.log('Notice management modal opened');
+}
+
+// 공지 관리 모달 닫기
+function closeNoticeManagementModal() {
+    document.getElementById('noticeManagementModal').style.display = 'none';
+    document.getElementById('noticeContent').value = '';
+    document.getElementById('isImportantNotice').checked = false;
+    console.log('Notice management modal closed');
+}
+
+// 공지 편집 취소
+function cancelNoticeEdit() {
+    document.getElementById('noticeContent').value = originalNoticeContent;
+    closeNoticeManagementModal();
+}
+
+// 공지 확인 모달 열기
+function openNoticeViewModal() {
+    if (!currentNotice) {
+        alert('현재 등록된 공지사항이 없습니다.');
+        return;
+    }
+    
+    document.getElementById('noticeViewModal').style.display = 'block';
+    
+    const titleElement = document.getElementById('noticeViewTitle');
+    const contentElement = document.getElementById('noticeViewContent');
+    const dateElement = document.getElementById('noticeViewDate');
+    
+    // 제목 설정 (중요공지 여부에 따라)
+    if (currentNotice.isImportant) {
+        titleElement.textContent = '📢 중요 공지';
+        titleElement.className = 'important';
+    } else {
+        titleElement.textContent = '📢 공지사항';
+        titleElement.className = 'normal';
+    }
+    
+    // 내용 설정
+    contentElement.textContent = currentNotice.content;
+    
+    // 날짜 설정
+    const date = new Date(currentNotice.lastUpdated);
+    const dateString = ` ${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} 등록`;
+    dateElement.textContent = dateString;
+    
+    console.log('Notice view modal opened');
+}
+
+// 공지 확인 모달 닫기
+function closeNoticeViewModal() {
+    document.getElementById('noticeViewModal').style.display = 'none';
+    console.log('Notice view modal closed');
+}
+
+// 공지 버튼 클릭 처리
+function handleNoticeButtonClick() {
+    if (currentNotice) {
+        openNoticeViewModal();
+    } else {
+        alert('현재 등록된 공지사항이 없습니다.');
+    }
+}
+
+// 공지 버튼 상태 업데이트
+function updateNoticeButton() {
+    const button = document.getElementById('noticeButton');
+    const badge = document.getElementById('noticeBadge');
+    
+    if (currentNotice && currentNotice.isActive) {
+        button.className = 'notice-button active';
+        badge.style.display = 'block';
+    } else {
+        button.className = 'notice-button inactive';
+        badge.style.display = 'none';
+    }
+}
+
+// 글자수 카운트 업데이트
+function updateCharCount() {
+    const content = document.getElementById('noticeContent').value;
+    document.getElementById('noticeCharCount').textContent = content.length;
+}
+
+// 글자수 카운트 이벤트 리스너 추가
+document.addEventListener('DOMContentLoaded', function() {
+    const noticeContent = document.getElementById('noticeContent');
+    if (noticeContent) {
+        noticeContent.addEventListener('input', updateCharCount);
+    }
+});
 
         // 요일 선택 시 구역 선택 영역 표시
         document.querySelectorAll('input[name="day"]').forEach(radio => {
@@ -1925,6 +2288,8 @@
             const userManagementModal = document.getElementById('userManagementModal');
             const zoneManagementModal = document.getElementById('zoneManagementModal');
             const statsModal = document.getElementById('statsModal');
+            const noticeManagementModal = document.getElementById('noticeManagementModal');
+            const noticeViewModal = document.getElementById('noticeViewModal');
 
             if (event.target === registrationModal) {
                 closeRegistrationModal();
@@ -1943,6 +2308,12 @@
             }
             if (event.target === statsModal) {
                 closeStatsModal();
+            }
+            if (event.target === noticeManagementModal) {
+                closeNoticeManagementModal();
+            }
+            if (event.target === noticeViewModal) {
+                closeNoticeViewModal();
             }
         };
 
