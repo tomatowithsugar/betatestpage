@@ -42,7 +42,7 @@
         });</script>
 
     <style>
-* {
+        * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -80,20 +80,8 @@ body {
     min-height: 100vh;
     position: relative;
     overflow: hidden;
-}
-
-/* 글래스모피즘 헤더 */
-.container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 120px;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    z-index: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
@@ -117,6 +105,7 @@ h1 {
     position: relative;
     z-index: 2;
     margin-top: 20px;
+    flex-shrink: 0;
 }
 
 .login-page {
@@ -383,6 +372,9 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     padding: 0;
     background: none;
     border-radius: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 300px);
 }
 
 .applicants-list h3 {
@@ -487,7 +479,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     }
 }
 
-/* 모달 스타일 */
 .modal {
     display: none;
     position: fixed;
@@ -575,7 +566,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     background-clip: text;
 }
 
-/* 신청 취소 모달 스타일 */
 .cancel-list {
     max-height: 400px;
     overflow-y: auto;
@@ -627,7 +617,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     font-weight: 500;
 }
 
-/* 관리자 모달 스타일 */
 .admin-form {
     margin-bottom: 24px;
 }
@@ -646,7 +635,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     flex-wrap: wrap;
 }
 
-/* 데이터 통계 스타일 */
 .stats-header {
     display: flex;
     justify-content: center;
@@ -793,7 +781,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     font-weight: 600;
 }
 
-/* 사용자 관리 스타일 */
 .user-list {
     margin-top: 28px;
     padding: 24px;
@@ -847,7 +834,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     padding: 0 20px;
 }
 
-/* 공지사항 관련 스타일 */
 .notice-button {
     position: fixed;
     top: 20px;
@@ -903,7 +889,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     100% { transform: scale(1); }
 }
 
-/* 공지사항 모달 스타일 */
 .notice-modal-content h2.important {
     color: #e53e3e;
 }
@@ -946,7 +931,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     font-weight: 600;
 }
 
-/* 모바일 스크롤바 커스터마이징 */
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -965,7 +949,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     background: linear-gradient(135deg, #5a6fd8 0%, #6b46c1 100%);
 }
 
-/* 모바일 최적화 */
 @media (max-width: 768px) {
     body {
         padding: 0;
@@ -1029,7 +1012,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     }
 }
 
-/* 아이폰 노치 대응 */
 @supports (padding: max(0px)) {
     .container {
         padding-top: max(20px, env(safe-area-inset-top));
@@ -1041,7 +1023,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     }
 }
 
-/* 다크모드 미디어 쿼리 지원 */
 @media (prefers-color-scheme: dark) {
     body {
         background: linear-gradient(145deg, #4c51bf 0%, #553c9a 50%, #4c51bf 100%);
@@ -1085,7 +1066,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     }
 }
 
-/* 접근성 개선 */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -1102,7 +1082,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     }
 }
 
-/* 고대비 모드 지원 */
 @media (prefers-contrast: high) {
     .btn {
         border: 2px solid #2d3748;
@@ -1118,7 +1097,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     }
 }
 
-/* 터치 디바이스 최적화 */
 @media (hover: none) and (pointer: coarse) {
     .btn:hover {
         transform: none;
@@ -1140,7 +1118,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         transform: none;
     }
     
-    /* 터치 피드백 */
     .btn:active {
         transform: scale(0.97);
         transition: transform 0.1s ease;
@@ -1152,7 +1129,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     }
 }
 
-/* 추가 모바일 최적화 */
 @media (max-width: 390px) {
     .container {
         padding: 20px 16px;
