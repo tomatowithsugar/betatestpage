@@ -42,7 +42,7 @@
         });</script>
 
     <style>
-        * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -1164,6 +1164,293 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     
     .current-month {
         font-size: 16px;
+    }
+}
+/* 플로팅 메뉴 버튼 컨테이너 */
+.floating-menu-container {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 0;
+}
+
+/* 메인 메뉴 버튼 */
+.floating-menu-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.floating-menu-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s;
+}
+
+.floating-menu-btn:hover::before {
+    left: 100%;
+}
+
+.floating-menu-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+}
+
+/* 햄버거 아이콘 */
+.hamburger-icon {
+    width: 24px;
+    height: 18px;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hamburger-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hamburger-line:nth-child(1) {
+    top: 0;
+}
+
+.hamburger-line:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.hamburger-line:nth-child(3) {
+    bottom: 0;
+}
+
+/* 메뉴 열린 상태 */
+.floating-menu-container.open .hamburger-icon {
+    transform: rotate(90deg);
+}
+
+.floating-menu-container.open .hamburger-line:nth-child(1) {
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.floating-menu-container.open .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: translateY(-50%) translateX(20px);
+}
+
+.floating-menu-container.open .hamburger-line:nth-child(3) {
+    bottom: 50%;
+    transform: translateY(50%) rotate(-45deg);
+}
+
+/* 서브 메뉴 버튼들 */
+.sub-menu-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    transform: translateY(60px) scale(0);
+    pointer-events: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    bottom: 0;
+}
+
+/* 다크모드 토글 버튼 */
+.dark-mode-btn {
+    background: rgba(255, 255, 255, 0.95);
+    color: #f59e0b;
+}
+
+.dark-mode-btn:hover {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+/* 메뉴 열린 상태 - 서브 버튼들 애니메이션 */
+.floating-menu-container.open .sub-menu-btn {
+    opacity: 1;
+    transform: translateY(-70px) scale(1);
+    pointer-events: auto;
+}
+
+.floating-menu-container.open .sub-menu-btn:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+/* 다크모드 상태 */
+body.dark-mode {
+    background: linear-gradient(145deg, #1a202c 0%, #2d3748 50%, #1a202c 100%);
+}
+
+body.dark-mode .container {
+    background: rgba(26, 32, 44, 0.95);
+    color: #e2e8f0;
+}
+
+body.dark-mode h1 {
+    color: #e2e8f0;
+}
+
+body.dark-mode input[type="text"], 
+body.dark-mode select, 
+body.dark-mode textarea, 
+body.dark-mode input[type="number"] {
+    background: rgba(45, 55, 72, 0.8);
+    border-color: rgba(102, 126, 234, 0.3);
+    color: #e2e8f0;
+}
+
+body.dark-mode .day-title {
+    background: rgba(45, 55, 72, 0.8);
+    color: #9f7aea;
+}
+
+body.dark-mode .zone-applicants {
+    background: rgba(45, 55, 72, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .zone-name {
+    color: #e2e8f0;
+}
+
+body.dark-mode .applicant-names {
+    color: #cbd5e0;
+}
+
+body.dark-mode .day-label, 
+body.dark-mode .zone-label {
+    background: rgba(45, 55, 72, 0.7);
+    color: #e2e8f0;
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+body.dark-mode .stats-content,
+body.dark-mode .user-list,
+body.dark-mode .cancel-item,
+body.dark-mode .user-item,
+body.dark-mode .stat-card,
+body.dark-mode .zone-stat-card {
+    background: rgba(45, 55, 72, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+
+body.dark-mode .modal-content {
+    background: rgba(26, 32, 44, 0.95);
+    color: #e2e8f0;
+}
+
+/* 다크모드에서 아이콘 변경 */
+body.dark-mode .dark-mode-btn {
+    background: rgba(45, 55, 72, 0.95);
+    color: #fbbf24;
+}
+
+body.dark-mode .dark-mode-btn:hover {
+    background: rgba(55, 65, 81, 1);
+    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .floating-menu-container {
+        bottom: 20px;
+        right: 20px;
+        gap: 0;
+    }
+    
+    .floating-menu-btn {
+        width: 56px;
+        height: 56px;
+    }
+    
+    .sub-menu-btn {
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+        bottom: 0;
+    }
+    
+    .floating-menu-container.open .sub-menu-btn:nth-child(1) {
+        transform: translateY(-65px) scale(1);
+    }
+    
+    .hamburger-icon {
+        width: 22px;
+        height: 16px;
+    }
+    
+    .hamburger-line {
+        height: 2.5px;
+    }
+}
+
+/* 안전 영역 지원 */
+@supports (padding: max(0px)) {
+    .floating-menu-container {
+        bottom: max(20px, calc(env(safe-area-inset-bottom) + 10px));
+        right: max(30px, calc(env(safe-area-inset-right) + 20px));
+    }
+}
+
+/* 애니메이션 감소 설정 */
+@media (prefers-reduced-motion: reduce) {
+    .floating-menu-btn,
+    .sub-menu-btn,
+    .hamburger-icon,
+    .hamburger-line {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+    .floating-menu-btn,
+    .sub-menu-btn {
+        border: 3px solid #2d3748;
+    }
+    
+    body.dark-mode .floating-menu-btn,
+    body.dark-mode .sub-menu-btn {
+        border: 3px solid #e2e8f0;
     }
 }
     </style>
@@ -2823,5 +3110,80 @@ document.addEventListener('DOMContentLoaded', function() {
         function resetAdminForm() {
             alert('폼 초기화 (구현 필요)');
         }</script>
+        <!-- 플로팅 메뉴를 body 태그 끝나기 전에 추가 -->
+<div class="floating-menu-container" id="floatingMenu">
+    <!-- 다크모드 토글 버튼 -->
+    <button class="sub-menu-btn dark-mode-btn" onclick="toggleDarkMode()" title="다크모드 전환">
+        🌙
+    </button>
+    
+    <!-- 메인 메뉴 버튼 -->
+    <button class="floating-menu-btn" onclick="toggleFloatingMenu()" title="메뉴">
+        <div class="hamburger-icon">
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+        </div>
+    </button>
+</div>
+
+<script>
+// 플로팅 메뉴 토글 함수
+function toggleFloatingMenu() {
+    const menu = document.getElementById('floatingMenu');
+    menu.classList.toggle('open');
+}
+
+// 다크모드 토글 함수
+function toggleDarkMode() {
+    const body = document.body;
+    const darkModeBtn = document.querySelector('.dark-mode-btn');
+    
+    body.classList.toggle('dark-mode');
+    
+    // 다크모드 상태에 따라 아이콘 변경
+    if (body.classList.contains('dark-mode')) {
+        darkModeBtn.innerHTML = '☀️';
+        darkModeBtn.title = '라이트모드 전환';
+        localStorage.setItem('darkMode', 'enabled');
+    } else {
+        darkModeBtn.innerHTML = '🌙';
+        darkModeBtn.title = '다크모드 전환';
+        localStorage.setItem('darkMode', 'disabled');
+    }
+}
+
+// 페이지 로드 시 다크모드 상태 복원
+document.addEventListener('DOMContentLoaded', function() {
+    const darkMode = localStorage.getItem('darkMode');
+    const darkModeBtn = document.querySelector('.dark-mode-btn');
+    
+    if (darkMode === 'enabled') {
+        document.body.classList.add('dark-mode');
+        darkModeBtn.innerHTML = '☀️';
+        darkModeBtn.title = '라이트모드 전환';
+    }
+});
+
+// 메뉴 외부 클릭 시 닫기
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('floatingMenu');
+    const isClickInsideMenu = menu.contains(event.target);
+    
+    if (!isClickInsideMenu && menu.classList.contains('open')) {
+        menu.classList.remove('open');
+    }
+});
+
+// ESC 키로 메뉴 닫기
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const menu = document.getElementById('floatingMenu');
+        if (menu.classList.contains('open')) {
+            menu.classList.remove('open');
+        }
+    }
+});
+</script>
 </body>
 </html>
