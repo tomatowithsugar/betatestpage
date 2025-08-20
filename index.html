@@ -1283,17 +1283,18 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     backdrop-filter: blur(20px);
     border: 2px solid rgba(255, 255, 255, 0.3);
     opacity: 0;
-    transform: translateY(60px) scale(0);
+    transform: scale(0);
     pointer-events: none;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     position: absolute;
-    bottom: 0;
 }
 
 /* 다크모드 토글 버튼 */
 .dark-mode-btn {
     background: rgba(255, 255, 255, 0.95);
     color: #f59e0b;
+    bottom: 5px;
+    right: 5px;
 }
 
 .dark-mode-btn:hover {
@@ -1302,15 +1303,36 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
 }
 
+/* 홈 버튼 */
+.home-btn {
+    background: rgba(255, 255, 255, 0.95);
+    color: #10b981;
+    bottom: 5px;
+    right: 5px;
+}
+
+.home-btn:hover {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
 /* 메뉴 열린 상태 - 서브 버튼들 애니메이션 */
 .floating-menu-container.open .sub-menu-btn {
     opacity: 1;
-    transform: translateY(-70px) scale(1);
     pointer-events: auto;
 }
 
-.floating-menu-container.open .sub-menu-btn:nth-child(1) {
+/* 다크모드 버튼 (위쪽으로) */
+.floating-menu-container.open .dark-mode-btn {
+    transform: translateY(-70px) translateX(0px) scale(1);
     transition-delay: 0.1s;
+}
+
+/* 홈 버튼 (왼쪽으로) */
+.floating-menu-container.open .home-btn {
+    transform: translateY(0px) translateX(-70px) scale(1);
+    transition-delay: 0.15s;
 }
 
 /* 다크모드 상태 */
@@ -1388,10 +1410,20 @@ body.dark-mode .dark-mode-btn:hover {
     box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
 }
 
+body.dark-mode .home-btn {
+    background: rgba(45, 55, 72, 0.95);
+    color: #34d399;
+}
+
+body.dark-mode .home-btn:hover {
+    background: rgba(55, 65, 81, 1);
+    box-shadow: 0 8px 25px rgba(52, 211, 153, 0.3);
+}
+
 /* 모바일 반응형 */
 @media (max-width: 768px) {
     .floating-menu-container {
-        bottom: 20px;
+        bottom: 15px;
         right: 20px;
         gap: 0;
     }
@@ -1405,11 +1437,19 @@ body.dark-mode .dark-mode-btn:hover {
         width: 46px;
         height: 46px;
         font-size: 18px;
-        bottom: 0;
     }
     
-    .floating-menu-container.open .sub-menu-btn:nth-child(1) {
-        transform: translateY(-65px) scale(1);
+    .dark-mode-btn, .home-btn {
+        bottom: 5px;
+        right: 5px;
+    }
+    
+    .floating-menu-container.open .dark-mode-btn {
+        transform: translateY(-65px) translateX(0px) scale(1);
+    }
+    
+    .floating-menu-container.open .home-btn {
+        transform: translateY(0px) translateX(-65px) scale(1);
     }
     
     .hamburger-icon {
@@ -3110,11 +3150,17 @@ document.addEventListener('DOMContentLoaded', function() {
         function resetAdminForm() {
             alert('폼 초기화 (구현 필요)');
         }</script>
+
         <!-- 플로팅 메뉴를 body 태그 끝나기 전에 추가 -->
 <div class="floating-menu-container" id="floatingMenu">
     <!-- 다크모드 토글 버튼 -->
     <button class="sub-menu-btn dark-mode-btn" onclick="toggleDarkMode()" title="다크모드 전환">
         🌙
+    </button>
+    
+    <!-- 홈 버튼 -->
+    <button class="sub-menu-btn home-btn" onclick="goToHome()" title="홈으로 이동">
+        🏠
     </button>
     
     <!-- 메인 메뉴 버튼 -->
@@ -3151,6 +3197,11 @@ function toggleDarkMode() {
         darkModeBtn.title = '다크모드 전환';
         localStorage.setItem('darkMode', 'disabled');
     }
+}
+
+// 홈으로 이동 함수
+function goToHome() {
+    window.open('https://bgs.jwcard.co.kr', '_blank');
 }
 
 // 페이지 로드 시 다크모드 상태 복원
