@@ -47,6 +47,13 @@
     padding: 0;
     box-sizing: border-box;
 }
+:root {
+  --base-font-size: 16px;
+  --heading-font-size: 26px;
+  --button-font-size: 17px;
+  --label-font-size: 15px;
+  --small-font-size: 13px;
+}
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
@@ -66,6 +73,7 @@ body {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
+
 
 .container {
     background: rgba(255, 255, 255, 0.95);
@@ -125,7 +133,7 @@ label {
     margin-bottom: 10px;
     color: #2d3748;
     font-weight: 600;
-    font-size: 15px;
+    font-size: var(--label-font-size);
     text-align: left;
 }
 
@@ -134,7 +142,7 @@ input[type="text"], select, textarea, input[type="number"] {
     padding: 18px 20px;
     border: none;
     border-radius: 16px;
-    font-size: 16px;
+    font-size: var(--base-font-size);
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(102, 126, 234, 0.2);
@@ -157,7 +165,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     color: white;
     border: none;
     border-radius: 16px;
-    font-size: 17px;
+    font-size: var(--button-font-size);
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -218,7 +226,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 
 .btn.small {
     padding: 16px 22px;
-    font-size: 15px;
+    font-size: var(--label-font-size);
     width: auto;
 }
 
@@ -300,14 +308,14 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     backdrop-filter: blur(10px);
     border: 1px solid rgba(102, 126, 234, 0.1);
     font-weight: 600;
-    font-size: 15px;
+    font-size: var(--label-font-size);
     position: relative;
     overflow: hidden;
 }
 
 .zone-label {
     padding: 24px 20px;
-    font-size: 16px;
+    font-size: var(--base-font-size);
 }
 
 .day-label::before, .zone-label::before {
@@ -341,7 +349,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 
 .date-info {
-    font-size: 12px;
+    font-size: var(--small-font-size);
     margin-top: 6px;
     color: #718096;
     font-weight: 500;
@@ -352,7 +360,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 
 .capacity-info {
-    font-size: 13px;
+    font-size: var(--small-font-size);
     margin-top: 8px;
     text-align: center;
     color: #718096;
@@ -364,7 +372,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 
 .zone-label .capacity-info {
-    font-size: 14px;
+    font-size: var(--label-font-size);
 }
 
 .applicants-list {
@@ -397,7 +405,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     font-weight: 800;
     color: #667eea;
     margin-bottom: 12px;
-    font-size: 18px;
+    font-size: var(--button-font-size);
     padding: 0 20px;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
@@ -421,7 +429,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     font-weight: 700;
     color: #2d3748;
     margin-bottom: 10px;
-    font-size: 15px;
+    font-size: var(--label-font-size);
 }
 
 .name-tag {
@@ -431,7 +439,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     padding: 8px 14px;
     margin: 4px 6px 4px 0;
     border-radius: 20px;
-    font-size: 13px;
+    font-size: var(--small-font-size);
     font-weight: 600;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
     position: relative;
@@ -456,7 +464,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 .applicant-names {
     line-height: 1.8;
     color: #4a5568;
-    font-size: 14px;
+    font-size: var(--label-font-size);
 }
 
 .zone-selection-container {
@@ -598,12 +606,12 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 .cancel-day {
     font-weight: 800;
     color: #667eea;
-    font-size: 17px;
+    font-size: var(--button-font-size);
 }
 
 .cancel-details {
     color: #718096;
-    font-size: 14px;
+    font-size: var(--small-font-size);
     margin-top: 4px;
     font-weight: 500;
 }
@@ -613,7 +621,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     color: #a0aec0;
     font-style: italic;
     padding: 60px 20px;
-    font-size: 16px;
+    font-size: var(--base-font-size);
     font-weight: 500;
 }
 
@@ -635,36 +643,40 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     flex-wrap: wrap;
 }
 
+/* stats-header 스타일 수정 */
 .stats-header {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
+    flex-wrap: nowrap; /* 요소가 한 줄에 유지되도록 */
 }
 
+/* month-navigation 스타일 수정 */
 .month-navigation {
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: center;
+    gap: 12px;
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
-    padding: 12px 20px;
-    border-radius: 16px;
+    padding: 10px 16px;
+    border-radius: 12px;
     border: 1px solid rgba(102, 126, 234, 0.1);
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    width: auto;
+    max-width: 100%;
 }
 
 .month-nav-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    border-radius: 12px;
-    width: 44px;
-    height: 44px;
+    border-radius: 10px;
+    width: 40px; /* 버튼 크기 조정 */
+    height: 40px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px; /* 폰트 크기 조정 */
     font-weight: bold;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
@@ -676,11 +688,12 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 
 .current-month {
-    font-size: 18px;
+    font-size: 16px; /* 폰트 크기 조정 */
     font-weight: 700;
     color: #2d3748;
-    min-width: 120px;
+    width: auto; /* 고정 폭 제거 */
     text-align: center;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 
 .stats-content {
@@ -691,6 +704,44 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     margin-bottom: 20px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+@media (max-width: 768px) {
+    .stats-header {
+        padding: 0 10px; /* 좌우 패딩 추가 */
+    }
+
+    .month-navigation {
+        gap: 8px; /* 모바일에서 간격 축소 */
+        padding: 8px 12px;
+    }
+
+    .month-nav-btn {
+        width: 36px; /* 모바일에서 버튼 크기 축소 */
+        height: 36px;
+        font-size: 12px;
+    }
+
+    .current-month {
+        font-size: 14px; /* 모바일에서 폰트 크기 축소 */
+    }
+}
+
+@media (max-width: 390px) {
+    .month-navigation {
+        gap: 6px; /* 더 작은 화면에서 간격 축소 */
+        padding: 6px 10px;
+    }
+
+    .month-nav-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 11px;
+    }
+
+    .current-month {
+        font-size: 13px;
+    }
 }
 
 .stats-summary {
@@ -776,7 +827,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 
 .zone-stat-text {
-    font-size: 14px;
+    font-size: var(--label-font-size);
     color: #718096;
     font-weight: 600;
 }
@@ -1493,6 +1544,492 @@ body.dark-mode .home-btn:hover {
         border: 3px solid #e2e8f0;
     }
 }
+.time-selection-container {
+    display: none;
+}
+
+.time-selection-container.show {
+    display: block;
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.time-selection {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.time-option {
+    position: relative;
+}
+
+.time-option input[type="radio"] {
+    display: none;
+}
+
+.time-label {
+    display: block;
+    padding: 20px 16px;
+    border: none;
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    font-weight: 600;
+    font-size: var(--label-font-size);
+    position: relative;
+    overflow: hidden;
+}
+
+.time-label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.time-option input[type="radio"]:checked + .time-label {
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+}
+
+.time-option input[type="radio"]:checked + .time-label::before {
+    opacity: 1;
+}
+
+.time-label:active {
+    transform: scale(0.98);
+}
+
+.time-label.disabled {
+    background: #ff6b6b !important;
+    color: white !important;
+    border-color: #ff6b6b !important;
+    cursor: not-allowed !important;
+}
+
+.time-capacity-info {
+    font-size: var(--small-font-size);
+    margin-top: 6px;
+    color: #718096;
+    font-weight: 500;
+}
+.time-slot-header {
+    font-size: var(--small-font-size);
+    color: #667eea;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.time-option input[type="radio"]:checked + .time-label .time-capacity-info {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 768px) {
+    .time-selection {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}
+
+body.dark-mode .time-label {
+    background: rgba(45, 55, 72, 0.7);
+    color: #e2e8f0;
+    border-color: rgba(102, 126, 234, 0.3);
+}
+/* 시간대 설정 컨테이너 */
+.time-slot-settings {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px 0;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    min-height: 60px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.time-slot-setting {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(15px);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+}
+
+.time-slot-setting:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.time-slot-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+}
+
+.time-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.time-input-label {
+    font-size: var(--small-font-size);
+    color: #667eea;
+    font-weight: 600;
+    margin: 0;
+}
+
+.time-picker-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.time-picker {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: var(--label-font-size);
+}
+
+.time-select {
+    border: none;
+    background: transparent;
+    font-size: var(--label-font-size);
+    font-weight: 600;
+    color: #2d3748;
+    cursor: pointer;
+}
+
+.time-select:focus {
+    outline: none;
+}
+
+.capacity-input {
+    width: 70px !important;
+    padding: 12px !important;
+    text-align: center;
+    font-weight: 600;
+}
+
+.btn.remove-time {
+    background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(252, 129, 129, 0.3);
+    min-width: 60px;
+}
+
+.btn.remove-time:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(252, 129, 129, 0.4);
+}
+
+.btn.toggle-active {
+    background: linear-gradient(135deg, #68d391 0%, #38a169 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(104, 211, 145, 0.3);
+    min-width: 60px;
+}
+
+.btn.toggle-active:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(104, 211, 145, 0.4);
+}
+
+.btn.toggle-active.inactive {
+    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+    box-shadow: 0 4px 12px rgba(160, 174, 192, 0.3);
+}
+
+.time-slot-controls {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.zone-add-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.empty-time-slots {
+    text-align: center;
+    color: #a0aec0;
+    font-style: italic;
+    padding: 30px 20px;
+    font-size: 14px;
+}
+
+/* 다크모드 지원 */
+body.dark-mode .time-slot-settings,
+body.dark-mode .time-slot-setting {
+    background: rgba(45, 55, 72, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .time-picker {
+    background: rgba(55, 65, 81, 0.9);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+body.dark-mode .time-select {
+    color: #e2e8f0;
+}
+
+body.dark-mode .time-input-label {
+    color: #9f7aea;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .time-slot-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .time-input-group {
+        grid-column: 1;
+    }
+    
+    .capacity-input {
+        width: 100% !important;
+    }
+    
+    .time-picker-container {
+        justify-content: space-between;
+    }
+    
+    .btn.remove-time,
+    .btn.toggle-active {
+        width: 100%;
+        margin-top: 8px;
+    }
+}
+.warning {
+    font-size: 12px;
+    color: #e53e3e;
+    margin-top: 4px;
+    font-weight: 500;
+}
+/* 글자 크기 조정 버튼 */
+.font-size-btn {
+    background: rgba(255, 255, 255, 0.95);
+    color: #667eea;
+    bottom: 5px;
+    right: 5px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.font-size-btn:hover {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* 글자 크기 슬라이더 컨테이너 */
+.font-size-slider-container {
+    position: absolute;
+    bottom: 70px;
+    right: 10px;
+    width: 200px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 1001;
+}
+
+.font-size-slider-container.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* 슬라이더 헤더 */
+.slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.close-slider {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #a0aec0;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.close-slider:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #4a5568;
+}
+
+/* 슬라이더 스타일 */
+#fontSizeRange {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #e2e8f0;
+    outline: none;
+    appearance: none;  
+    -webkit-appearance: none;
+}
+
+#fontSizeRange::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
+}
+
+#fontSizeRange::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
+}
+
+.slider-value {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #718096;
+    font-weight: 600;
+}
+
+/* 다크모드에서의 스타일 */
+body.dark-mode .font-size-btn {
+    background: rgba(45, 55, 72, 0.95);
+    color: #9f7aea;
+}
+
+body.dark-mode .font-size-btn:hover {
+    background: rgba(55, 65, 81, 1);
+    box-shadow: 0 8px 25px rgba(159, 122, 234, 0.3);
+}
+
+body.dark-mode .font-size-slider-container {
+    background: rgba(45, 55, 72, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+
+body.dark-mode .slider-header {
+    color: #e2e8f0;
+}
+
+body.dark-mode .close-slider {
+    color: #cbd5e0;
+}
+
+body.dark-mode .close-slider:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+
+body.dark-mode #fontSizeRange {
+    background: #4a5568;
+}
+
+/* 플로팅 메뉴 열린 상태에서의 글자 크기 버튼 위치 조정 */
+.floating-menu-container.open .font-size-btn {
+    transform: translateY(-140px) translateX(0px) scale(1);
+    transition-delay: 0.05s;
+}
+
+.floating-menu-container.open .dark-mode-btn {
+    transform: translateY(-70px) translateX(0px) scale(1);
+    transition-delay: 0.1s;
+}
+
+.floating-menu-container.open .home-btn {
+    transform: translateY(0px) translateX(-70px) scale(1);
+    transition-delay: 0.15s;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .font-size-slider-container {
+        width: 180px;
+        right: 5px;
+    }
+    
+    .floating-menu-container.open .font-size-btn {
+        transform: translateY(-130px) translateX(0px) scale(1);
+    }
+    
+    .floating-menu-container.open .dark-mode-btn {
+        transform: translateY(-65px) translateX(0px) scale(1);
+    }
+    
+    .floating-menu-container.open .home-btn {
+        transform: translateY(0px) translateX(-65px) scale(1);
+    }
+}
     </style>
 </head>
 <body>
@@ -1541,7 +2078,7 @@ body.dark-mode .home-btn:hover {
             <h3>신청 현황</h3>
             <div id="applicantsList"></div>
         </div>
-        <div class="version-info">v.2</div>
+        <div class="version-info">v2.1</div>
     </div>
     <!-- 고정 공지 버튼 -->
 <button id="noticeButton" class="notice-button inactive" onclick="handleNoticeButtonClick()" style="display: none;">
@@ -1608,6 +2145,12 @@ body.dark-mode .home-btn:hover {
                     <label>구역 선택</label>
                     <div class="zone-selection" id="zoneSelection">
                         <!-- 동적으로 생성됨 -->
+                    </div>
+                </div>
+                <div class="form-group time-selection-container" id="timeSelectionContainer">
+                    <label>시간 선택</label>
+                    <div class="time-selection" id="timeSelection">
+                         <!-- 동적으로 생성됨 -->
                     </div>
                 </div>
 
@@ -1706,6 +2249,12 @@ body.dark-mode .home-btn:hover {
                         <!-- 동적으로 생성됨 -->
                     </div>
                 </div>
+                <div class="form-group time-selection-container" id="adminTimeSelectionContainer" style="display: none;">
+                    <label>시간 선택</label>
+                    <div class="time-selection" id="adminTimeSelection">
+                        <!-- 동적으로 생성됨 -->
+                    </div>
+                </div>
 
                 <div id="adminCancelList" style="display: none;">
                     <h4>취소할 신청 선택</h4>
@@ -1745,15 +2294,23 @@ body.dark-mode .home-btn:hover {
             <span class="close" onclick="closeZoneManagementModal()">&times;</span>
             <h2>구역 관리</h2>
 
-            <div class="form-group">
-                <label for="newZoneName">새 구역 추가</label>
-                <input type="text" id="newZoneName" placeholder="구역 이름을 입력하세요" required>
-            </div>
-            <div class="form-group">
-                <label for="newZoneCapacity">최대 용량</label>
-                <input type="number" id="newZoneCapacity" placeholder="최대 용량 (기본 4)" value="4" min="1" required>
-                <button type="button" class="btn success small" onclick="addNewZone()" style="margin-top: 10px;">추가</button>
-            </div>
+<div class="form-group">
+    <label for="newZoneName">새 구역 추가</label>
+    <input type="text" id="newZoneName" placeholder="구역 이름을 입력하세요" required>
+</div>
+<div class="form-group">
+    <label>시간대 설정</label>
+    <div id="timeSlotSettings" class="time-slot-settings">
+        <!-- 동적으로 시간대 설정 UI 생성 -->
+    </div>
+    <div class="time-slot-controls">
+        <button type="button" class="btn secondary small" onclick="addTimeSlot()">시간대 추가</button>
+    </div>
+</div>
+
+<div class="zone-add-controls">
+    <button type="button" class="btn success" onclick="addNewZone()">구역 추가</button>
+</div>
 
             <div class="user-list">
                 <h3>등록된 구역</h3>
@@ -1764,24 +2321,25 @@ body.dark-mode .home-btn:hover {
 
     <!-- 데이터 통계 모달 -->
     <div id="statsModal" class="modal">
-        <div class="modal-content large">
-            <span class="close" onclick="closeStatsModal()">&times;</span>
-            <h2>데이터 통계</h2>
-
-            <div class="stats-header">
-                <div class="month-navigation">
-                    <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
-                    <div class="current-month" id="currentMonth"></div>
-                    <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
-                </div>
-            </div>
-
-            <div class="stats-content">
-                <div class="stats-summary" id="statsSummary"></div>
-                <div class="zone-stats" id="zoneStats"></div>
+    <div class="modal-content large">
+        <span class="close" onclick="closeStatsModal()">&times;</span>
+        <h2 style="text-align:center;"> <span id="currentMonth"></span> </h2>
+        <div class="stats-header">
+            <div class="month-navigation">
+                <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
+                <div class="current-month" id="currentMonth"></div>
+                <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
             </div>
         </div>
+        <div class="stats-content">
+            <div class="stats-buttons" style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+                <button class="btn" onclick="displayZoneStats()">구역별 통계</button>
+                <button class="btn" onclick="displayUserStats()">개인별 통계</button>
+            </div>
+            <div id="statsDisplayArea" style="overflow-y: auto; max-height: 400px;"></div>
+        </div>
     </div>
+</div>
     <!-- 공지사항 관리 모달 -->
 <div id="noticeManagementModal" class="modal">
     <div class="modal-content">
@@ -1815,7 +2373,7 @@ body.dark-mode .home-btn:hover {
         <span class="close" onclick="closeNoticeViewModal()">&times;</span>
         <h2 id="noticeViewTitle">📢 공지사항</h2>
         
-        <div id="noticeViewContent" style="margin: 20px 0; line-height: 1.6; font-size: 16px;">
+        <div id="noticeViewContent" style="margin: 20px 0; line-height: 1.6; font-size: var(--base-font-size);">
             <!-- 공지 내용이 여기에 표시됩니다 -->
         </div>
         
@@ -1833,10 +2391,12 @@ body.dark-mode .home-btn:hover {
         const applicants = {};
         const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
         let zones = []; // 동적으로 로드
+        let timeSlots = []; // 시간대 배열
         let currentUser = '';
         let isAdmin = false;
         let userApplications = [];
         let allApplications = [];
+        let monthlyData = [];
         let currentStatsYear = new Date().getFullYear();
         let currentStatsMonth = new Date().getMonth() + 1;
         let allowedUsers = []; // 서버에서 로드될 배열
@@ -1850,27 +2410,43 @@ body.dark-mode .home-btn:hover {
             days.forEach(day => {
                 applicants[day] = {};
                 zones.forEach(zone => {
-                    applicants[day][zone.name] = [];
+                    applicants[day][zone.name] = {};
+                    zone.timeSlots.forEach(timeSlot => {
+                        applicants[day][zone.name][timeSlot.time] = [];
+                    });
                 });
             });
         }
 
         // 페이지 로드 시 초기화
-        window.initializeApp = function () {
-            console.log('Initializing application...');
-            setCurrentWeekDates();
-            setAdminWeekDates();
-            loadZonesFromFirestore(); // 구역 먼저 로드
-            populateAdminUserSelect();
-            loadDataFromFirestore();
-            loadNoticeFromFirestore();
+        window.initializeApp = async function () {
+    try {
+        console.log('Initializing application...');
+        setCurrentWeekDates();
+        setAdminWeekDates();
+        
+        // 구역을 먼저 로드하고 완료될 때까지 대기
+        await loadZonesFromFirestore();
+        
+        // 그 다음 사용자 로드
+        await loadUsersFromFirestore();
+        
+        populateAdminUserSelect();
+        loadDataFromFirestore();
+        loadNoticeFromFirestore();
 
-            document.getElementById('loginName').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    login();
-                }
-            });
-        };
+        document.getElementById('loginName').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+        
+        console.log('Application initialized successfully');
+    } catch (error) {
+        console.error('앱 초기화 오류:', error);
+        alert('애플리케이션 초기화 중 오류가 발생했습니다.');
+    }
+};
 
         // Firestore에서 구역 목록 로드
         async function loadZonesFromFirestore() {
@@ -1884,7 +2460,11 @@ body.dark-mode .home-btn:hover {
                     zones.push({
                         id: doc.id,
                         name: data.name,
-                        maxCapacity: data.maxCapacity || 4
+                        maxCapacity: data.maxCapacity || 4,
+                        timeSlots: data.timeSlots || [
+                            { time: '오전 9:00-12:00', maxCapacity: data.maxCapacity || 4, isActive: true },
+                            { time: '오후 1:00-4:00', maxCapacity: data.maxCapacity || 4, isActive: true }
+                        ]
                     });
                 });
                 console.log('Loaded zones from Firestore:', zones);
@@ -1905,13 +2485,14 @@ body.dark-mode .home-btn:hover {
                 zones.forEach((zone, index) => {
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'zone-option';
+                    const totalCapacity = zone.timeSlots.reduce((sum, slot) => sum + (slot.isActive ? slot.maxCapacity : 0), 0);
+                    const currentTotal = getCurrentZoneTotal(zone.name);
                     optionDiv.innerHTML = `
-                            <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
-                            <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
-                                ${zone.name}
-                                <div class="capacity-info">0/${zone.maxCapacity}</div>
-                            </label>
-                        `;
+                        <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
+                        <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
+                            ${zone.name}
+                        </label>
+                    `;
                     zoneSelection.appendChild(optionDiv);
                 });
             }
@@ -1934,6 +2515,332 @@ body.dark-mode .home-btn:hover {
             }
             console.log('Zone UI updated');
         }
+
+function getCurrentZoneTotal(zoneName) {
+    const selectedDay = document.querySelector('input[name="day"]:checked')?.value;
+    if (!selectedDay || !applicants[selectedDay] || !applicants[selectedDay][zoneName]) {
+        return 0;
+    }
+    
+    let total = 0;
+    Object.keys(applicants[selectedDay][zoneName]).forEach(timeSlot => {
+        total += (applicants[selectedDay][zoneName][timeSlot] || []).length;
+    });
+    return total;
+}
+function openStatsModal() {
+    const statsModal = document.getElementById('statsModal');
+    if (!statsModal) {
+        console.error('statsModal 요소를 찾을 수 없습니다.');
+        return;
+    }
+    statsModal.style.display = 'block';
+    window.currentStatsYear = new Date().getFullYear();
+    window.currentStatsMonth = new Date().getMonth() + 1;
+    loadMonthlyStats();
+}
+
+function closeStatsModal() {
+    const statsModal = document.getElementById('statsModal');
+    if (statsModal) {
+        statsModal.style.display = 'none';
+    }
+}
+// 시간 선택 UI 업데이트
+function updateTimeSelection(selectedDay, selectedZone) {
+    const timeSelection = document.getElementById('timeSelection');
+    const timeContainer = document.getElementById('timeSelectionContainer');
+    const zoneObj = zones.find(z => z.name === selectedZone);
+    
+    if (!zoneObj) {
+        timeContainer.classList.remove('show');
+        return;
+    }
+    
+    timeSelection.innerHTML = '';
+    let hasActiveSlots = false;
+    
+    zoneObj.timeSlots.forEach((timeSlot, index) => {
+        if (!timeSlot.isActive) return; // 비활성화된 시간대는 표시하지 않음
+        hasActiveSlots = true;
+        
+        const currentCount = applicants[selectedDay][selectedZone][timeSlot.time]?.length || 0;
+        const isDisabled = currentCount >= timeSlot.maxCapacity;
+        
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'time-option';
+        
+        const radioInput = document.createElement('input');
+        radioInput.type = 'radio';
+        radioInput.id = `time${index}`;
+        radioInput.name = 'time';
+        radioInput.value = timeSlot.time;
+        radioInput.disabled = isDisabled;
+        
+        const label = document.createElement('label');
+        label.htmlFor = `time${index}`;
+        label.className = `time-label ${isDisabled ? 'disabled' : ''}`;
+        label.dataset.time = timeSlot.time;
+        
+        // 겹침 확인
+        let isOverlappingTime = false;
+        userApplications.forEach(app => {
+            if (app.day === selectedDay && isOverlapping(timeSlot.time, app.timeSlot)) {
+                isOverlappingTime = true;
+            }
+        });
+        
+        if (isOverlappingTime) {
+            radioInput.disabled = true;
+            label.classList.add('disabled');
+            label.innerHTML += '<div class="warning">이미 신청된 시간대입니다</div>';
+        }
+        
+        label.innerHTML = `
+            ${formatTimeToAMPM(timeSlot.time)}
+            <div class="time-capacity-info">${currentCount}/${timeSlot.maxCapacity}</div>
+            ${label.innerHTML || ''}
+        `;
+        
+        optionDiv.appendChild(radioInput);
+        optionDiv.appendChild(label);
+        timeSelection.appendChild(optionDiv);
+    });
+    
+    // 활성 시간대가 있으면 컨테이너 표시, 없으면 숨김
+    if (hasActiveSlots) {
+        timeContainer.classList.add('show');
+    } else {
+        timeContainer.classList.remove('show');
+        timeSelection.innerHTML = '<div class="empty-time-slots">사용 가능한 시간대가 없습니다.</div>';
+    }
+}
+
+// 시간대 추가 함수
+function addTimeSlot() {
+    const container = document.getElementById('timeSlotSettings');
+    const index = container.children.length;
+    
+    const timeSlotDiv = document.createElement('div');
+    timeSlotDiv.className = 'time-slot-setting';
+    timeSlotDiv.innerHTML = `
+        <div class="time-slot-row">
+            <div class="time-input-group">
+                <label class="time-input-label">시작 시간</label>
+                <div class="time-picker-container">
+                    <div class="time-picker">
+                        <select class="time-select start-hour">
+                            ${generateHourOptions()}
+                        </select>
+                        <span>:</span>
+                        <select class="time-select start-minute">
+                            ${generateMinuteOptions()}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="time-input-group">
+                <label class="time-input-label">종료 시간</label>
+                <div class="time-picker-container">
+                    <div class="time-picker">
+                        <select class="time-select end-hour">
+                            ${generateHourOptions()}
+                        </select>
+                        <span>:</span>
+                        <select class="time-select end-minute">
+                            ${generateMinuteOptions()}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="time-input-group">
+                <label class="time-input-label">최대 인원</label>
+                <input type="number" class="capacity-input" value="4" min="1" max="20">
+            </div>
+            
+            <div class="time-input-group">
+                <button type="button" class="btn remove-time" onclick="removeTimeSlot(this)">삭제</button>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(timeSlotDiv);
+    
+    // 기본값 설정
+    const startHour = timeSlotDiv.querySelector('.start-hour');
+    const endHour = timeSlotDiv.querySelector('.end-hour');
+    if (index === 0) {
+        startHour.value = '09';
+        endHour.value = '12';
+    } else {
+        startHour.value = '13';
+        endHour.value = '16';
+    }
+}
+
+// 시간대 삭제 함수
+function removeTimeSlot(button) {
+    button.closest('.time-slot-setting').remove();
+}
+
+// 글자 크기 슬라이더 토글
+function toggleFontSizeSlider() {
+    const slider = document.getElementById('fontSizeSlider');
+    const isShowing = slider.classList.contains('show');
+    
+    if (isShowing) {
+        closeFontSizeSlider();
+    } else {
+        openFontSizeSlider();
+    }
+}
+
+// 글자 크기 슬라이더 열기
+function openFontSizeSlider() {
+    const slider = document.getElementById('fontSizeSlider');
+    slider.classList.add('show');
+    
+    // 저장된 글자 크기 값으로 슬라이더 초기화
+    const savedSize = localStorage.getItem('fontSize');
+    if (savedSize) {
+        const fontSize = parseInt(savedSize.replace('px', ''));
+        document.getElementById('fontSizeRange').value = fontSize;
+        document.getElementById('fontSizeValue').textContent = savedSize;
+    }
+    
+    // 슬라이더에 포커스
+    document.getElementById('fontSizeRange').focus();
+}
+
+// 글자 크기 슬라이더 닫기
+function closeFontSizeSlider() {
+    const slider = document.getElementById('fontSizeSlider');
+    slider.classList.remove('show');
+}
+
+// 글자 크기 변경 처리
+function changeFontSize(baseSize) {
+  // 기본 크기 비율 계산
+  const ratio = baseSize / 16;
+  
+  // CSS 변수 업데이트
+  document.documentElement.style.setProperty('--base-font-size', `${baseSize}px`);
+  document.documentElement.style.setProperty('--heading-font-size', `${26 * ratio}px`);
+  document.documentElement.style.setProperty('--button-font-size', `${17 * ratio}px`);
+  document.documentElement.style.setProperty('--label-font-size', `${15 * ratio}px`);
+  document.documentElement.style.setProperty('--small-font-size', `${13 * ratio}px`);
+  
+  // 변경된 값 표시
+  document.getElementById('fontSizeValue').textContent = baseSize + 'px';
+  
+  // 로컬 스토리지에 저장
+  localStorage.setItem('fontSize', baseSize + 'px');
+}
+
+// 페이지 로드 시 저장된 글자 크기 적용
+function applySavedFontSize() {
+  const savedSize = localStorage.getItem('fontSize');
+  if (savedSize) {
+    const sizeValue = parseInt(savedSize.replace('px', ''));
+    changeFontSize(sizeValue);
+    
+    // 슬라이더 값도 업데이트
+    const slider = document.getElementById('fontSizeRange');
+    if (slider) {
+      slider.value = sizeValue;
+    }
+  }
+}
+
+// DOM이 로드된 후 실행
+window.addEventListener('DOMContentLoaded', function() {
+    // 저장된 글자 크기 적용
+    applySavedFontSize();
+    
+    // 슬라이더 이벤트 리스너 추가
+// 기존 코드에서 이 부분을 찾아 수정합니다
+const fontSizeSlider = document.getElementById('fontSizeRange');
+if (fontSizeSlider) {
+  fontSizeSlider.addEventListener('input', function() {
+    changeFontSize(parseInt(this.value));
+  });
+}
+    
+    // 외부 클릭 시 슬라이더 닫기
+    document.addEventListener('click', function(event) {
+        const slider = document.getElementById('fontSizeSlider');
+        const fontBtn = document.querySelector('.font-size-btn');
+        
+        if (slider.classList.contains('show') && 
+            !slider.contains(event.target) && 
+            !fontBtn.contains(event.target)) {
+            closeFontSizeSlider();
+        }
+    });
+    
+    // ESC 키로 슬라이더 닫기
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const slider = document.getElementById('fontSizeSlider');
+            if (slider.classList.contains('show')) {
+                closeFontSizeSlider();
+            }
+        }
+    });
+});
+
+// 다크모드에서의 글자 크기 버튼 색상 업데이트
+function updateFontSizeButtonColor() {
+    const fontSizeBtn = document.querySelector('.font-size-btn');
+    if (document.body.classList.contains('dark-mode')) {
+        fontSizeBtn.style.background = 'rgba(45, 55, 72, 0.95)';
+        fontSizeBtn.style.color = '#9f7aea';
+    } else {
+        fontSizeBtn.style.background = 'rgba(255, 255, 255, 0.95)';
+        fontSizeBtn.style.color = '#667eea';
+    }
+}
+
+
+function updateAdminTimeSelection(selectedDay, selectedZone) {
+    const timeSelection = document.getElementById('adminTimeSelection');
+    const zoneObj = zones.find(z => z.name === selectedZone);
+    
+    if (!zoneObj) return;
+    
+    timeSelection.innerHTML = '';
+    
+    zoneObj.timeSlots.forEach((timeSlot, index) => {
+        if (!timeSlot.isActive) return;
+        
+        const currentCount = applicants[selectedDay][selectedZone][timeSlot.time]?.length || 0;
+        
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'time-option';
+        
+        const radioInput = document.createElement('input');
+        radioInput.type = 'radio';
+        radioInput.id = `admin-time${index}`;
+        radioInput.name = 'admin-time';
+        radioInput.value = timeSlot.time;
+        
+        const label = document.createElement('label');
+        label.htmlFor = `admin-time${index}`;
+        label.className = 'time-label';
+        label.dataset.time = timeSlot.time;
+        
+        label.innerHTML = `
+            ${formatTimeToAMPM(timeSlot.time)}
+            <div class="time-capacity-info">${currentCount}/${timeSlot.maxCapacity}</div>
+        `;
+        
+        optionDiv.appendChild(radioInput);
+        optionDiv.appendChild(label);
+        timeSelection.appendChild(optionDiv);
+    });
+}
 
         // Firestore에서 사용자 목록 로드
         async function loadUsersFromFirestore() {
@@ -1958,6 +2865,25 @@ body.dark-mode .home-btn:hover {
                 alert('사용자 목록을 불러오는 중 오류가 발생했습니다.');
             }
         }
+        // 24시간제를 오전/오후 형식으로 변환하는 함수
+function formatTimeToAMPM(timeStr) {
+    // timeStr은 "HH:MM-HH:MM" 형식
+    const [start, end] = timeStr.split('-');
+    const convertToAMPM = (time) => {
+        const [hours, minutes] = time.split(':');
+        const hourNum = parseInt(hours, 10);
+        if (hourNum === 0) {
+            return `오전 12:${minutes}`;
+        } else if (hourNum < 12) {
+            return `오전 ${hourNum}:${minutes}`;
+        } else if (hourNum === 12) {
+            return `오후 12:${minutes}`;
+        } else {
+            return `오후 ${hourNum - 12}:${minutes}`;
+        }
+    };
+    return `${convertToAMPM(start)}-${convertToAMPM(end)}`;
+}
 
         function invalidateUsersCache() {
             usersLoaded = false;
@@ -1990,28 +2916,64 @@ body.dark-mode .home-btn:hover {
                         const zonesData = data.zones || {};
 
                         Object.keys(zonesData).forEach(zone => {
-                            if (applicants[day] && applicants[day][zone]) {
-                                applicants[day][zone] = zonesData[zone];
-                                zonesData[zone].forEach(name => {
-                                    allApplications.push({
-                                        id: docSnap.id,
-                                        name: name,
-                                        day: day,
-                                        zone: zone,
-                                        actualDate: data.actualDate
-                                    });
-                                    if (name === currentUser) {
-                                        userApplications.push({
-                                            id: docSnap.id,
-                                            name: name,
-                                            day: day,
-                                            zone: zone,
-                                            actualDate: data.actualDate
-                                        });
-                                    }
-                                });
-                            }
+    if (applicants[day] && applicants[day][zone]) {
+        const zoneTimeSlots = zonesData[zone];
+        
+        // 기존 시간대 구조가 아닌 경우 변환
+        if (Array.isArray(zoneTimeSlots)) {
+            // 구버전 데이터 처리 (시간대 없이 저장된 데이터)
+            const zoneObj = zones.find(z => z.name === zone);
+            if (zoneObj && zoneObj.timeSlots.length > 0) {
+                applicants[day][zone][zoneObj.timeSlots[0].time] = zoneTimeSlots;
+                zoneTimeSlots.forEach(name => {
+                    allApplications.push({
+                        id: docSnap.id,
+                        name: name,
+                        day: day,
+                        zone: zone,
+                        timeSlot: zoneObj.timeSlots[0].time,
+                        actualDate: data.actualDate
+                    });
+                    if (name === currentUser) {
+                        userApplications.push({
+                            id: docSnap.id,
+                            name: name,
+                            day: day,
+                            zone: zone,
+                            timeSlot: zoneObj.timeSlots[0].time,
+                            actualDate: data.actualDate
                         });
+                    }
+                });
+            }
+        } else {
+            // 새로운 시간대 구조 처리
+            Object.keys(zoneTimeSlots).forEach(timeSlot => {
+                applicants[day][zone][timeSlot] = zoneTimeSlots[timeSlot];
+                zoneTimeSlots[timeSlot].forEach(name => {
+                    allApplications.push({
+                        id: docSnap.id,
+                        name: name,
+                        day: day,
+                        zone: zone,
+                        timeSlot: timeSlot,
+                        actualDate: data.actualDate
+                    });
+                    if (name === currentUser) {
+                        userApplications.push({
+                            id: docSnap.id,
+                            name: name,
+                            day: day,
+                            zone: zone,
+                            timeSlot: timeSlot,
+                            actualDate: data.actualDate
+                        });
+                    }
+                });
+            });
+        }
+    }
+});
                     });
 
                     console.log('All applications loaded:', allApplications);
@@ -2033,35 +2995,35 @@ body.dark-mode .home-btn:hover {
         }
 
         // Firestore에 데이터 저장
-        async function saveToFirestore(name, day, zone) {
-            try {
-                console.log(`Saving to Firestore: ${name}, ${day}, ${zone}`);
-                const { collection, doc, setDoc, updateDoc, arrayUnion } = window.firestoreFunctions;
-                const actualDate = getActualDateForDay(day);
-                const docId = `${actualDate}_${day}`;
-                const applicantsRef = doc(window.db, 'applicants', docId);
+                async function saveToFirestore(name, day, zone, timeSlot) {
+                    try {
+                        console.log(`Saving to Firestore: ${name}, ${day}, ${zone}, ${timeSlot}`);
+                        const { collection, doc, setDoc, updateDoc, arrayUnion } = window.firestoreFunctions;
+                        const actualDate = getActualDateForDay(day);
+                        const docId = `${actualDate}_${day}`;
+                        const applicantsRef = doc(window.db, 'applicants', docId);
 
-                const docSnap = await window.firestoreFunctions.getDoc(applicantsRef);
-                if (docSnap.exists()) {
-                    await updateDoc(applicantsRef, {
-                        [`zones.${zone}`]: arrayUnion(name),
-                        timestamp: new Date()
-                    });
-                } else {
-                    await setDoc(applicantsRef, {
-                        actualDate: actualDate,
-                        zones: { [zone]: [name] },
-                        timestamp: new Date()
-                    });
+                        const docSnap = await window.firestoreFunctions.getDoc(applicantsRef);
+                        if (docSnap.exists()) {
+                            await updateDoc(applicantsRef, {
+                                [`zones.${zone}.${timeSlot}`]: arrayUnion(name),
+                                timestamp: new Date()
+                            });
+                        } else {
+                            await setDoc(applicantsRef, {
+                                actualDate: actualDate,
+                                zones: { [zone]: { [timeSlot]: [name] } },
+                                timestamp: new Date()
+                            });
+                        }
+                        console.log(`Document saved/updated with ID: ${docId}`);
+                        return true;
+                    } catch (error) {
+                        console.error('저장 오류:', error);
+                        alert('신청 저장 중 오류가 발생했습니다.');
+                        return false;
+                    }
                 }
-                console.log(`Document saved/updated with ID: ${docId}`);
-                return true;
-            } catch (error) {
-                console.error('저장 오류:', error);
-                alert('신청 저장 중 오류가 발생했습니다.');
-                return false;
-            }
-        }
 
         // Firestore에서 데이터 삭제
         async function deleteFromFirestore(docId, application) {
@@ -2070,7 +3032,7 @@ body.dark-mode .home-btn:hover {
                 const { doc, updateDoc, arrayRemove } = window.firestoreFunctions;
                 const applicantsRef = doc(window.db, 'applicants', docId);
                 await updateDoc(applicantsRef, {
-                    [`zones.${application.zone}`]: arrayRemove(application.name)
+                    [`zones.${application.zone}.${application.timeSlot}`]: arrayRemove(application.name)
                 });
                 console.log('Application removed successfully');
                 return true;
@@ -2111,19 +3073,23 @@ body.dark-mode .home-btn:hover {
         }
 
         // Firestore에 구역 추가
-        async function addZoneToFirestore(name, maxCapacity) {
-            try {
-                const { collection, addDoc } = window.firestoreFunctions;
-                const zonesRef = collection(window.db, 'zones');
-                await addDoc(zonesRef, { name: name, maxCapacity: parseInt(maxCapacity) });
-                console.log('Zone added:', name);
-                return true;
-            } catch (error) {
-                console.error('구역 추가 오류:', error);
-                alert('구역 추가 중 오류가 발생했습니다.');
-                return false;
-            }
-        }
+async function addZoneToFirestore(name, timeSlots) {
+    try {
+        const { collection, addDoc } = window.firestoreFunctions;
+        const zonesRef = collection(window.db, 'zones');
+        await addDoc(zonesRef, { 
+            name: name, 
+            timeSlots: timeSlots,
+            maxCapacity: timeSlots.reduce((sum, slot) => sum + slot.maxCapacity, 0) // 호환성을 위해
+        });
+        console.log('Zone added:', name);
+        return true;
+    } catch (error) {
+        console.error('구역 추가 오류:', error);
+        alert('구역 추가 중 오류가 발생했습니다.');
+        return false;
+    }
+}
 
         // Firestore에서 구역 삭제
         async function deleteZoneFromFirestore(docId) {
@@ -2321,33 +3287,63 @@ body.dark-mode .home-btn:hover {
         }
 
         // 새 구역 추가
-        async function addNewZone() {
-            const name = document.getElementById('newZoneName').value.trim();
-            const maxCapacity = document.getElementById('newZoneCapacity').value.trim();
-            if (!name || !maxCapacity) {
-                alert('구역 이름과 용량을 입력해주세요.');
-                return;
-            }
-
-            const { collection, getDocs, query, where } = window.firestoreFunctions;
-            const zonesRef = collection(window.db, 'zones');
-            const q = query(zonesRef, where("name", "==", name));
-            const querySnapshot = await getDocs(q);
-
-            if (!querySnapshot.empty) {
-                alert('이미 등록된 구역입니다.');
-                return;
-            }
-
-            const added = await addZoneToFirestore(name, maxCapacity);
-            if (added) {
-                alert(`${name} 구역이 추가되었습니다.`);
-                document.getElementById('newZoneName').value = '';
-                document.getElementById('newZoneCapacity').value = '4';
-                loadZonesFromFirestore();
-                loadAndDisplayZones();
-            }
+// 새 구역 추가 (수정된 버전)
+async function addNewZone() {
+    const name = document.getElementById('newZoneName').value.trim();
+    const timeSlotSettings = document.querySelectorAll('.time-slot-setting');
+    
+    if (!name) {
+        alert('구역 이름을 입력해주세요.');
+        return;
+    }
+    
+    if (timeSlotSettings.length === 0) {
+        alert('최소 하나의 시간대를 설정해주세요.');
+        return;
+    }
+    
+    // 시간대 데이터 수집
+    const timeSlots = [];
+    
+    timeSlotSettings.forEach(setting => {
+        const startHour = setting.querySelector('.start-hour').value;
+        const startMinute = setting.querySelector('.start-minute').value;
+        const endHour = setting.querySelector('.end-hour').value;
+        const endMinute = setting.querySelector('.end-minute').value;
+        const capacity = parseInt(setting.querySelector('.capacity-input').value);
+        
+        const timeText = `${startHour}:${startMinute}-${endHour}:${endMinute}`;
+        
+        if (capacity > 0) {
+            timeSlots.push({
+                time: timeText,
+                maxCapacity: capacity,
+                isActive: true
+            });
         }
+    });
+    
+    if (timeSlots.length === 0) {
+        alert('유효한 시간대를 설정해주세요.');
+        return;
+    }
+    
+    // 기존 구역명 중복 검사
+    const existingZone = zones.find(zone => zone.name === name);
+    if (existingZone) {
+        alert('이미 존재하는 구역 이름입니다.');
+        return;
+    }
+    
+    const added = await addZoneToFirestore(name, timeSlots);
+    if (added) {
+        alert(`${name} 구역이 추가되었습니다.`);
+        document.getElementById('newZoneName').value = '';
+        document.getElementById('timeSlotSettings').innerHTML = '';
+        loadZonesFromFirestore();
+        loadAndDisplayZones();
+    }
+}
 
         // 구역 삭제
         async function deleteZone(docId, zoneName) {
@@ -2374,6 +3370,7 @@ body.dark-mode .home-btn:hover {
             document.getElementById('registrationModal').style.display = 'none';
             document.getElementById('registrationForm').reset();
             document.getElementById('zoneSelectionContainer').classList.remove('show');
+            document.getElementById('timeSelectionContainer').classList.remove('show');
             console.log('Registration modal closed');
         }
 
@@ -2418,12 +3415,120 @@ body.dark-mode .home-btn:hover {
             console.log('Zone management modal closed');
         }
 
-        // 데이터 통계 모달 열기
-        function openStatsModal() {
-            document.getElementById('statsModal').style.display = 'block';
-            loadMonthlyStats();
-            console.log('Stats modal opened');
-        }
+function displayZoneStats() {
+  const display = document.getElementById('statsDisplayArea');
+  display.innerHTML = '';
+
+  const zoneMap = new Map();
+  // zones 배열이 있으면 미리 채우고, 없으면 데이터에서 동적 생성
+  if (Array.isArray(zones) && zones.length) {
+    zones.forEach(z => zoneMap.set(z.name, new Map()));
+  }
+  monthlyData.forEach(({ name, zone }) => {
+    if (!zoneMap.has(zone)) zoneMap.set(zone, new Map());
+    const userMap = zoneMap.get(zone);
+    userMap.set(name, (userMap.get(name) || 0) + 1);
+  });
+
+  const table = document.createElement('table');
+  table.style.width = '100%';
+  table.style.borderCollapse = 'collapse';
+
+  const thead = document.createElement('thead');
+  thead.innerHTML =
+    '<tr>' +
+      '<th style="border:1px solid #ddd;padding:8px;background:#f0f0f0;">구역</th>' +
+      '<th style="border:1px solid #ddd;padding:8px;background:#f0f0f0;">요약</th>' +
+      '<th style="border:1px solid #ddd;padding:8px;background:#f0f0f0;">참여자 (횟수)</th>' +
+    '</tr>';
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  zoneMap.forEach((userMap, zone) => {
+    const row = document.createElement('tr');
+
+    const zoneCell = document.createElement('td');
+    zoneCell.textContent = zone;
+    zoneCell.style.border = '1px solid #ddd';
+    zoneCell.style.padding = '8px';
+
+    const summaryCell = document.createElement('td');
+    const distinct = userMap.size; // 참여 인원 수
+    const total = Array.from(userMap.values()).reduce((a, b) => a + b, 0); // 총 신청 횟수
+    summaryCell.textContent = `${distinct}명 / ${total}회`;
+    summaryCell.style.border = '1px solid #ddd';
+    summaryCell.style.padding = '8px';
+
+    const usersCell = document.createElement('td');
+    usersCell.style.border = '1px solid #ddd';
+    usersCell.style.padding = '8px';
+    usersCell.innerHTML = userMap.size
+      ? Array.from(userMap.entries()).map(([u, c]) => `${u} (${c}회)`).join('<br>')
+      : '참여자 없음';
+
+    row.appendChild(zoneCell);
+    row.appendChild(summaryCell);
+    row.appendChild(usersCell);
+    tbody.appendChild(row);
+  });
+
+  table.appendChild(tbody);
+  display.appendChild(table);
+}
+
+
+
+function displayUserStats() {
+  const displayArea = document.getElementById('statsDisplayArea');
+  displayArea.innerHTML = '';
+
+  // {user: Map(zone -> count)}
+  const userMap = new Map();
+
+  monthlyData.forEach(({ name, zone }) => {
+    if (!userMap.has(name)) userMap.set(name, new Map());
+    const zmap = userMap.get(name);
+    zmap.set(zone, (zmap.get(zone) || 0) + 1);
+  });
+
+  const table = document.createElement('table');
+  table.style.width = '100%';
+  table.style.borderCollapse = 'collapse';
+
+  const thead = document.createElement('thead');
+  thead.innerHTML =
+    '<tr>' +
+      '<th style="border:1px solid #ddd;padding:8px;background:#f0f0f0;">개인</th>' +
+      '<th style="border:1px solid #ddd;padding:8px;background:#f0f0f0;">구역 (횟수)</th>' +
+    '</tr>';
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  userMap.forEach((zmap, user) => {
+    const row = document.createElement('tr');
+
+    const userCell = document.createElement('td');
+    userCell.textContent = user;
+    userCell.style.border = '1px solid #ddd';
+    userCell.style.padding = '8px';
+
+    const zonesCell = document.createElement('td');
+    zonesCell.style.border = '1px solid #ddd';
+    zonesCell.style.padding = '8px';
+    zonesCell.innerHTML = zmap.size
+      ? Array.from(zmap.entries()).map(([z, c]) => `${z} (${c}회)`).join('<br>')
+      : '참여 구역 없음';
+
+    row.appendChild(userCell);
+    row.appendChild(zonesCell);
+    tbody.appendChild(row);
+  });
+
+  table.appendChild(tbody);
+  displayArea.appendChild(table);
+}
+
+
 
         // 데이터 통계 모달 닫기
         function closeStatsModal() {
@@ -2432,122 +3537,99 @@ body.dark-mode .home-btn:hover {
         }
 
         // 월간 통계 로드
-        async function loadMonthlyStats() {
-            try {
-                console.log('Loading monthly stats for:', currentStatsYear, currentStatsMonth);
-                const { collection, getDocs, query, where } = window.firestoreFunctions;
-                const applicantsRef = collection(window.db, 'applicants');
-                const startDate = new Date(currentStatsYear, currentStatsMonth - 1, 1);
-                const endDate = new Date(currentStatsYear, currentStatsMonth, 0);
-                const startDateStr = getLocalDateString(startDate);
-                const endDateStr = getLocalDateString(endDate);
+async function loadMonthlyStats() {
+  try {
+    const { collection, getDocs, query, where } = window.firestoreFunctions;
+    const applicantsRef = collection(window.db, 'applicants');
 
-                const monthQuery = query(
-                    applicantsRef,
-                    where('actualDate', '>=', startDateStr),
-                    where('actualDate', '<=', endDateStr)
-                );
+    // 이번 달 1일~말일
+    const startDate = new Date(currentStatsYear, currentStatsMonth - 1, 1);
+    const endDate   = new Date(currentStatsYear, currentStatsMonth, 0);
+    const startDateStr = getLocalDateString(startDate);
+    const endDateStr   = getLocalDateString(endDate);
 
-                const querySnapshot = await getDocs(monthQuery);
-                const monthlyData = [];
-                const zoneStats = {};
-                const dayStats = {};
+    const monthQuery = query(
+      applicantsRef,
+      where('actualDate', '>=', startDateStr),
+      where('actualDate', '<=', endDateStr)
+    );
 
-                zones.forEach(zone => zoneStats[zone.name] = 0);
-                days.forEach(day => dayStats[day] = 0);
+    const snap = await getDocs(monthQuery);
 
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const day = doc.id.split('_')[1];
-                    const zonesData = data.zones || {};
-                    Object.keys(zonesData).forEach(zone => {
-                        zonesData[zone].forEach(name => {
-                            monthlyData.push({ name, day, zone, actualDate: data.actualDate });
-                            if (zoneStats[zone] !== undefined) {
-                                zoneStats[zone]++;
-                            }
-                            if (dayStats[day] !== undefined) {
-                                dayStats[day]++;
-                            }
-                        });
-                    });
-                });
+    // 전역 배열 재사용(중요! const로 새로 만들지 말기)
+    monthlyData = [];
 
-                displayMonthlyStats(monthlyData, zoneStats, dayStats);
-            } catch (error) {
-                console.error('통계 데이터 로드 오류:', error);
-                alert('통계 데이터를 불러오는 중 오류가 발생했습니다.');
-            }
-        }
+    // Firestore 문서에서 이름/구역만 뽑아서 Push
+    snap.forEach(doc => {
+      const data = doc.data();
+      const zonesData = data.zones || {};
+      Object.keys(zonesData).forEach(zone => {
+        const timeSlots = zonesData[zone] || {};
+        Object.values(timeSlots).forEach(applicantList => {
+          (applicantList || []).forEach(name => {
+            monthlyData.push({ name, zone }); // 시간/요일 버림
+          });
+        });
+      });
+    });
+
+    // 상단 월 표시
+    const monthEl = document.getElementById('currentMonth');
+    if (monthEl) {
+      monthEl.textContent = `${currentStatsYear}년 ${currentStatsMonth}월`;
+    }
+
+    // 기본 탭: 구역별
+    displayZoneStats();
+
+    // 데이터 없을 때 메시지
+    if (monthlyData.length === 0) {
+      document.getElementById('statsDisplayArea').innerHTML =
+        '<p style="text-align:center;color:#a0aec0;">해당 월에 데이터가 없습니다.</p>';
+    }
+  } catch (e) {
+    console.error('통계 데이터 로드 오류:', e);
+    document.getElementById('statsDisplayArea').innerHTML =
+      '<p style="text-align:center;color:#e53e3e;">데이터 로드 실패</p>';
+    alert(`통계 데이터를 불러오는 중 오류가 발생했습니다: ${e.message}`);
+  }
+}
+
 
         // 로컬 날짜 문자열 생성 함수
         function getLocalDateString(date) {
             return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         }
+        // 시간대 겹침 확인 함수 (완전히 새로 추가)
+function isOverlapping(newTime, existingTime) {
+    // 시간 문자열 "HH:MM-HH:MM"을 분 단위로 변환
+    function timeToMinutes(timeStr) {
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return hours * 60 + minutes;
+    }
 
-        // 월간 통계 화면에 표시
-        function displayMonthlyStats(data, zoneStats, dayStats) {
-            document.getElementById('currentMonth').textContent = `${currentStatsYear}년 ${currentStatsMonth}월`;
-
-            const summaryEl = document.getElementById('statsSummary');
-            const totalApplications = data.length;
-            const uniqueUsers = new Set(data.map(d => d.name)).size;
-
-            const zoneCounts = Object.values(zoneStats);
-            const mean = totalApplications / zones.length;
-            const variance = zoneCounts.reduce((acc, count) => acc + Math.pow(count - mean, 2), 0) / zones.length;
-            const stdDev = Math.sqrt(variance);
-            const imbalanceRate = mean > 0 ? (stdDev / mean) * 100 : 0;
-
-            summaryEl.innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-number">${totalApplications}</div>
-                        <div class="stat-label">총 신청 건수</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${uniqueUsers}</div>
-                        <div class="stat-label">참여 인원</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${imbalanceRate.toFixed(1)}%</div>
-                        <div class="stat-label">불균형률</div>
-                    </div>
-                `;
-
-            const zoneStatsEl = document.getElementById('zoneStats');
-            const maxZoneCount = Math.max(...Object.values(zoneStats));
-
-            zoneStatsEl.innerHTML = '';
-            zones.forEach(zone => {
-                const count = zoneStats[zone.name] || 0;
-                const percentage = maxZoneCount > 0 ? (count / maxZoneCount) * 100 : 0;
-                const zoneCard = document.createElement('div');
-                zoneCard.className = 'zone-stat-card';
-                zoneCard.innerHTML = `
-                        <div class="zone-stat-title">${zone.name}</div>
-                        <div class="zone-stat-bar">
-                            <div class="zone-stat-fill" style="width: ${percentage}%"></div>
-                        </div>
-                        <div class="zone-stat-text">${count}건 신청</div>
-                    `;
-                zoneStatsEl.appendChild(zoneCard);
-            });
-            console.log('Monthly stats displayed:', data.length, 'applications');
-        }
+    // 새 시간대의 시작/종료 시간
+    const [newStart, newEnd] = newTime.split('-').map(timeToMinutes);
+    
+    // 기존 시간대의 시작/종료 시간
+    const [existStart, existEnd] = existingTime.split('-').map(timeToMinutes);
+    
+    // 겹침 조건: 새 시작 시간이 기존 종료 시간보다 작거나 같고, 새 종료 시간이 기존 시작 시간보다 크거나 같음
+    return newStart <= existEnd && newEnd >= existStart;
+}
 
         // 월 변경
-        function changeMonth(direction) {
-            currentStatsMonth += direction;
-            if (currentStatsMonth > 12) {
-                currentStatsMonth = 1;
-                currentStatsYear++;
-            } else if (currentStatsMonth < 1) {
-                currentStatsMonth = 12;
-                currentStatsYear--;
-            }
-            loadMonthlyStats();
-            console.log('Month changed to:', currentStatsYear, currentStatsMonth);
-        }
+ function changeMonth(direction) {
+    currentStatsMonth += direction;
+    if (currentStatsMonth > 12) {
+        currentStatsMonth = 1;
+        currentStatsYear += 1;
+    } else if (currentStatsMonth < 1) {
+        currentStatsMonth = 12;
+        currentStatsYear -= 1;
+    }
+    loadMonthlyStats();
+}
 
         // 현재 주의 날짜 범위 계산
         function getCurrentWeekDates() {
@@ -2670,7 +3752,7 @@ body.dark-mode .home-btn:hover {
                 const dateParts = application.actualDate.split('-');
                 const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
                 const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-                detailsDiv.textContent = `${dateString} • ${application.zone}`;
+                detailsDiv.textContent = `${dateString} • ${application.zone} • ${application.timeSlot || '시간미지정'}`;
 
                 infoDiv.appendChild(dayDiv);
                 infoDiv.appendChild(detailsDiv);
@@ -2754,6 +3836,31 @@ body.dark-mode .home-btn:hover {
             });
             console.log('Zone display updated for day:', selectedDay);
         }
+        function generateHourOptions() {
+    let options = '';
+    for (let i = 6; i <= 22; i++) {
+        const hour = i.toString().padStart(2, '0');
+        options += `<option value="${hour}">${hour}</option>`;
+    }
+    return options;
+}
+
+function generateMinuteOptions() {
+    const minutes = ['00', '15', '30', '45'];
+    let options = '';
+    minutes.forEach(minute => {
+        options += `<option value="${minute}">${minute}</option>`;
+    });
+    return options;
+}
+
+
+
+function removeTimeSlot(button) {
+    if (confirm('이 시간대를 삭제하시겠습니까?')) {
+        button.closest('.time-slot-setting').remove();
+    }
+}
 
         // 신청자 목록 업데이트
         function updateDisplay() {
@@ -2770,29 +3877,52 @@ body.dark-mode .home-btn:hover {
                 dayTitleDiv.textContent = `${day} (${dayDate})`;
                 dayDiv.appendChild(dayTitleDiv);
 
-                zones.forEach(zone => {
-                    const zoneApplicants = applicants[day][zone.name] || [];
-                    const zoneDiv = document.createElement('div');
-                    zoneDiv.className = 'zone-applicants';
+zones.forEach(zone => {
+    const zoneTimeSlots = applicants[day][zone.name] || {};
+    
+    const zoneDiv = document.createElement('div');
+    zoneDiv.className = 'zone-applicants';
 
-                    const zoneNameDiv = document.createElement('div');
-                    zoneNameDiv.className = 'zone-name';
-                    zoneNameDiv.textContent = `${zone.name} (${zoneApplicants.length}/${zone.maxCapacity})`;
+    const zoneNameDiv = document.createElement('div');
+    zoneNameDiv.className = 'zone-name';
+    zoneNameDiv.textContent = zone.name;
 
-                    const applicantNamesDiv = document.createElement('div');
-                    applicantNamesDiv.className = 'applicant-names';
-                    if (zoneApplicants.length > 0) {
-                        applicantNamesDiv.innerHTML = zoneApplicants
-                            .map(name => `<span class="name-tag">${name}</span>`)
-                            .join('');
-                    } else {
-                        applicantNamesDiv.textContent = '신청자 없음';
-                    }
+    const timeSlotsDiv = document.createElement('div');
+    timeSlotsDiv.className = 'time-slots-container';
+    
+    zone.timeSlots.forEach(slot => {
+        if (slot.isActive) {
+            const currentCount = (zoneTimeSlots[slot.time] || []).length;
+            const timeSlotDiv = document.createElement('div');
+            timeSlotDiv.className = 'time-slot-item';
+            timeSlotDiv.style.marginBottom = '12px';
+            
+            const timeHeaderDiv = document.createElement('div');
+            timeHeaderDiv.className = 'time-slot-header';
+            timeHeaderDiv.style.color = '#667eea';
+            timeHeaderDiv.style.fontWeight = '700';
+            timeHeaderDiv.style.marginBottom = '6px';
+            timeHeaderDiv.textContent = `${formatTimeToAMPM(slot.time)} (${currentCount}/${slot.maxCapacity})`;
+            
+            const namesDiv = document.createElement('div');
+            if (currentCount > 0) {
+                namesDiv.innerHTML = zoneTimeSlots[slot.time]
+                    .map(name => `<span class="name-tag">${name}</span>`)
+                    .join('');
+            } else {
+                namesDiv.innerHTML = '<span style="color: #a0aec0; font-style: italic;">신청자 없음</span>';
+            }
+            
+            timeSlotDiv.appendChild(timeHeaderDiv);
+            timeSlotDiv.appendChild(namesDiv);
+            timeSlotsDiv.appendChild(timeSlotDiv);
+        }
+    });
 
-                    zoneDiv.appendChild(zoneNameDiv);
-                    zoneDiv.appendChild(applicantNamesDiv);
-                    dayDiv.appendChild(zoneDiv);
-                });
+    zoneDiv.appendChild(zoneNameDiv);
+    zoneDiv.appendChild(timeSlotsDiv);
+    dayDiv.appendChild(zoneDiv);
+});
 
                 applicantsListEl.appendChild(dayDiv);
             });
@@ -3025,37 +4155,89 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
         // 요일 선택 시 구역 선택 영역 표시
-        document.querySelectorAll('input[name="day"]').forEach(radio => {
-            radio.addEventListener('change', function () {
-                const zoneContainer = document.getElementById('zoneSelectionContainer');
-                if (this.checked) {
-                    zoneContainer.classList.add('show');
-                    updateZoneDisplay(this.value);
-                    document.querySelectorAll('input[name="zone"]').forEach(zoneRadio => {
-                        zoneRadio.checked = false;
-                    });
-                    console.log('Day selected:', this.value);
+// 요일 선택 시 구역 선택 영역 표시
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[name="day"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            const zoneContainer = document.getElementById('zoneSelectionContainer');
+            if (this.checked) {
+                zoneContainer.classList.add('show');
+                
+                // transition이 반영된 후에 스크롤 실행
+                setTimeout(() => {
                     zoneContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
+                }, 100); // transition 완료 후 스크롤
+                
+                updateZoneDisplay(this.value);
+                document.querySelectorAll('input[name="zone"]').forEach(zoneRadio => {
+                    zoneRadio.checked = false;
+                });
+                console.log('Day selected:', this.value);
+            }
         });
+    });
+});
+        // 구역 선택 시 시간 선택 영역 표시
+document.addEventListener('change', function(e) {
+    if (e.target.name === 'zone') {
+        const selectedDay = document.querySelector('input[name="day"]:checked')?.value;
+        const selectedZone = e.target.value;
+        
+        if (selectedDay && selectedZone) {
+            const timeContainer = document.getElementById('timeSelectionContainer');
+            timeContainer.classList.add('show');
+            updateTimeSelection(selectedDay, selectedZone);
+            
+            // 기존 시간 선택 초기화
+            document.querySelectorAll('input[name="time"]').forEach(timeRadio => {
+                timeRadio.checked = false;
+            });
+            
+            console.log('Zone selected:', selectedZone);
+            
+            timeContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+        if (e.target.name === 'admin-day') {
+        const adminZoneContainer = document.getElementById('adminZoneSelectionContainer');
+        adminZoneContainer.style.display = 'block';
+    }
+    
+    // 관리자 구역 선택 (새로 추가)  
+    if (e.target.name === 'admin-zone') {
+        const selectedDay = document.querySelector('input[name="admin-day"]:checked')?.value;
+        const selectedZone = e.target.value;
+        if (selectedDay && selectedZone) {
+            const adminTimeContainer = document.getElementById('adminTimeSelectionContainer');
+            adminTimeContainer.style.display = 'block';
+            updateAdminTimeSelection(selectedDay, selectedZone); // 이 함수도 새로 만들어야 함
+        }
+    }
+});
+
 
         // 폼 제출 이벤트 처리
         document.getElementById('registrationForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const selectedDay = document.querySelector('input[name="day"]:checked');
-            const selectedZone = document.querySelector('input[name="zone"]:checked');
+                const selectedDay = document.querySelector('input[name="day"]:checked');
+                const selectedZone = document.querySelector('input[name="zone"]:checked');
+                const selectedTime = document.querySelector('input[name="time"]:checked');
 
-            if (!selectedDay) {
-                alert('요일을 선택해주세요.');
-                console.log('Form submission failed: No day selected');
-                return;
-            }
-            if (!selectedZone) {
-                alert('구역을 선택해주세요.');
-                console.log('Form submission failed: No zone selected');
-                return;
-            }
+                if (!selectedDay) {
+                    alert('요일을 선택해주세요.');
+                    console.log('Form submission failed: No day selected');
+                    return;
+                }
+                if (!selectedZone) {
+                    alert('구역을 선택해주세요.');
+                    console.log('Form submission failed: No zone selected');
+                    return;
+                }
+                if (!selectedTime) {
+                    alert('시간을 선택해주세요.');
+                    console.log('Form submission failed: No time selected');
+                    return;
+                }
 
             const dayValue = selectedDay.value;
             const zoneValue = selectedZone.value;
@@ -3068,20 +4250,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            let isDuplicate = false;
-            zones.forEach(zone => {
-                if (applicants[dayValue][zone.name].includes(currentUser)) {
-                    isDuplicate = true;
-                }
-            });
+                const timeValue = selectedTime.value;
 
-            if (isDuplicate) {
-                alert(`${dayValue}에 이미 신청하셨습니다.`);
-                console.log('Form submission failed: Duplicate application');
-                return;
-            }
+                // 같은 시간대에 중복 신청 체크
+// 같은 시간대에 중복 신청 체크 (모든 구역에서)
+let isDuplicate = false;
+zones.forEach(zone => {
+    if (applicants[dayValue][zone.name][timeValue] && 
+        applicants[dayValue][zone.name][timeValue].includes(currentUser)) {
+        isDuplicate = true;
+    }
+});
 
-            const saved = await saveToFirestore(currentUser, dayValue, zoneValue);
+if (isDuplicate) {
+    alert(`${dayValue} ${timeValue}에 이미 다른 구역에서 신청하셨습니다.`);
+    return;
+}
+// 중복 시간대 확인 (새로 추가)
+let isOverlappingTime = false;
+userApplications.forEach(app => {
+    if (app.day === dayValue && isOverlapping(timeValue, app.timeSlot)) {
+        isOverlappingTime = true;
+    }
+});
+
+if (isOverlappingTime) {
+    alert(`${dayValue}에 이미 겹치는 시간대(${timeValue})에 신청하셨습니다. 다른 시간대를 선택해주세요.`);
+    return; // 신청 중단
+}
+
+            const saved = await saveToFirestore(currentUser, dayValue, zoneValue, timeValue);
             if (saved) {
                 alert(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`);
                 closeRegistrationModal();
@@ -3142,9 +4340,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // 관리자 액션 실행
-        function executeAdminAction() {
-            alert('관리자 액션 실행 (구현 필요)');
+// 약 1460번째 줄의 함수를 다음과 같이 수정
+async function executeAdminAction() {
+    const selectedUser = document.getElementById('adminUserSelect').value;
+    const selectedAction = document.getElementById('adminAction').value;
+    const selectedDay = document.querySelector('input[name="admin-day"]:checked')?.value;
+    const selectedZone = document.querySelector('input[name="admin-zone"]:checked')?.value;
+    const selectedTime = document.querySelector('input[name="admin-time"]:checked')?.value;
+    
+    if (!selectedUser || !selectedAction) {
+        alert('사용자와 작업을 선택해주세요.');
+        return;
+    }
+    
+    if (selectedAction === 'assign') {
+        if (!selectedDay || !selectedZone || !selectedTime) {
+            alert('요일, 구역, 시간을 모두 선택해주세요.');
+            return;
         }
+        
+        const saved = await saveToFirestore(selectedUser, selectedDay, selectedZone, selectedTime);
+        if (saved) {
+            alert(`${selectedUser}님이 ${selectedDay} ${selectedZone} ${selectedTime}에 배정되었습니다.`);
+            resetAdminForm();
+        }
+    } else if (selectedAction === 'cancel') {
+        // 취소 로직은 별도 UI 필요
+        showAdminCancelOptions(selectedUser);
+    }
+}
 
         // 관리자 폼 초기화
         function resetAdminForm() {
@@ -3153,12 +4377,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         <!-- 플로팅 메뉴를 body 태그 끝나기 전에 추가 -->
 <div class="floating-menu-container" id="floatingMenu">
+        <!-- 글자 크기 조정 버튼 -->
+        <div class="sub-menu-btn font-size-btn" onclick="toggleFontSizeSlider()" title="글자 크기 조정">
+        Aa
+    </div>
     <!-- 다크모드 토글 버튼 -->
     <button class="sub-menu-btn dark-mode-btn" onclick="toggleDarkMode()" title="다크모드 전환">
         🌙
     </button>
     
-    <!-- 홈 버튼 -->
+    <!-- 구역카드 버튼 -->
     <button class="sub-menu-btn home-btn" onclick="goToHome()" title="홈으로 이동">
         🏠
     </button>
@@ -3171,6 +4399,15 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="hamburger-line"></div>
         </div>
     </button>
+        <!-- 글자 크기 슬라이더 (처음에는 숨김) -->
+    <div class="font-size-slider-container" id="fontSizeSlider">
+        <div class="slider-header">
+            <span>글자 크기</span>
+            <button class="close-slider" onclick="closeFontSizeSlider()">×</button>
+        </div>
+        <input type="range" id="fontSizeRange" min="12" max="24" value="16" step="1">
+        <div class="slider-value" id="fontSizeValue">16px</div>
+    </div>
 </div>
 
 <script>
@@ -3197,6 +4434,8 @@ function toggleDarkMode() {
         darkModeBtn.title = '다크모드 전환';
         localStorage.setItem('darkMode', 'disabled');
     }
+    // 글자 크기 버튼 색상 업데이트
+    updateFontSizeButtonColor();
 }
 
 // 홈으로 이동 함수
