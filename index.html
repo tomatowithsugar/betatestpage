@@ -39,7 +39,6 @@
         // DOM이 로드된 후 실행
         window.addEventListener('DOMContentLoaded', function () {
             window.initializeApp();
-            setTimeout(initializeDayTabs, 500);
         });</script>
 
     <style>
@@ -2108,33 +2107,36 @@ body.dark-mode #fontSizeRange {
     font-size: 12px;
     font-weight: 600;
 }
+
 /* 요일 탭 스타일 */
 .day-tabs {
     display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+    overflow-x: auto;
     gap: 8px;
+    margin-bottom: 20px;
     padding: 0 10px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.day-tabs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
 }
 
 .day-tab {
+    flex: 0 0 auto;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.7);
     border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(102, 126, 234, 0.2);
     cursor: pointer;
     font-weight: 600;
     font-size: 14px;
+    white-space: nowrap;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    min-width: 70px;
-    text-align: center;
 }
 
 .day-tab:hover {
     background: rgba(102, 126, 234, 0.1);
-    transform: translateY(-2px);
 }
 
 .day-tab.active {
@@ -2143,23 +2145,17 @@ body.dark-mode #fontSizeRange {
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
+.day-tab.empty {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .tab-content {
     min-height: 200px;
 }
-
-/* 다크모드에서의 탭 스타일 */
-body.dark-mode .day-tab {
-    background: rgba(45, 55, 72, 0.7);
-    color: #e2e8f0;
-    border-color: rgba(102, 126, 234, 0.3);
-}
-
-body.dark-mode .day-tab:hover {
-    background: rgba(102, 126, 234, 0.2);
-}
-
-body.dark-mode .day-tab.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.day-tabs {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
     </style>
 </head>
@@ -2205,22 +2201,15 @@ body.dark-mode .day-tab.active {
         </div>
 
         <!-- 신청 현황 -->
-<!-- 신청 현황 -->
 <div class="applicants-list">
     <h3>신청 현황</h3>
-    
-    <!-- 요일 탭 버튼 -->
     <div class="day-tabs" id="dayTabs">
-        <!-- 동적으로 생성됩니다 -->
+        <!-- 동적으로 생성될 요일 탭들 -->
     </div>
-    
-    <!-- 탭 내용 -->
-    <div class="tab-content" id="tabContent">
-        <!-- 선택된 요일의 신청 현황이 여기에 표시됩니다 -->
+    <div class="tab-content" id="applicantsList">
+        <!-- 선택된 요일의 신청현황만 표시 -->
     </div>
 </div>
-            <div id="applicantsList"></div>
-        </div>
         <div class="version-info">v2.4</div>
     </div>
     <!-- 고정 공지 버튼 -->
@@ -2569,6 +2558,7 @@ function initializeApplicants() {
         initializeApplicants();
         updateZoneUI();
         updateDisplay();
+        createDayTabs();
     } catch (error) {
         console.error('구역 로드 오류:', error);
         alert('구역 목록을 불러오는 중 오류가 발생했습니다: ' + error.message);
@@ -2893,6 +2883,152 @@ function applySavedFontSize() {
     }
   }
 }
+// 요일 탭 생성 함수
+function createDayTabs() {
+    const dayTabsContainer = document.getElementById('dayTabs');
+    dayTabsContainer.innerHTML = '';
+    
+    // 오늘 날짜의 요일 찾기
+    const today = new Date();
+    const dayNames = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    const todayDayName = dayNames[today.getDay()];
+    let activeDay = todayDayName;
+    
+    days.forEach(day => {
+        // 해당 요일에 활성화된 구역이 있는지 확인
+        const hasActiveZones = zones.some(zone => {
+            if (!zone.schedules) return false;
+            return zone.schedules.some(schedule => 
+                schedule.days && schedule.days.includes(day)
+            );
+        });
+        
+        // 활성화된 구역이 없으면 탭을 생성하지 않음
+        if (!hasActiveZones) return;
+        
+        const tab = document.createElement('div');
+        tab.className = `day-tab ${day === activeDay ? 'active' : ''}`;
+        tab.textContent = day;
+        tab.dataset.day = day;
+        
+        tab.addEventListener('click', () => {
+            // 모든 탭에서 active 클래스 제거
+            document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+            // 클릭한 탭에 active 클래스 추가
+            tab.classList.add('active');
+            // 해당 요일의 신청현황 표시
+            displayDayApplications(day);
+        });
+        
+        dayTabsContainer.appendChild(tab);
+    });
+    
+    // 활성 탭이 있으면 해당 요일 표시
+    const activeTab = document.querySelector('.day-tab.active');
+    if (activeTab) {
+        displayDayApplications(activeTab.dataset.day);
+    }
+    scrollToActiveTab()
+}
+
+// 특정 요일의 신청현황 표시 함수
+function displayDayApplications(day) {
+    const applicantsListEl = document.getElementById('applicantsList');
+    applicantsListEl.innerHTML = '';
+    
+    // 해당 요일에 활성화된 구역이 있는지 확인
+    const hasActiveZones = zones.some(zone => {
+        if (!zone.schedules) return false;
+        return zone.schedules.some(schedule => 
+            schedule.days && schedule.days.includes(day)
+        );
+    });
+    
+    if (!hasActiveZones) {
+        applicantsListEl.innerHTML = '<div class="no-applications">해당 요일은 등록된 구역이 없습니다.</div>';
+        return;
+    }
+    
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'day-section';
+
+    const dayTitleDiv = document.createElement('div');
+    dayTitleDiv.className = 'day-title';
+    const dayDate = getDateForDay(day);
+    dayTitleDiv.textContent = `${day} (${dayDate})`;
+    dayDiv.appendChild(dayTitleDiv);
+
+    zones.forEach(zone => {
+        // 해당 요일에 구역이 활성화되어 있는지 확인
+        let hasActiveSlots = false;
+        if (zone.schedules) {
+            zone.schedules.forEach(schedule => {
+                if (schedule.days && schedule.days.includes(day)) {
+                    hasActiveSlots = true;
+                }
+            });
+        }
+        
+        if (!hasActiveSlots) return;
+
+        const zoneDiv = document.createElement('div');
+        zoneDiv.className = 'zone-applicants';
+
+        const zoneNameDiv = document.createElement('div');
+        zoneNameDiv.className = 'zone-name';
+        zoneNameDiv.textContent = zone.name;
+
+        const timeSlotsDiv = document.createElement('div');
+        timeSlotsDiv.className = 'time-slots-container';
+        
+        // 해당 요일에 활성화된 시간대 표시
+        if (zone.schedules) {
+            zone.schedules.forEach(schedule => {
+                if (schedule.days && schedule.days.includes(day)) {
+                    schedule.timeSlots.forEach(slot => {
+                        if (slot.isActive !== false) {
+                            const currentCount = applicants[day] && 
+                                                 applicants[day][zone.name] && 
+                                                 applicants[day][zone.name][slot.time] 
+                                                 ? applicants[day][zone.name][slot.time].length 
+                                                 : 0;
+                            
+                            const timeSlotDiv = document.createElement('div');
+                            timeSlotDiv.className = 'time-slot-item';
+                            timeSlotDiv.style.marginBottom = '12px';
+                            
+                            const timeHeaderDiv = document.createElement('div');
+                            timeHeaderDiv.className = 'time-slot-header';
+                            timeHeaderDiv.style.color = '#667eea';
+                            timeHeaderDiv.style.fontWeight = '700';
+                            timeHeaderDiv.style.marginBottom = '6px';
+                            timeHeaderDiv.textContent = `${formatTimeToAMPM(slot.time)} (${currentCount}/${slot.maxCapacity || 4})`;
+                            
+                            const namesDiv = document.createElement('div');
+                            if (currentCount > 0) {
+                                namesDiv.innerHTML = applicants[day][zone.name][slot.time]
+                                    .map(name => `<span class="name-tag">${name}</span>`)
+                                    .join('');
+                            } else {
+                                namesDiv.innerHTML = '<span style="color: #a0aec0; font-style: italic;">신청자 없음</span>';
+                            }
+                            
+                            timeSlotDiv.appendChild(timeHeaderDiv);
+                            timeSlotDiv.appendChild(namesDiv);
+                            timeSlotsDiv.appendChild(timeSlotDiv);
+                        }
+                    });
+                }
+            });
+        }
+
+        zoneDiv.appendChild(zoneNameDiv);
+        zoneDiv.appendChild(timeSlotsDiv);
+        dayDiv.appendChild(zoneDiv);
+    });
+
+    applicantsListEl.appendChild(dayDiv);
+}
 
 // DOM이 로드된 후 실행
 window.addEventListener('DOMContentLoaded', function() {
@@ -3024,6 +3160,16 @@ function formatTimeToAMPM(timeStr) {
     };
     return `${convertToAMPM(start)}-${convertToAMPM(end)}`;
 }
+function scrollToActiveTab() {
+    const activeTab = document.querySelector('.day-tab.active');
+    if (activeTab) {
+        activeTab.scrollIntoView({
+            behavior: 'smooth',
+            inline: 'center',
+            block: 'nearest'
+        });
+    }
+}
 
         function invalidateUsersCache() {
             usersLoaded = false;
@@ -3127,7 +3273,6 @@ function formatTimeToAMPM(timeStr) {
                 }, (error) => {
                     console.error('Firestore snapshot error:', error);
                     alert('데이터베이스 연결에 실패했습니다.');
-                    initializeDayTabs();
                 });
             } catch (error) {
                 console.error('Firebase 연결 오류:', error);
@@ -3571,146 +3716,7 @@ function initSchedulesContainer() {
     container.innerHTML = '';
     addNewSchedule(); // 기본으로 하나의 스케줄 추가
 }
-// 요일 탭 생성 및 관리 함수
-function initializeDayTabs() {
-    const dayTabsContainer = document.getElementById('dayTabs');
-    const tabContentContainer = document.getElementById('tabContent');
-    
-    // 기존 내용 비우기
-    dayTabsContainer.innerHTML = '';
-    tabContentContainer.innerHTML = '';
-    
-    // 오늘 날짜의 요일 찾기
-    const today = new Date();
-    const dayIndex = today.getDay();
-    // JavaScript에서 일요일은 0, 월요일은 1, ... 토요일은 6
-    const dayMap = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
-    const todayDayName = dayMap[dayIndex];
-    
-    // 활성화된 구역이 있는 요일만 필터링
-    const activeDays = days.filter(day => {
-        return zones.some(zone => {
-            if (!zone.schedules) return false;
-            return zone.schedules.some(schedule => 
-                schedule.days && schedule.days.includes(day)
-            );
-        });
-    });
-    
-    // 탭 버튼 생성
-    activeDays.forEach(day => {
-        const tab = document.createElement('div');
-        tab.className = `day-tab ${day === todayDayName ? 'active' : ''}`;
-        tab.textContent = day;
-        tab.dataset.day = day;
-        
-        tab.addEventListener('click', () => {
-            // 모든 탭에서 active 클래스 제거
-            document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
-            // 클릭한 탭에 active 클래스 추가
-            tab.classList.add('active');
-            // 해당 요일의 신청 현황 표시
-            displayDayApplications(day);
-        });
-        
-        dayTabsContainer.appendChild(tab);
-    });
-    
-    // 기본적으로 오늘 요일의 신청 현황 표시
-    if (activeDays.includes(todayDayName)) {
-        displayDayApplications(todayDayName);
-    } else if (activeDays.length > 0) {
-        // 오늘 요일에 활성 구역이 없으면 첫 번째 요일 표시
-        displayDayApplications(activeDays[0]);
-        document.querySelector(`.day-tab[data-day="${activeDays[0]}"]`).classList.add('active');
-    }
-}
 
-// 특정 요일의 신청 현황 표시 함수
-function displayDayApplications(day) {
-    const tabContentContainer = document.getElementById('tabContent');
-    tabContentContainer.innerHTML = '';
-    
-    const dayDiv = document.createElement('div');
-    dayDiv.className = 'day-section';
-
-    const dayTitleDiv = document.createElement('div');
-    dayTitleDiv.className = 'day-title';
-    const dayDate = getDateForDay(day);
-    dayTitleDiv.textContent = `${day} (${dayDate})`;
-    dayDiv.appendChild(dayTitleDiv);
-
-    zones.forEach(zone => {
-        // 해당 요일에 구역이 활성화되어 있는지 확인
-        let hasActiveSlots = false;
-        if (zone.schedules) {
-            zone.schedules.forEach(schedule => {
-                if (schedule.days && schedule.days.includes(day)) {
-                    hasActiveSlots = true;
-                }
-            });
-        }
-        
-        if (!hasActiveSlots) return;
-
-        const zoneDiv = document.createElement('div');
-        zoneDiv.className = 'zone-applicants';
-
-        const zoneNameDiv = document.createElement('div');
-        zoneNameDiv.className = 'zone-name';
-        zoneNameDiv.textContent = zone.name;
-
-        const timeSlotsDiv = document.createElement('div');
-        timeSlotsDiv.className = 'time-slots-container';
-        
-        // 해당 요일에 활성화된 시간대 표시
-        if (zone.schedules) {
-            zone.schedules.forEach(schedule => {
-                if (schedule.days && schedule.days.includes(day)) {
-                    schedule.timeSlots.forEach(slot => {
-                        if (slot.isActive !== false) {
-                            const currentCount = applicants[day] && 
-                                                 applicants[day][zone.name] && 
-                                                 applicants[day][zone.name][slot.time] 
-                                                 ? applicants[day][zone.name][slot.time].length 
-                                                 : 0;
-                            
-                            const timeSlotDiv = document.createElement('div');
-                            timeSlotDiv.className = 'time-slot-item';
-                            timeSlotDiv.style.marginBottom = '12px';
-                            
-                            const timeHeaderDiv = document.createElement('div');
-                            timeHeaderDiv.className = 'time-slot-header';
-                            timeHeaderDiv.style.color = '#667eea';
-                            timeHeaderDiv.style.fontWeight = '700';
-                            timeHeaderDiv.style.marginBottom = '6px';
-                            timeHeaderDiv.textContent = `${formatTimeToAMPM(slot.time)} (${currentCount}/${slot.maxCapacity || 4})`;
-                            
-                            const namesDiv = document.createElement('div');
-                            if (currentCount > 0) {
-                                namesDiv.innerHTML = applicants[day][zone.name][slot.time]
-                                    .map(name => `<span class="name-tag">${name}</span>`)
-                                    .join('');
-                            } else {
-                                namesDiv.innerHTML = '<span style="color: #a0aec0; font-style: italic;">신청자 없음</span>';
-                            }
-                            
-                            timeSlotDiv.appendChild(timeHeaderDiv);
-                            timeSlotDiv.appendChild(namesDiv);
-                            timeSlotsDiv.appendChild(timeSlotDiv);
-                        }
-                    });
-                }
-            });
-        }
-
-        zoneDiv.appendChild(zoneNameDiv);
-        zoneDiv.appendChild(timeSlotsDiv);
-        dayDiv.appendChild(zoneDiv);
-    });
-
-    tabContentContainer.appendChild(dayDiv);
-}
 // 새 스케줄 추가
 function addNewSchedule() {
     const container = document.getElementById('schedulesContainer');
@@ -4342,10 +4348,9 @@ function removeTimeSlot(button) {
 
         // 신청자 목록 업데이트
        // 신청자 목록 업데이트 함수 수정
-       // 신청자 목록 업데이트 함수 (탭 방식으로 변경)
+       // 전체 신청현황 업데이트 (더 이상 사용하지 않음)
 function updateDisplay() {
-    initializeDayTabs(); // 탭 인터페이스 초기화
-    console.log('Applicants list updated with tab interface');
+    createDayTabs(); // 요일 탭 생성
 }
        // 기존 데이터를 새로운 구조로 업데이트하는 함수
 async function updateZoneStructure(docId, zoneName, schedules) {
