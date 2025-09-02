@@ -19,8 +19,8 @@
   projectId: "assignment-1bf57",
   storageBucket: "assignment-1bf57.firebasestorage.app",
   messagingSenderId: "609185997879",
-  appId: "1:609185997879:web:e1932a4a1e959c1b088bb2",
-  measurementId: "G-TEP0FST75C"
+  appId: "1:609185997879:web:c8db0f997cbfafc2088bb2",
+  measurementId: "G-Q0X97TE8LS"
         };
 
 
@@ -2157,6 +2157,447 @@ body.dark-mode #fontSizeRange {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 }
+/* 날씨 버튼 스타일 */
+.weather-btn {
+    background: rgba(255, 255, 255, 0.95);
+    color: #3b82f6;
+    bottom: 5px;
+    right: 5px;
+}
+
+.weather-btn:hover {
+    background: white;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+/* 다크모드에서의 날씨 버튼 */
+body.dark-mode .weather-btn {
+    background: rgba(45, 55, 72, 0.95);
+    color: #93c5fd;
+}
+
+body.dark-mode .weather-btn:hover {
+    background: rgba(55, 65, 81, 1);
+    box-shadow: 0 8px 25px rgba(147, 197, 253, 0.3);
+}
+
+/* 플로팅 메뉴 열린 상태에서의 버튼 위치 조정 */
+.floating-menu-container.open .weather-btn {
+    transform: translateY(-210px) translateX(0px) scale(1);
+    transition-delay: 0.05s;  /* 가장 먼저 나타나도록 */
+}
+
+.floating-menu-container.open .font-size-btn {
+    transform: translateY(-140px) translateX(0px) scale(1);
+    transition-delay: 0.1s;   /* 두 번째로 나타나도록 */
+}
+
+.floating-menu-container.open .dark-mode-btn {
+    transform: translateY(-70px) translateX(0px) scale(1);
+    transition-delay: 0.15s;  /* 세 번째로 나타나도록 */
+}
+
+.floating-menu-container.open .home-btn {
+    transform: translateY(0px) translateX(-70px) scale(1);
+    transition-delay: 0.2s;   /* 마지막으로 나타나도록 */
+}
+@media (max-width: 768px) {
+    .floating-menu-container.open .weather-btn {
+        transform: translateY(-195px) translateX(0px) scale(1);
+    }
+    
+    .floating-menu-container.open .font-size-btn {
+        transform: translateY(-130px) translateX(0px) scale(1);
+    }
+    
+    .floating-menu-container.open .dark-mode-btn {
+        transform: translateY(-65px) translateX(0px) scale(1);
+    }
+    
+    .floating-menu-container.open .home-btn {
+        transform: translateY(0px) translateX(-65px) scale(1);
+    }
+}
+/* 날씨 모달 오버레이 스타일 */
+.weather-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.weather-modal-overlay.active {
+    opacity: 1;
+}
+
+/* 날씨 모달 컨텐츠 스타일 (아래에서 위로 올라오는 애니메이션) */
+.weather-modal-content {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 800px;
+    max-height: 80vh;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.weather-modal-content.active {
+    transform: translateY(0);
+}
+
+/* 모달 헤더 (제목, 닫기 버튼) */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #333;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 2.5em;
+    line-height: 1;
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.2s;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+/* 날씨 카드 컨테이너 (스크롤 가능) */
+.forecast-container {
+    display: flex;
+    overflow-x: auto; /* 작은 화면에서 가로 스크롤 가능 */
+    gap: 15px;
+    padding: 10px 5px;
+}
+/* 스크롤바 디자인 */
+.forecast-container::-webkit-scrollbar {
+  height: 8px;
+}
+.forecast-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+/* 개별 날씨 카드 */
+.forecast-card {
+    flex: 0 0 130px; /* 카드의 너비를 고정 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+    text-align: center;
+}
+
+.forecast-date {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+.forecast-date .day-of-week {
+    font-size: 1.2em;
+    color: #007bff;
+}
+.forecast-date .month-day {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.weather-icon {
+    width: 70px;
+    height: 70px;
+}
+
+.weather-description {
+    font-size: 0.9em;
+    color: #495057;
+    margin-bottom: 10px;
+    height: 30px; /* 설명이 길어도 높이를 유지 */
+}
+
+.temperature {
+    font-size: 1em;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+.temp-max {
+    color: #e44d26;
+    font-weight: bold;
+}
+.temp-min {
+    color: #269de4;
+}
+.weather-icon-kma {
+    font-size: 4em; /* 이모지 아이콘 크기 */
+    line-height: 1;
+    margin: 10px 0;
+}
+/* 기존 모달 컨텐츠 스타일 유지 */
+.weather-modal-content {
+    background-color: #ffffff; /* 기본 배경 흰색 유지 */
+    width: 100%;
+    max-width: 800px;
+    max-height: 80vh;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    /* 여기에 배경 이미지 관련 속성 추가 */
+    background-size: cover; /* 배경 이미지가 모달 전체를 덮도록 */
+    background-position: center bottom; /* 배경 이미지 위치 */
+    color: #333; /* 기본 글자색 */
+    position: relative; /* 의사 요소를 위한 기준점 */
+}
+
+/* 모달 컨텐츠 배경 이미지 오버레이 (텍스트 가독성을 높임) */
+.weather-modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5); /* 반투명 흰색 오버레이 */
+    border-radius: 20px 20px 0 0;
+    z-index: 0; /* 컨텐츠 아래에 위치 */
+    pointer-events: none;
+}
+
+.weather-modal-content > *:not(::before) {
+    position: relative;
+    z-index: 1; /* 컨텐츠가 오버레이 위에 오도록 */
+}
+
+/* 날씨별 모달 배경 이미지 */
+.weather-modal-content.clear-bg {
+    background-image: url('https://images.unsplash.com/photo-1596482181554-46c05d7b5b7c?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* 맑음 */
+    color: #222;
+}
+.weather-modal-content.cloudy-bg {
+    background-image: url('https://images.unsplash.com/photo-1501612781498-8a211e2f5f7a?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* 구름많음 */
+    color: #222;
+}
+.weather-modal-content.overcast-bg {
+    background-image: url('https://images.unsplash.com/photo-1534082531317-a1dc0c634c03?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* 흐림 */
+    color: #fff;
+}
+.weather-modal-content.rain-bg {
+    background-image: url('https://images.unsplash.com/photo-1534082531317-a1dc0c634c03?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* 비 */
+    color: #fff;
+}
+.weather-modal-content.sleet-bg { /* 비/눈 */
+    background-image: url('https://images.unsplash.com/photo-1601614051016-17b738941011?q=80&w=2942&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+    color: #fff;
+}
+.weather-modal-content.snow-bg {
+    background-image: url('https://images.unsplash.com/photo-1549477025-a1c6a014d48c?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* 눈 */
+    color: #fff;
+}
+.weather-modal-content.shower-bg { /* 소나기 */
+    background-image: url('https://images.unsplash.com/photo-1627993074360-1e5f8f8f0f0f?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    color: #fff;
+}
+.weather-modal-content.default-bg {
+    background-image: url('https://images.unsplash.com/photo-1500382017468-b27b3d0a6311?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* 기본 배경 */
+    color: #333;
+}
+
+/* 모달 헤더 (배경에 따라 글자색 조정) */
+.modal-header h2, .close-button {
+    color: inherit; /* 부모 요소의 글자색을 상속 */
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2); /* 가독성 향상 */
+}
+
+
+/* 개별 날씨 카드 스타일 (배경 그라데이션 추가) */
+.forecast-card {
+    flex: 0 0 130px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    /* background-color: #f8f9fa; */ /* 기존 배경색 제거 */
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* 테두리 연하게 */
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    backdrop-filter: blur(5px); /* 배경을 흐리게 */
+    color: #f8f9fa; /* 카드 내부 글자색 밝게 */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.forecast-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+/* 날씨별 카드 배경 그라데이션 */
+.clear-bg-card { background: linear-gradient(135deg, #FFD700, #FFA500); } /* 맑음: 황금색 */
+.cloudy-bg-card { background: linear-gradient(135deg, #A9A9A9, #778899); } /* 구름많음: 회색 */
+.overcast-bg-card { background: linear-gradient(135deg, #696969, #4F4F4F); } /* 흐림: 진회색 */
+.rain-bg-card { background: linear-gradient(135deg, #4682B4, #2F4F4F); } /* 비: 파란색 */
+.sleet-bg-card { background: linear-gradient(135deg, #87CEEB, #6A5ACD); } /* 비/눈: 하늘색-보라 */
+.snow-bg-card { background: linear-gradient(135deg, #B0E0E6, #ADD8E6); } /* 눈: 연한 하늘색 */
+.shower-bg-card { background: linear-gradient(135deg, #40E0D0, #20B2AA); } /* 소나기: 청록색 */
+.default-bg-card { background: linear-gradient(135deg, #87CEEB, #6A5ACD); } /* 기본: 하늘색 */
+
+/* 카드 내부 글자색 조정 */
+.forecast-date .day-of-week, .forecast-date .month-day,
+.weather-description, .temperature, .temp-max, .temp-min {
+    color: inherit; /* 부모인 카드 색상 상속 */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2); /* 가독성 향상 */
+}
+
+/* 이모지 아이콘 크기 */
+.weather-icon-kma {
+    font-size: 4em; 
+    line-height: 1;
+    margin: 10px 0;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* 아이콘에도 그림자 추가 */
+}
+
+/* 스크롤바 디자인 (조금 더 세련되게) */
+.forecast-container::-webkit-scrollbar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+.forecast-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+}
+.forecast-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+/* --- 어두운 배경용 글자색 테마 --- */
+
+/* 모달 헤더 (제목, 닫기 버튼) */
+.modal-header h2, .close-button {
+    color: #0e00a8;
+    text-shadow: none;
+}
+
+/* 카드 날짜 (요일 강조) */
+.forecast-date .day-of-week {
+    color: #87CEFA; /* 밝은 하늘색으로 요일 강조 */
+}
+
+.forecast-date .month-day {
+    color: #dcdcdc; /* 날짜는 연한 회색 */
+}
+
+/* 최고/최저 기온 색상 대비 */
+.temp-max {
+    color: #FFB6C1; /* 최고기온: 밝은 핑크 */
+}
+
+.temp-min {
+    color: #ADD8E6; /* 최저기온: 밝은 하늘색 */
+}
+/* 새로고침 버튼 스타일 */
+.refresh-btn {
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%); /* 붉은색 그라데이션 */
+    color: white;
+    bottom: 5px;
+    right: 5px;
+}
+
+.refresh-btn:hover {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%); /* 호버 시 더 밝은 붉은색 */
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(245, 101, 101, 0.4);
+}
+
+/* 다크모드에서의 새로고침 버튼 */
+body.dark-mode .refresh-btn {
+    background: linear-gradient(135deg, #e53e3e 0%, #9b2c2c 100%); /* 다크모드용 붉은색 */
+}
+
+body.dark-mode .refresh-btn:hover {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+    box-shadow: 0 8px 25px rgba(245, 101, 101, 0.4);
+}
+
+/* 새로고침 버튼 위치 조정 */
+.floating-menu-container.open .refresh-btn {
+    transform: translateY(0px) translateX(-125px) scale(1);
+    transition-delay: 0.175s;
+}
+/* 메모 버튼 (왼쪽 상단) */
+#memoButton {
+    left: 20px !important;
+    right: auto !important;
+}
+
+/* 메모 목록 아이템 */
+.memo-item {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.memo-zone-title {
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.memo-content {
+    margin-bottom: 10px;
+}
+
+.memo-meta {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 10px;
+}
+
+.memo-actions button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* 다크모드 지원 */
+body.dark-mode .memo-item {
+    background: rgba(45, 55, 72, 0.9);
+}
+
+
     </style>
 </head>
 <body>
@@ -2210,13 +2651,52 @@ body.dark-mode #fontSizeRange {
         <!-- 선택된 요일의 신청현황만 표시 -->
     </div>
 </div>
-        <div class="version-info">v2.4</div>
+        <div class="version-info">v2.6</div>
     </div>
+    <!-- 메모 버튼 (왼쪽 상단, 공지사항과 대칭) -->
+<button id="memoButton" class="notice-button inactive" onclick="handleMemoButtonClick()" style="display: none; left: 20px; right: auto;">
+    📝
+    <div id="memoBadge" class="notice-badge"></div> <!-- 새 메모 알림 배지, 필요 시 사용 -->
+</button>
+
+<!-- 메모 목록 모달 -->
+<div id="memoListModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeMemoListModal()">&times;</span>
+        <h2>구역별 메모</h2>
+        <div id="memoList" class="cancel-list"> <!-- 게시판 형식 목록 -->
+            <!-- 동적으로 생성됨 -->
+        </div>
+        <button class="btn success small" onclick="openAddMemoModal()" style="margin-top: 20px;">+ 새 메모 추가</button>
+    </div>
+</div>
+
+<!-- 메모 추가/편집 모달 -->
+<div id="addMemoModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeAddMemoModal()">&times;</span>
+        <h2 id="addMemoTitle">새 메모 추가</h2>
+        <form id="memoForm">
+            <div class="form-group">
+                <label for="memoZone">구역 선택</label>
+                <select id="memoZone" required>
+                    <!-- 동적으로 zones 배열로 채움 -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="memoContent">내용</label>
+                <textarea id="memoContent" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn">저장</button>
+        </form>
+    </div>
+</div>
     <!-- 고정 공지 버튼 -->
 <button id="noticeButton" class="notice-button inactive" onclick="handleNoticeButtonClick()" style="display: none;">
     📢
     <div id="noticeBadge" class="notice-badge"></div>
 </button>
+
 
     <!-- 신청 모달 -->
     <div id="registrationModal" class="modal">
@@ -2433,7 +2913,13 @@ body.dark-mode #fontSizeRange {
     <script>// 신청자 데이터를 저장할 객체
         const applicants = {};
         const days = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+        const KMA_API_KEY = "9a51af0f896d3b36123dd1e23780795957e9349038e8410404b6260b68309a7e";
+        const SEOUL_LAT = 37.5665;
+        const SEOUL_LON = 126.9780;
+        const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxPP9sSrgB4MkjvyXUaZejWR7OKOJAaqC8m4byW-5Vh-uKHDle_YqWP2mMmu4P8diMT/exec';
         let zones = []; // 동적으로 로드
+        let memos = []; // 메모 목록 캐시
+        let editingMemoId = null; // 편집 중인 메모 ID
         let timeSlots = []; // 시간대 배열
         let currentUser = '';
         let isAdmin = false;
@@ -2490,6 +2976,9 @@ function initializeApplicants() {
             loadZonesFromFirestore(),
             loadUsersFromFirestore()
         ]);
+        loadMemos(); // 메모 목록 로드
+        document.getElementById('memoButton').style.display = 'block'; // 버튼 표시
+        populateMemoZoneSelect(); // 구역 선택 옵션 채우기
         
         populateAdminUserSelect();
         loadDataFromFirestore();
@@ -2557,6 +3046,7 @@ function initializeApplicants() {
         console.log('Processed zones:', zones);
         initializeApplicants();
         updateZoneUI();
+        updateDaySelectionModal();
         updateDisplay();
         createDayTabs();
     } catch (error) {
@@ -3662,6 +4152,7 @@ async function addNewZone() {
         function openRegistrationModal() {
             document.getElementById('registrationModal').style.display = 'block';
             setCurrentWeekDates();
+            updateDaySelectionModal();
             updateZoneDisplayForModal();
             console.log('Registration modal opened');
         }
@@ -4123,30 +4614,33 @@ function setCurrentWeekDates() {
     const today = new Date();
     const currentDay = today.getDay();
     
-    // 월요일을 주의 시작으로 설정
     const monday = new Date(today);
     monday.setDate(today.getDate() - (currentDay === 0 ? 6 : currentDay - 1));
     
-    const dayElements = [
-        { id: 'monday-date', offset: 0 },
-        { id: 'tuesday-date', offset: 1 },
-        { id: 'wednesday-date', offset: 2 },
-        { id: 'thursday-date', offset: 3 },
-        { id: 'friday-date', offset: 4 },
-        { id: 'saturday-date', offset: 5 },
-        { id: 'sunday-date', offset: 6 } // 일요일 추가
-    ];
+    const dayMap = {
+        '월요일': 0,
+        '화요일': 1,
+        '수요일': 2,
+        '목요일': 3,
+        '금요일': 4,
+        '토요일': 5,
+        '일요일': 6
+    };
     
-    dayElements.forEach(day => {
+    // 활성화된 요일만 처리
+    const activeDays = getActiveDays();
+    activeDays.forEach(day => {
         const date = new Date(monday);
-        date.setDate(monday.getDate() + day.offset);
+        date.setDate(monday.getDate() + dayMap[day]);
         const dateString = `${date.getMonth() + 1}/${date.getDate()}`;
-        const element = document.getElementById(day.id);
+        
+        const element = document.getElementById(`${day.toLowerCase().replace('요일', '')}-date`);
         if (element) {
             element.textContent = dateString;
         }
     });
-    console.log('Current week dates set');
+    
+    console.log('Current week dates set for active days');
 }
 
         // 관리자 요일 날짜 설정
@@ -4179,6 +4673,22 @@ function setAdminWeekDates() {
     });
     console.log('Admin week dates set');
 }
+// 활성화된 요일 목록을 반환하는 함수
+function getActiveDays() {
+    const activeDays = new Set();
+    zones.forEach(zone => {
+        if (zone.schedules) {
+            zone.schedules.forEach(schedule => {
+                if (schedule.days) {
+                    schedule.days.forEach(day => {
+                        activeDays.add(day);
+                    });
+                }
+            });
+        }
+    });
+    return Array.from(activeDays);
+}
 
         // 사용자 신청 필터링
         function filterUserApplications() {
@@ -4189,7 +4699,54 @@ function setAdminWeekDates() {
             userApplications = allApplications.filter(a => a.name === currentUser);
             console.log('Filtered user applications:', userApplications);
         }
+// 신청 모달의 요일 선택 UI를 업데이트하는 함수
+function updateDaySelectionModal() {
+    const daySelection = document.querySelector('.day-selection');
+    if (!daySelection) return;
 
+    const activeDays = getActiveDays();
+    daySelection.innerHTML = '';
+
+    activeDays.forEach(day => {
+        const dayOption = document.createElement('div');
+        dayOption.className = 'day-option';
+        
+        const dayId = day.toLowerCase().replace('요일', '');
+        const dateInfo = document.getElementById(`${dayId}-date`)?.textContent || '';
+        
+        dayOption.innerHTML = `
+            <input type="radio" id="${dayId}" name="day" value="${day}">
+            <label for="${dayId}" class="day-label" data-day="${day}">
+                ${day}
+                <div class="date-info" id="${dayId}-date">${dateInfo}</div>
+            </label>
+        `;
+        
+        daySelection.appendChild(dayOption);
+    });
+
+    // 변경 사항에 대한 이벤트 리스너 다시 등록
+    attachDaySelectionListeners();
+}
+
+// 요일 선택 이벤트 리스너를 다시 연결하는 함수
+function attachDaySelectionListeners() {
+    document.querySelectorAll('input[name="day"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const zoneContainer = document.getElementById('zoneSelectionContainer');
+            if (this.checked) {
+                zoneContainer.classList.add('show');
+                setTimeout(() => {
+                    zoneContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+                updateZoneDisplay(this.value);
+                document.querySelectorAll('input[name="zone"]').forEach(zoneRadio => {
+                    zoneRadio.checked = false;
+                });
+            }
+        });
+    });
+}
         // 신청 취소 목록 업데이트
         function updateCancelList() {
             const cancelListEl = document.getElementById('cancelList');
@@ -4249,6 +4806,229 @@ function setAdminWeekDates() {
             }
         }
 
+// 날씨 정보 열기 함수 (기상청 API)
+async function openWeather() {
+    const xy = dfs_xy_conv("toXY", 37.6027, 126.9292); // 서울 은평구
+    const now = new Date();
+    let base_date = now.getFullYear().toString() +
+                    ("0" + (now.getMonth() + 1)).slice(-2) +
+                    ("0" + now.getDate()).slice(-2);
+    
+    const available_times = ["0200", "0500", "0800", "1100", "1400", "1700", "2000", "2300"];
+    let current_hour = ("0" + now.getHours()).slice(-2);
+    let base_time = "";
+
+    for (let i = available_times.length - 1; i >= 0; i--) {
+        if (current_hour >= available_times[i].substring(0, 2)) {
+            base_time = available_times[i];
+            break;
+        }
+    }
+    if (base_time === "") {
+        now.setDate(now.getDate() - 1);
+        base_date = now.getFullYear().toString() +
+                    ("0" + (now.getMonth() + 1)).slice(-2) +
+                    ("0" + now.getDate()).slice(-2);
+        base_time = "2300";
+    }
+
+    const apiUrl = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${KMA_API_KEY}&pageNo=1&numOfRows=1000&dataType=JSON&base_date=${base_date}&base_time=${base_time}&nx=${xy.x}&ny=${xy.y}`;
+
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`API 요청 실패: ${response.status}`);
+        const data = await response.json();
+        
+        if (data.response.header.resultCode !== "00") {
+            throw new Error(`API 오류: ${data.response.header.resultMsg}`);
+        }
+        
+        const dailyData = processKmaData(data.response.body.items.item);
+        createWeatherModal(dailyData);
+
+    } catch (error) {
+        console.error("날씨 정보를 가져오는 중 오류가 발생했습니다:", error);
+        alert(`날씨 정보를 가져오는 데 실패했습니다: ${error.message}`);
+    }
+}
+
+function processKmaData(items) {
+    const daily = {};
+
+    items.forEach(item => {
+        const date = item.fcstDate;
+        if (!daily[date]) {
+            daily[date] = {
+                dt: new Date(date.substring(0,4), date.substring(4,6) - 1, date.substring(6,8)),
+                temp_min: null,
+                temp_max: null,
+                sky: null, 
+                pty: null, 
+            };
+        }
+        
+        if (item.category === 'TMX') daily[date].temp_max = parseFloat(item.fcstValue);
+        if (item.category === 'TMN') daily[date].temp_min = parseFloat(item.fcstValue);
+        
+        // 정오(12시)의 날씨를 대표로 사용하되, 만약 정오 데이터가 없다면 그 시간대의 SKY/PTY를 사용 (가장 중요한 대표 날씨)
+        if (item.fcstTime === "1200" || (!daily[date].sky && !daily[date].pty)) { // 12시 데이터 우선, 없으면 첫 데이터
+            if (item.category === 'SKY') daily[date].sky = parseInt(item.fcstValue);
+            if (item.category === 'PTY') daily[date].pty = parseInt(item.fcstValue);
+        }
+    });
+    
+    // 오늘 최저기온은 이미 발표되었으므로, 현재 기온으로 대체 (더 정확)
+    // KMA API는 TMN/TMX를 포함하지만, 당일 TMN은 보통 밤에 나타남.
+    // 현재 기온(TMP)을 받아와 당일 최저/최고 기온과 비교하여 더 정확한 값을 설정
+    const todayKey = Object.keys(daily)[0];
+    if (todayKey && daily[todayKey]) {
+        const currentTempItem = items.find(i => i.category === 'TMP' && i.fcstDate === todayKey);
+        if (currentTempItem) {
+            const currentTemp = parseFloat(currentTempItem.fcstValue);
+            if (daily[todayKey].temp_min === null || currentTemp < daily[todayKey].temp_min) {
+                daily[todayKey].temp_min = currentTemp;
+            }
+            if (daily[todayKey].temp_max === null || currentTemp > daily[todayKey].temp_max) {
+                daily[todayKey].temp_max = currentTemp;
+            }
+        }
+    }
+
+
+    return Object.values(daily).filter(day => day.temp_max !== null && day.temp_min !== null && day.sky !== null);
+}
+
+// 날씨 상태 코드와 아이콘 및 배경 정보 매핑하는 함수 (배경 이미지 URL 추가)
+function getWeatherInfo(sky, pty) {
+    let description = "정보 없음";
+    let icon = "❓";
+    let backgroundClass = "default-bg"; // 기본 배경 클래스
+
+    if (pty === 0) { // 강수 없음
+        if (sky === 1) { description = "맑음"; icon = "☀️"; backgroundClass = "clear-bg"; } // 맑음
+        else if (sky === 3) { description = "구름많음"; icon = "☁️"; backgroundClass = "cloudy-bg"; } // 구름많음
+        else if (sky === 4) { description = "흐림"; icon = "🌫️"; backgroundClass = "overcast-bg"; } // 흐림
+    } else if (pty === 1) { description = "비"; icon = "🌧️"; backgroundClass = "rain-bg"; } // 비
+    else if (pty === 2) { description = "비/눈"; icon = "🌨️"; backgroundClass = "sleet-bg"; } // 비/눈
+    else if (pty === 3) { description = "눈"; icon = "❄️"; backgroundClass = "snow-bg"; } // 눈
+    else if (pty === 4) { description = "소나기"; icon = "🌦️"; backgroundClass = "shower-bg"; } // 소나기
+    
+    return { description, icon, backgroundClass };
+}
+
+// 모달 생성 함수 (기상청 데이터에 맞게 수정)
+function createWeatherModal(dailyForecasts) {
+    const existingModal = document.querySelector('.weather-modal-overlay');
+    if (existingModal) existingModal.remove();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'weather-modal-overlay';
+    
+    const modalContent = document.createElement('div');
+    modalContent.className = 'weather-modal-content';
+
+    // 첫째 날의 날씨 정보로 모달 전체의 배경 클래스 설정
+    if (dailyForecasts.length > 0) {
+        const todayWeather = getWeatherInfo(dailyForecasts[0].sky, dailyForecasts[0].pty);
+        modalContent.classList.add(todayWeather.backgroundClass);
+    }
+
+
+    modalContent.innerHTML = `
+        <div class="modal-header">
+            <h2>이번 주 은평구 날씨</h2>
+            <button class="close-button">&times;</button>
+        </div>
+        <div class="forecast-container"></div>
+    `;
+
+    const forecastContainer = modalContent.querySelector('.forecast-container');
+    // 최대 7일치 예보만 표시
+    dailyForecasts.slice(0, 7).forEach(day => {
+        const date = day.dt;
+        const dayOfWeek = date.toLocaleString('ko-KR', { weekday: 'short' });
+        const monthDay = date.toLocaleString('ko-KR', { month: 'long', day: 'numeric' });
+
+        const weatherInfo = getWeatherInfo(day.sky, day.pty);
+        
+        const card = document.createElement('div');
+        card.className = `forecast-card ${weatherInfo.backgroundClass}-card`; // 카드에도 배경 클래스 적용
+        card.innerHTML = `
+            <div class="forecast-date">
+                <span class="day-of-week">${dayOfWeek}</span>
+                <span class="month-day">${monthDay}</span>
+            </div>
+            <div class="weather-icon-kma">${weatherInfo.icon}</div>
+            <div class="weather-description">${weatherInfo.description}</div>
+            <div class="temperature">
+                <span class="temp-max">최고: ${day.temp_max}°</span>
+                <span class="temp-min">최저: ${day.temp_min}°</span>
+            </div>
+        `;
+        forecastContainer.appendChild(card);
+    });
+
+    overlay.appendChild(modalContent);
+    document.body.appendChild(overlay);
+    
+    const close = () => {
+        modalContent.classList.remove('active');
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.remove(), 300);
+    };
+
+    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+    modalContent.querySelector('.close-button').addEventListener('click', close);
+    
+    setTimeout(() => {
+        overlay.classList.add('active');
+        modalContent.classList.add('active');
+    }, 10);
+}
+
+
+//=====================================================================================
+// LCC DFS 좌표변환을 위한 라이브러리 (수정할 필요 없음)
+// 출처: https://gist.github.com/fronteer-kr/14d7f779d52a21ac2f56
+//=====================================================================================
+function dfs_xy_conv(code, v1, v2) {
+    var DEGRAD = Math.PI / 180.0;
+    var GRID = 5.0;
+    var RE = 6371.00877; 
+    var SLAT1 = 30.0;
+    var SLAT2 = 60.0;
+    var OLON = 126.0;
+    var OLAT = 38.0;
+    var XO = 43;
+    var YO = 136;
+
+    var re = RE / GRID;
+    var slat1 = SLAT1 * DEGRAD;
+    var slat2 = SLAT2 * DEGRAD;
+    var olon = OLON * DEGRAD;
+    var olat = OLAT * DEGRAD;
+
+    var sn = Math.tan(Math.PI * 0.25 + slat2 * 0.5) / Math.tan(Math.PI * 0.25 + slat1 * 0.5);
+    sn = Math.log(Math.cos(slat1) / Math.cos(slat2)) / Math.log(sn);
+    var sf = Math.tan(Math.PI * 0.25 + slat1 * 0.5);
+    sf = Math.pow(sf, sn) * Math.cos(slat1) / sn;
+    var ro = Math.tan(Math.PI * 0.25 + olat * 0.5);
+    ro = re * sf / Math.pow(ro, sn);
+    var rs = {};
+    if (code == "toXY") {
+        rs['lat'] = v1;
+        rs['lng'] = v2;
+        var ra = Math.tan(Math.PI * 0.25 + (v1) * DEGRAD * 0.5);
+        ra = re * sf / Math.pow(ra, sn);
+        var theta = v2 * DEGRAD - olon;
+        if (theta > Math.PI) theta -= 2.0 * Math.PI;
+        if (theta < -Math.PI) theta += 2.0 * Math.PI;
+        theta *= sn;
+        rs['x'] = Math.floor(ra * Math.sin(theta) + XO + 0.5);
+        rs['y'] = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
+    }
+    return rs;
+}
         // 신청 취소 실행
         async function cancelApplication(docId, application) {
             const deleted = await deleteFromFirestore(docId, application);
@@ -4344,6 +5124,210 @@ function removeTimeSlot(button) {
     if (confirm('이 시간대를 삭제하시겠습니까?')) {
         button.closest('.time-slot-setting').remove();
     }
+}
+// 메모 목록 로드
+async function loadMemos() {
+    try {
+        const response = await fetch(`${SHEETS_URL}?action=getMemos`);
+        memos = await response.json();
+        updateMemoBadge(); // 배지 업데이트 (새 메모 알림, 옵션)
+    } catch (error) {
+        console.error('메모 로드 오류:', error);
+    }
+}
+
+// 메모 버튼 클릭
+function handleMemoButtonClick() {
+    openMemoListModal();
+}
+
+// 메모 목록 모달 열기
+function openMemoListModal() {
+    document.getElementById('memoListModal').style.display = 'block';
+    displayMemos();
+}
+
+// 메모 목록 모달 닫기
+function closeMemoListModal() {
+    document.getElementById('memoListModal').style.display = 'none';
+}
+
+// 메모 표시 (구역별 그룹핑)
+function displayMemos() {
+    const listEl = document.getElementById('memoList');
+    listEl.innerHTML = '';
+
+    if (memos.length === 0) {
+        listEl.innerHTML = '<div class="no-applications">메모가 없습니다.</div>';
+        return;
+    }
+
+    // 구역별 그룹핑
+    const grouped = memos.reduce((acc, memo) => {
+        if (!acc[memo.zone]) acc[memo.zone] = [];
+        acc[memo.zone].push(memo);
+        return acc;
+    }, {});
+
+    Object.keys(grouped).forEach(zone => {
+        const zoneDiv = document.createElement('div');
+        zoneDiv.className = 'memo-zone-title';
+        zoneDiv.textContent = zone;
+        listEl.appendChild(zoneDiv);
+
+        grouped[zone].forEach(memo => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'memo-item';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'memo-content';
+            contentDiv.textContent = memo.content;
+
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'memo-meta';
+            metaDiv.textContent = `${memo.author} | ${new Date(memo.createdDate).toLocaleDateString()} ${memo.editedDate ? '(수정됨)' : ''}`;
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'memo-actions';
+            if (memo.author === currentUser || isAdmin) {
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn small';
+                editBtn.textContent = '수정';
+                editBtn.onclick = () => editMemo(memo);
+                actionsDiv.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn danger small';
+                deleteBtn.textContent = '삭제';
+                deleteBtn.onclick = () => deleteMemoAction(memo.id);
+                actionsDiv.appendChild(deleteBtn);
+            }
+
+            itemDiv.appendChild(contentDiv);
+            itemDiv.appendChild(metaDiv);
+            itemDiv.appendChild(actionsDiv);
+            listEl.appendChild(itemDiv);
+        });
+    });
+}
+
+// 새 메모 추가 모달 열기
+function openAddMemoModal() {
+    document.getElementById('addMemoModal').style.display = 'block';
+    document.getElementById('addMemoTitle').textContent = '새 메모 추가';
+    document.getElementById('memoContent').value = '';
+    editingMemoId = null;
+}
+
+// 메모 추가 모달 닫기
+function closeAddMemoModal() {
+    document.getElementById('addMemoModal').style.display = 'none';
+}
+
+// 구역 선택 옵션 채우기
+function populateMemoZoneSelect() {
+    const select = document.getElementById('memoZone');
+    select.innerHTML = '';
+    zones.forEach(zone => {
+        const option = document.createElement('option');
+        option.value = zone.name;
+        option.textContent = zone.name;
+        select.appendChild(option);
+    });
+}
+
+// 메모 폼 제출
+document.getElementById('memoForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const zone = document.getElementById('memoZone').value;
+    const content = document.getElementById('memoContent').value.trim();
+    
+    if (!zone || !content) {
+        alert('구역과 내용을 입력해주세요.');
+        return;
+    }
+    
+    try {
+        let response;
+        if (editingMemoId) {
+            // 수정
+            response = await fetch(SHEETS_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'updateMemo',
+                    id: editingMemoId,
+                    content: content,
+                    author: currentUser
+                })
+            });
+        } else {
+            // 추가
+            response = await fetch(SHEETS_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'addMemo',
+                    zone: zone,
+                    content: content,
+                    author: currentUser
+                })
+            });
+        }
+        
+        const result = await response.json();
+        if (result.success) {
+            alert(editingMemoId ? '메모가 수정되었습니다.' : '메모가 추가되었습니다.');
+            closeAddMemoModal();
+            loadMemos(); // 목록 새로고침
+            displayMemos();
+        } else {
+            alert('오류: ' + result.error);
+        }
+    } catch (error) {
+        alert('메모 저장 중 오류 발생: ' + error.message);
+    }
+});
+
+// 메모 편집
+function editMemo(memo) {
+    openAddMemoModal();
+    document.getElementById('addMemoTitle').textContent = '메모 수정';
+    document.getElementById('memoZone').value = memo.zone;
+    document.getElementById('memoZone').disabled = true; // 구역 변경 불가
+    document.getElementById('memoContent').value = memo.content;
+    editingMemoId = memo.id;
+}
+
+// 메모 삭제
+async function deleteMemoAction(id) {
+    if (!confirm('이 메모를 삭제하시겠습니까?')) return;
+    
+    try {
+        const response = await fetch(SHEETS_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'deleteMemo',
+                id: id,
+                author: currentUser
+            })
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            alert('메모가 삭제되었습니다.');
+            loadMemos();
+            displayMemos();
+        } else {
+            alert('오류: ' + result.error);
+        }
+    } catch (error) {
+        alert('메모 삭제 중 오류 발생: ' + error.message);
+    }
+}
+
+// 메모 배지 업데이트 (새 메모 알림, 옵션으로 구현. 필요 없으면 생략)
+function updateMemoBadge() {
+    const badge = document.getElementById('memoBadge');
+    badge.style.display = memos.length > 0 ? 'block' : 'none';
 }
 
         // 신청자 목록 업데이트
@@ -4829,10 +5813,17 @@ async function executeAdminAction() {
 
         <!-- 플로팅 메뉴를 body 태그 끝나기 전에 추가 -->
 <div class="floating-menu-container" id="floatingMenu">
+        <button class="sub-menu-btn weather-btn" onclick="openWeather()" title="날씨 정보">
+        🔅
+    </button>
         <!-- 글자 크기 조정 버튼 -->
         <div class="sub-menu-btn font-size-btn" onclick="toggleFontSizeSlider()" title="글자 크기 조정">
         Aa
     </div>
+        <!-- 새로고침 버튼 -->
+    <button class="sub-menu-btn refresh-btn" onclick="refreshPage()" title="페이지 새로고침">
+        X
+    </button>
     <!-- 다크모드 토글 버튼 -->
     <button class="sub-menu-btn dark-mode-btn" onclick="toggleDarkMode()" title="다크모드 전환">
         🌙
@@ -4867,6 +5858,10 @@ async function executeAdminAction() {
 function toggleFloatingMenu() {
     const menu = document.getElementById('floatingMenu');
     menu.classList.toggle('open');
+}
+// 새로고침 함수 추가
+function refreshPage() {
+    window.location.reload();
 }
 
 // 다크모드 토글 함수
@@ -4929,3 +5924,4 @@ document.addEventListener('keydown', function(event) {
 </script>
 </body>
 </html>
+
