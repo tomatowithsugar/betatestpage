@@ -14,13 +14,13 @@
 
         // Firebase 설정
         const firebaseConfig = {
-  apiKey: "AIzaSyCv5Za0pq9okmTgorjPuZHiJIhkgAieVPY",
-  authDomain: "assignment-1bf57.firebaseapp.com",
-  projectId: "assignment-1bf57",
-  storageBucket: "assignment-1bf57.firebasestorage.app",
-  messagingSenderId: "609185997879",
-  appId: "1:609185997879:web:c8db0f997cbfafc2088bb2",
-  measurementId: "G-Q0X97TE8LS"
+            apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
+            authDomain: "cart-witnessing-404c0.firebaseapp.com",
+            projectId: "cart-witnessing-404c0",
+            storageBucket: "cart-witnessing-404c0.firebasestorage.app",
+            messagingSenderId: "616001042576",
+            appId: "1:616001042576:web:314fe2268c8fffe82a8015",
+            measurementId: "G-HT3T8YS1MW"
         };
 
 
@@ -2555,46 +2555,120 @@ body.dark-mode .refresh-btn:hover {
     transform: translateY(0px) translateX(-125px) scale(1);
     transition-delay: 0.175s;
 }
-/* 메모 버튼 (왼쪽 상단) */
-#memoButton {
-    left: 20px !important;
-    right: auto !important;
+/* 메모 버튼 */
+.memo-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.95);
+    color: #667eea;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-/* 메모 목록 아이템 */
+.memo-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* 메모 탭 */
+.memo-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 0 10px;
+    scrollbar-width: none;
+}
+
+.memo-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.memo-tab {
+    flex: 0 0 auto;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.memo-tab:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.memo-tab.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* 메모 콘텐츠 */
+.memo-content {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
 .memo-item {
     background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
     border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
-.memo-zone-title {
-    font-weight: bold;
-    color: #667eea;
+.memo-content-text {
     margin-bottom: 10px;
-}
-
-.memo-content {
-    margin-bottom: 10px;
+    line-height: 1.6;
 }
 
 .memo-meta {
+    display: flex;
+    justify-content: space-between;
     font-size: 12px;
     color: #718096;
-    margin-bottom: 10px;
 }
 
-.memo-actions button {
-    margin-right: 10px;
-    padding: 5px 10px;
-    font-size: 12px;
+.memo-actions {
+    margin-top: 10px;
+    text-align: right;
 }
 
 /* 다크모드 지원 */
+body.dark-mode .memo-button {
+    background: rgba(45, 55, 72, 0.95);
+    color: #9f7aea;
+}
+
+body.dark-mode .memo-tab {
+    background: rgba(45, 55, 72, 0.8);
+    border-color: rgba(102, 126, 234, 0.3);
+    color: #e2e8f0;
+}
+
 body.dark-mode .memo-item {
     background: rgba(45, 55, 72, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 
@@ -2653,49 +2727,60 @@ body.dark-mode .memo-item {
 </div>
         <div class="version-info">v2.6</div>
     </div>
-    <!-- 메모 버튼 (왼쪽 상단, 공지사항과 대칭) -->
-<button id="memoButton" class="notice-button inactive" onclick="handleMemoButtonClick()" style="display: none; left: 20px; right: auto;">
-    📝
-    <div id="memoBadge" class="notice-badge"></div> <!-- 새 메모 알림 배지, 필요 시 사용 -->
-</button>
-
-<!-- 메모 목록 모달 -->
-<div id="memoListModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeMemoListModal()">&times;</span>
-        <h2>구역별 메모</h2>
-        <div id="memoList" class="cancel-list"> <!-- 게시판 형식 목록 -->
-            <!-- 동적으로 생성됨 -->
-        </div>
-        <button class="btn success small" onclick="openAddMemoModal()" style="margin-top: 20px;">+ 새 메모 추가</button>
-    </div>
-</div>
-
-<!-- 메모 추가/편집 모달 -->
-<div id="addMemoModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeAddMemoModal()">&times;</span>
-        <h2 id="addMemoTitle">새 메모 추가</h2>
-        <form id="memoForm">
-            <div class="form-group">
-                <label for="memoZone">구역 선택</label>
-                <select id="memoZone" required>
-                    <!-- 동적으로 zones 배열로 채움 -->
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="memoContent">내용</label>
-                <textarea id="memoContent" rows="5" required></textarea>
-            </div>
-            <button type="submit" class="btn">저장</button>
-        </form>
-    </div>
-</div>
     <!-- 고정 공지 버튼 -->
 <button id="noticeButton" class="notice-button inactive" onclick="handleNoticeButtonClick()" style="display: none;">
     📢
     <div id="noticeBadge" class="notice-badge"></div>
 </button>
+<!-- 기존 코드에 추가 -->
+<button id="memoButton" class="memo-button" onclick="openMemoModal()">📝</button>
+
+<!-- 메모 모달 -->
+<div id="memoModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeMemoModal()">&times;</span>
+        <h2>구역별 유의사항</h2>
+        
+        <div class="memo-tabs" id="memoTabs">
+            <!-- 구역 탭이 여기에 생성됩니다 -->
+        </div>
+        
+        <div class="memo-content" id="memoContent">
+            <!-- 선택된 구역의 메모들이 표시됩니다 -->
+        </div>
+        
+        <button class="btn" onclick="openEditMemoModal()">+ 새 메모 추가</button>
+    </div>
+</div>
+
+<!-- 메모 작성/수정 모달 -->
+<div id="editMemoModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditMemoModal()">&times;</span>
+        <h2 id="editMemoTitle">새 메모 작성</h2>
+        
+        <form id="editMemoForm">
+            <div class="form-group">
+                <label for="memoZone">구역 선택</label>
+                <select id="memoZone" required>
+                    <!-- 구역 옵션이 여기에 생성됩니다 -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="memoContentInput">메모 내용</label>
+                <textarea id="memoContentInput" rows="5" required placeholder="구역별 유의사항을 입력하세요"></textarea>
+            </div>
+            
+            <input type="hidden" id="memoId">
+            
+            <div class="form-buttons">
+                <button type="submit" class="btn">저장</button>
+                <button type="button" class="btn danger" id="deleteMemoBtn" style="display:none;" onclick="deleteMemo()">삭제</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 
     <!-- 신청 모달 -->
@@ -2916,10 +3001,10 @@ body.dark-mode .memo-item {
         const KMA_API_KEY = "9a51af0f896d3b36123dd1e23780795957e9349038e8410404b6260b68309a7e";
         const SEOUL_LAT = 37.5665;
         const SEOUL_LON = 126.9780;
-        const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxPP9sSrgB4MkjvyXUaZejWR7OKOJAaqC8m4byW-5Vh-uKHDle_YqWP2mMmu4P8diMT/exec';
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzpcLIHHRPMtxkSTAa_3VzDl5ss5IWsGOp_UlCU5iZi6P0rw7WBXiNezbZhb_pprhV5Pw/exec";
+        let memos = [];
+        let currentMemoZone = '';
         let zones = []; // 동적으로 로드
-        let memos = []; // 메모 목록 캐시
-        let editingMemoId = null; // 편집 중인 메모 ID
         let timeSlots = []; // 시간대 배열
         let currentUser = '';
         let isAdmin = false;
@@ -2976,9 +3061,6 @@ function initializeApplicants() {
             loadZonesFromFirestore(),
             loadUsersFromFirestore()
         ]);
-        loadMemos(); // 메모 목록 로드
-        document.getElementById('memoButton').style.display = 'block'; // 버튼 표시
-        populateMemoZoneSelect(); // 구역 선택 옵션 채우기
         
         populateAdminUserSelect();
         loadDataFromFirestore();
@@ -3049,6 +3131,7 @@ function initializeApplicants() {
         updateDaySelectionModal();
         updateDisplay();
         createDayTabs();
+        populateZoneOptions();
     } catch (error) {
         console.error('구역 로드 오류:', error);
         alert('구역 목록을 불러오는 중 오류가 발생했습니다: ' + error.message);
@@ -3123,7 +3206,306 @@ function initializeApplicants() {
     }
     console.log('Zone UI updated');
 }
+      
+// 메모 모달 열기
+function openMemoModal() {
+    const modal = document.getElementById('memoModal');
+    if (!modal) {
+        console.error('Memo modal not found');
+        return;
+    }
+    
+    modal.style.display = 'block';
+    
+    // 새 메모 추가 버튼 요소 찾기
+    const addButton = modal.querySelector('button');
+    
+    // 비로그인 상태면 버튼 숨기기, 로그인 상태면 보이기
+    if (!currentUser) {
+        if (addButton) addButton.style.display = 'none';
+    } else {
+        if (addButton) addButton.style.display = 'block';
+    }
+    
+    // 메모 데이터 로드
+    loadMemos();
+}
+// 메모 모달 닫기
+function closeMemoModal() {
+    document.getElementById('memoModal').style.display = 'none';
+}
+
+// 메모 작성/수정 모달 열기
+function openEditMemoModal(memoId = null) {
+    if (!currentUser) {
+        alert('로그인이 필요합니다.');
+        return;
+    }
+    
+    const modal = document.getElementById('editMemoModal');
+    const title = document.getElementById('editMemoTitle');
+    const deleteBtn = document.getElementById('deleteMemoBtn');
+    
+    // 구역 옵션이 채워졌는지 확인하고 없으면 채우기
+    if (document.getElementById('memoZone').options.length === 0) {
+        populateZoneOptions();
+    }
+    
+    if (memoId) {
+        // 수정 모드
+        title.textContent = "메모 수정";
+        deleteBtn.style.display = 'block';
         
+        const memo = memos.find(m => m.id === memoId);
+        if (memo) {
+            document.getElementById('memoId').value = memoId;
+            document.getElementById('memoZone').value = memo.zone;
+            document.getElementById('memoContentInput').value = memo.content;
+        }
+    } else {
+        // 새 메모 모드
+        title.textContent = "새 메모 작성";
+        deleteBtn.style.display = 'none';
+        document.getElementById('memoId').value = '';
+        document.getElementById('memoZone').selectedIndex = 0;
+        document.getElementById('memoContentInput').value = '';
+    }
+    
+    modal.style.display = 'block';
+}
+// 메모 작성/수정 모달 닫기
+function closeEditMemoModal() {
+    document.getElementById('editMemoModal').style.display = 'none';
+}
+
+// 구역 선택 옵션 채우기
+function populateZoneOptions() {
+    const select = document.getElementById('memoZone');
+    select.innerHTML = '';
+    
+    // 기본 옵션 추가
+    const defaultOption = document.createElement('option');
+    defaultOption.value = "";
+    defaultOption.textContent = "구역을 선택하세요";
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    select.appendChild(defaultOption);
+    
+    // 구역 옵션 추가
+    zones.forEach(zone => {
+        const option = document.createElement('option');
+        option.value = zone.name;
+        option.textContent = zone.name;
+        select.appendChild(option);
+    });
+}
+// 메모 불러오기
+async function loadMemos() {
+    try {
+        console.log('Loading memos from:', GAS_URL);
+        const response = await fetch(`${GAS_URL}?action=getMemos`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const text = await response.text();
+        console.log('Raw response:', text);
+        
+        // 빈 응답 체크
+        if (!text.trim()) {
+            memos = [];
+            console.log('No memos found (empty response)');
+        } else {
+            memos = JSON.parse(text);
+            console.log('Loaded memos:', memos);
+        }
+        
+        createMemoTabs();
+        displayMemos();
+    } catch (error) {
+        console.error('메모 로드 오류:', error);
+        alert('메모를 불러오는 중 오류가 발생했습니다: ' + error.message);
+    }
+}
+// 메모 탭 생성
+function createMemoTabs() {
+    const tabsContainer = document.getElementById('memoTabs');
+    if (!tabsContainer) {
+        console.error('Memo tabs container not found');
+        return;
+    }
+    
+    tabsContainer.innerHTML = '';
+    
+    // 모든 구역에 대한 탭 생성 (메모가 없어도)
+    zones.forEach(zone => {
+        const tab = document.createElement('div');
+        tab.className = 'memo-tab';
+        tab.textContent = zone.name;
+        tab.dataset.zone = zone.name;
+        
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.memo-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentMemoZone = zone.name;
+            displayMemos();
+        });
+        
+        tabsContainer.appendChild(tab);
+    });
+    
+    // 첫 번째 탭 활성화
+    const firstTab = tabsContainer.querySelector('.memo-tab');
+    if (firstTab) {
+        firstTab.classList.add('active');
+        currentMemoZone = firstTab.dataset.zone;
+    } else if (zones.length > 0) {
+        // zones는 있지만 탭이 생성되지 않은 경우
+        currentMemoZone = zones[0].name;
+    }
+}
+
+// 메모 표시 (수정된 버전)
+function displayMemos() {
+    const contentContainer = document.getElementById('memoContent');
+    if (!contentContainer) {
+        console.error('Memo content container not found');
+        return;
+    }
+    
+    contentContainer.innerHTML = '';
+    
+    if (!memos || memos.length === 0) {
+        contentContainer.innerHTML = '<div class="no-memos">등록된 메모가 없습니다.</div>';
+        return;
+    }
+    
+    // 👇 *** 이 부분을 수정하세요! *** 👇
+    // memo.zone을 문자열(String)으로 변환하여 currentMemoZone과 비교합니다.
+    const zoneMemos = memos.filter(memo => String(memo.zone) === currentMemoZone);
+    
+    if (zoneMemos.length === 0) {
+        contentContainer.innerHTML = '<div class="no-memos">이 구역에 등록된 메모가 없습니다.</div>';
+        return;
+    }
+    
+    // 최신 메모가 위로 오도록 정렬
+    zoneMemos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    zoneMemos.forEach(memo => {
+        const memoElement = document.createElement('div');
+        memoElement.className = 'memo-item';
+        
+        const canEdit = currentUser && (isAdmin || memo.author === currentUser);
+        
+        memoElement.innerHTML = `
+            <div class="memo-content-text">${memo.content}</div>
+            <div class="memo-meta">
+                <span>${memo.author}</span>
+                <span>${formatDate(memo.createdAt)}</span>
+            </div>
+            ${canEdit ? `
+                <div class="memo-actions">
+                    <button class="btn small" onclick="openEditMemoModal('${memo.id}')">수정</button>
+                </div>
+            ` : ''}
+        `;
+        
+        contentContainer.appendChild(memoElement);
+    });
+}// 날짜 형식화
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+// 메모 저장
+async function saveMemo(e) {
+    e.preventDefault();
+    
+    const memoId = document.getElementById('memoId').value;
+    const zone = document.getElementById('memoZone').value;
+    const content = document.getElementById('memoContentInput').value;
+    
+    if (!zone || zone === "") {
+        alert('구역을 선택해주세요.');
+        return;
+    }
+    
+    if (!content || content.trim() === "") {
+        alert('메모 내용을 입력해주세요.');
+        return;
+    }
+    
+    try {
+        const formData = new FormData();
+        formData.append('action', memoId ? 'updateMemo' : 'createMemo');
+        if (memoId) formData.append('id', memoId);
+        formData.append('zone', zone);
+        formData.append('content', content.trim());
+        formData.append('author', currentUser);
+        
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            alert('메모가 저장되었습니다.');
+            closeEditMemoModal();
+            loadMemos();
+        } else {
+            throw new Error('메모 저장 실패');
+        }
+    } catch (error) {
+        console.error('메모 저장 오류:', error);
+        alert('메모 저장 중 오류가 발생했습니다.');
+    }
+}
+// 메모 삭제
+async function deleteMemo() {
+    const memoId = document.getElementById('memoId').value;
+    
+    if (!confirm('정말 이 메모를 삭제하시겠습니까?')) {
+        return;
+    }
+    
+    try {
+        const formData = new FormData();
+        formData.append('action', 'deleteMemo');
+        formData.append('id', memoId);
+        
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            alert('메모가 삭제되었습니다.');
+            closeEditMemoModal();
+            loadMemos();
+        } else {
+            throw new Error('메모 삭제 실패');
+        }
+    } catch (error) {
+        console.error('메모 삭제 오류:', error);
+        alert('메모 삭제 중 오류가 발생했습니다.');
+    }
+}
+
+// 이벤트 리스너 등록
+document.addEventListener('DOMContentLoaded', function() {
+    applySavedFontSize();
+    
+    // 메모 폼 이벤트 리스너
+    document.getElementById('editMemoForm').addEventListener('submit', saveMemo);
+    
+    // 구역 데이터가 로드된 후 옵션 채우기
+    if (typeof zones !== 'undefined' && zones.length > 0) {
+        populateZoneOptions();
+    }
+});
 function getCurrentZoneTotal(zoneName) {
     const selectedDay = document.querySelector('input[name="day"]:checked')?.value;
     if (!selectedDay || !applicants[selectedDay] || !applicants[selectedDay][zoneName]) {
@@ -5125,210 +5507,6 @@ function removeTimeSlot(button) {
         button.closest('.time-slot-setting').remove();
     }
 }
-// 메모 목록 로드
-async function loadMemos() {
-    try {
-        const response = await fetch(`${SHEETS_URL}?action=getMemos`);
-        memos = await response.json();
-        updateMemoBadge(); // 배지 업데이트 (새 메모 알림, 옵션)
-    } catch (error) {
-        console.error('메모 로드 오류:', error);
-    }
-}
-
-// 메모 버튼 클릭
-function handleMemoButtonClick() {
-    openMemoListModal();
-}
-
-// 메모 목록 모달 열기
-function openMemoListModal() {
-    document.getElementById('memoListModal').style.display = 'block';
-    displayMemos();
-}
-
-// 메모 목록 모달 닫기
-function closeMemoListModal() {
-    document.getElementById('memoListModal').style.display = 'none';
-}
-
-// 메모 표시 (구역별 그룹핑)
-function displayMemos() {
-    const listEl = document.getElementById('memoList');
-    listEl.innerHTML = '';
-
-    if (memos.length === 0) {
-        listEl.innerHTML = '<div class="no-applications">메모가 없습니다.</div>';
-        return;
-    }
-
-    // 구역별 그룹핑
-    const grouped = memos.reduce((acc, memo) => {
-        if (!acc[memo.zone]) acc[memo.zone] = [];
-        acc[memo.zone].push(memo);
-        return acc;
-    }, {});
-
-    Object.keys(grouped).forEach(zone => {
-        const zoneDiv = document.createElement('div');
-        zoneDiv.className = 'memo-zone-title';
-        zoneDiv.textContent = zone;
-        listEl.appendChild(zoneDiv);
-
-        grouped[zone].forEach(memo => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'memo-item';
-
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'memo-content';
-            contentDiv.textContent = memo.content;
-
-            const metaDiv = document.createElement('div');
-            metaDiv.className = 'memo-meta';
-            metaDiv.textContent = `${memo.author} | ${new Date(memo.createdDate).toLocaleDateString()} ${memo.editedDate ? '(수정됨)' : ''}`;
-
-            const actionsDiv = document.createElement('div');
-            actionsDiv.className = 'memo-actions';
-            if (memo.author === currentUser || isAdmin) {
-                const editBtn = document.createElement('button');
-                editBtn.className = 'btn small';
-                editBtn.textContent = '수정';
-                editBtn.onclick = () => editMemo(memo);
-                actionsDiv.appendChild(editBtn);
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'btn danger small';
-                deleteBtn.textContent = '삭제';
-                deleteBtn.onclick = () => deleteMemoAction(memo.id);
-                actionsDiv.appendChild(deleteBtn);
-            }
-
-            itemDiv.appendChild(contentDiv);
-            itemDiv.appendChild(metaDiv);
-            itemDiv.appendChild(actionsDiv);
-            listEl.appendChild(itemDiv);
-        });
-    });
-}
-
-// 새 메모 추가 모달 열기
-function openAddMemoModal() {
-    document.getElementById('addMemoModal').style.display = 'block';
-    document.getElementById('addMemoTitle').textContent = '새 메모 추가';
-    document.getElementById('memoContent').value = '';
-    editingMemoId = null;
-}
-
-// 메모 추가 모달 닫기
-function closeAddMemoModal() {
-    document.getElementById('addMemoModal').style.display = 'none';
-}
-
-// 구역 선택 옵션 채우기
-function populateMemoZoneSelect() {
-    const select = document.getElementById('memoZone');
-    select.innerHTML = '';
-    zones.forEach(zone => {
-        const option = document.createElement('option');
-        option.value = zone.name;
-        option.textContent = zone.name;
-        select.appendChild(option);
-    });
-}
-
-// 메모 폼 제출
-document.getElementById('memoForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const zone = document.getElementById('memoZone').value;
-    const content = document.getElementById('memoContent').value.trim();
-    
-    if (!zone || !content) {
-        alert('구역과 내용을 입력해주세요.');
-        return;
-    }
-    
-    try {
-        let response;
-        if (editingMemoId) {
-            // 수정
-            response = await fetch(SHEETS_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'updateMemo',
-                    id: editingMemoId,
-                    content: content,
-                    author: currentUser
-                })
-            });
-        } else {
-            // 추가
-            response = await fetch(SHEETS_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'addMemo',
-                    zone: zone,
-                    content: content,
-                    author: currentUser
-                })
-            });
-        }
-        
-        const result = await response.json();
-        if (result.success) {
-            alert(editingMemoId ? '메모가 수정되었습니다.' : '메모가 추가되었습니다.');
-            closeAddMemoModal();
-            loadMemos(); // 목록 새로고침
-            displayMemos();
-        } else {
-            alert('오류: ' + result.error);
-        }
-    } catch (error) {
-        alert('메모 저장 중 오류 발생: ' + error.message);
-    }
-});
-
-// 메모 편집
-function editMemo(memo) {
-    openAddMemoModal();
-    document.getElementById('addMemoTitle').textContent = '메모 수정';
-    document.getElementById('memoZone').value = memo.zone;
-    document.getElementById('memoZone').disabled = true; // 구역 변경 불가
-    document.getElementById('memoContent').value = memo.content;
-    editingMemoId = memo.id;
-}
-
-// 메모 삭제
-async function deleteMemoAction(id) {
-    if (!confirm('이 메모를 삭제하시겠습니까?')) return;
-    
-    try {
-        const response = await fetch(SHEETS_URL, {
-            method: 'POST',
-            body: JSON.stringify({
-                action: 'deleteMemo',
-                id: id,
-                author: currentUser
-            })
-        });
-        
-        const result = await response.json();
-        if (result.success) {
-            alert('메모가 삭제되었습니다.');
-            loadMemos();
-            displayMemos();
-        } else {
-            alert('오류: ' + result.error);
-        }
-    } catch (error) {
-        alert('메모 삭제 중 오류 발생: ' + error.message);
-    }
-}
-
-// 메모 배지 업데이트 (새 메모 알림, 옵션으로 구현. 필요 없으면 생략)
-function updateMemoBadge() {
-    const badge = document.getElementById('memoBadge');
-    badge.style.display = memos.length > 0 ? 'block' : 'none';
-}
 
         // 신청자 목록 업데이트
        // 신청자 목록 업데이트 함수 수정
@@ -5924,4 +6102,3 @@ document.addEventListener('keydown', function(event) {
 </script>
 </body>
 </html>
-
