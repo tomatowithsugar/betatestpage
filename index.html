@@ -7,20 +7,20 @@
     <link rel="apple-touch-icon" href="apple-touch-icon_v3.png">
     <link rel="icon" type="image/png" href="favicon-512x512_v3.png">
 
-    <!-- Firebase SDK -->
+    <!-- Firebase ㄹSDK -->
     <script type="module">import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc, setDoc, updateDoc, arrayUnion, arrayRemove, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
 
         // Firebase 설정
         const firebaseConfig = {
-            apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
-            authDomain: "cart-witnessing-404c0.firebaseapp.com",
-            projectId: "cart-witnessing-404c0",
-            storageBucket: "cart-witnessing-404c0.firebasestorage.app",
-            messagingSenderId: "616001042576",
-            appId: "1:616001042576:web:314fe2268c8fffe82a8015",
-            measurementId: "G-HT3T8YS1MW"
+ apiKey: "AIzaSyCv5Za0pq9okmTgorjPuZHiJIhkgAieVPY",
+ authDomain: "assignment-1bf57.firebaseapp.com",
+ projectId: "assignment-1bf57",
+ storageBucket: "assignment-1bf57.firebasestorage.app",
+ messagingSenderId: "609185997879",
+ appId: "1:609185997879:web:c8db0f997cbfafc2088bb2",
+ measurementId: "G-Q0X97TE8LS"
         };
 
 
@@ -1074,49 +1074,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     }
 }
 
-@media (prefers-color-scheme: dark) {
-    body {
-        background: linear-gradient(145deg, #4c51bf 0%, #553c9a 50%, #4c51bf 100%);
-    }
-    
-    .container {
-        background: rgba(26, 32, 44, 0.95);
-        color: #e2e8f0;
-    }
-    
-    h1 {
-        color: #e2e8f0;
-    }
-    
-    input[type="text"], select, textarea, input[type="number"] {
-        background: rgba(45, 55, 72, 0.8);
-        border-color: rgba(102, 126, 234, 0.3);
-        color: #e2e8f0;
-    }
-    
-    .applicants-list {
-        background: none;
-    }
-    
-    .day-title {
-        background: rgba(45, 55, 72, 0.8);
-        color: #9f7aea;
-    }
-    
-    .zone-applicants {
-        background: rgba(45, 55, 72, 0.9);
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-    
-    .zone-name {
-        color: #e2e8f0;
-    }
-    
-    .applicant-names {
-        color: #cbd5e0;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -1374,101 +1331,10 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     pointer-events: auto;
 }
 
-/* 다크모드 버튼 (위쪽으로) */
-.floating-menu-container.open .dark-mode-btn {
-    transform: translateY(-70px) translateX(0px) scale(1);
-    transition-delay: 0.1s;
-}
-
 /* 홈 버튼 (왼쪽으로) */
 .floating-menu-container.open .home-btn {
     transform: translateY(0px) translateX(-70px) scale(1);
     transition-delay: 0.15s;
-}
-
-/* 다크모드 상태 */
-body.dark-mode {
-    background: linear-gradient(145deg, #1a202c 0%, #2d3748 50%, #1a202c 100%);
-}
-
-body.dark-mode .container {
-    background: rgba(26, 32, 44, 0.95);
-    color: #e2e8f0;
-}
-
-body.dark-mode h1 {
-    color: #e2e8f0;
-}
-
-body.dark-mode input[type="text"], 
-body.dark-mode select, 
-body.dark-mode textarea, 
-body.dark-mode input[type="number"] {
-    background: rgba(45, 55, 72, 0.8);
-    border-color: rgba(102, 126, 234, 0.3);
-    color: #e2e8f0;
-}
-
-body.dark-mode .day-title {
-    background: rgba(45, 55, 72, 0.8);
-    color: #9f7aea;
-}
-
-body.dark-mode .zone-applicants {
-    background: rgba(45, 55, 72, 0.9);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-body.dark-mode .zone-name {
-    color: #e2e8f0;
-}
-
-body.dark-mode .applicant-names {
-    color: #cbd5e0;
-}
-
-body.dark-mode .day-label, 
-body.dark-mode .zone-label {
-    background: rgba(45, 55, 72, 0.7);
-    color: #e2e8f0;
-    border-color: rgba(102, 126, 234, 0.3);
-}
-
-body.dark-mode .stats-content,
-body.dark-mode .user-list,
-body.dark-mode .cancel-item,
-body.dark-mode .user-item,
-body.dark-mode .stat-card,
-body.dark-mode .zone-stat-card {
-    background: rgba(45, 55, 72, 0.9);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #e2e8f0;
-}
-
-body.dark-mode .modal-content {
-    background: rgba(26, 32, 44, 0.95);
-    color: #e2e8f0;
-}
-
-/* 다크모드에서 아이콘 변경 */
-body.dark-mode .dark-mode-btn {
-    background: rgba(45, 55, 72, 0.95);
-    color: #fbbf24;
-}
-
-body.dark-mode .dark-mode-btn:hover {
-    background: rgba(55, 65, 81, 1);
-    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
-}
-
-body.dark-mode .home-btn {
-    background: rgba(45, 55, 72, 0.95);
-    color: #34d399;
-}
-
-body.dark-mode .home-btn:hover {
-    background: rgba(55, 65, 81, 1);
-    box-shadow: 0 8px 25px rgba(52, 211, 153, 0.3);
 }
 
 /* 모바일 반응형 */
@@ -1493,10 +1359,6 @@ body.dark-mode .home-btn:hover {
     .dark-mode-btn, .home-btn {
         bottom: 5px;
         right: 5px;
-    }
-    
-    .floating-menu-container.open .dark-mode-btn {
-        transform: translateY(-65px) translateX(0px) scale(1);
     }
     
     .floating-menu-container.open .home-btn {
@@ -1566,6 +1428,10 @@ body.dark-mode .home-btn:hover {
 
 .time-option input[type="radio"] {
     display: none;
+}
+#noticeViewContent {
+    white-space: pre-line;
+    line-height: 1.6;
 }
 
 .time-label {
@@ -1642,12 +1508,6 @@ body.dark-mode .home-btn:hover {
         grid-template-columns: 1fr;
         gap: 10px;
     }
-}
-
-body.dark-mode .time-label {
-    background: rgba(45, 55, 72, 0.7);
-    color: #e2e8f0;
-    border-color: rgba(102, 126, 234, 0.3);
 }
 /* 시간대 설정 컨테이너 */
 .time-slot-settings {
@@ -1800,26 +1660,6 @@ body.dark-mode .time-label {
     font-size: 14px;
 }
 
-/* 다크모드 지원 */
-body.dark-mode .time-slot-settings,
-body.dark-mode .time-slot-setting {
-    background: rgba(45, 55, 72, 0.9);
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-body.dark-mode .time-picker {
-    background: rgba(55, 65, 81, 0.9);
-    border-color: rgba(102, 126, 234, 0.3);
-}
-
-body.dark-mode .time-select {
-    color: #e2e8f0;
-}
-
-body.dark-mode .time-input-label {
-    color: #9f7aea;
-}
-
 /* 모바일 반응형 */
 @media (max-width: 768px) {
     .time-slot-row {
@@ -1961,49 +1801,10 @@ body.dark-mode .time-input-label {
     font-weight: 600;
 }
 
-/* 다크모드에서의 스타일 */
-body.dark-mode .font-size-btn {
-    background: rgba(45, 55, 72, 0.95);
-    color: #9f7aea;
-}
-
-body.dark-mode .font-size-btn:hover {
-    background: rgba(55, 65, 81, 1);
-    box-shadow: 0 8px 25px rgba(159, 122, 234, 0.3);
-}
-
-body.dark-mode .font-size-slider-container {
-    background: rgba(45, 55, 72, 0.95);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #e2e8f0;
-}
-
-body.dark-mode .slider-header {
-    color: #e2e8f0;
-}
-
-body.dark-mode .close-slider {
-    color: #cbd5e0;
-}
-
-body.dark-mode .close-slider:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #e2e8f0;
-}
-
-body.dark-mode #fontSizeRange {
-    background: #4a5568;
-}
-
 /* 플로팅 메뉴 열린 상태에서의 글자 크기 버튼 위치 조정 */
 .floating-menu-container.open .font-size-btn {
-    transform: translateY(-140px) translateX(0px) scale(1);
-    transition-delay: 0.05s;
-}
-
-.floating-menu-container.open .dark-mode-btn {
     transform: translateY(-70px) translateX(0px) scale(1);
-    transition-delay: 0.1s;
+    transition-delay: 0.05s;
 }
 
 .floating-menu-container.open .home-btn {
@@ -2019,10 +1820,6 @@ body.dark-mode #fontSizeRange {
     }
     
     .floating-menu-container.open .font-size-btn {
-        transform: translateY(-130px) translateX(0px) scale(1);
-    }
-    
-    .floating-menu-container.open .dark-mode-btn {
         transform: translateY(-65px) translateX(0px) scale(1);
     }
     
@@ -2171,31 +1968,15 @@ body.dark-mode #fontSizeRange {
     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 }
 
-/* 다크모드에서의 날씨 버튼 */
-body.dark-mode .weather-btn {
-    background: rgba(45, 55, 72, 0.95);
-    color: #93c5fd;
-}
-
-body.dark-mode .weather-btn:hover {
-    background: rgba(55, 65, 81, 1);
-    box-shadow: 0 8px 25px rgba(147, 197, 253, 0.3);
-}
-
 /* 플로팅 메뉴 열린 상태에서의 버튼 위치 조정 */
 .floating-menu-container.open .weather-btn {
-    transform: translateY(-210px) translateX(0px) scale(1);
+    transform: translateY(-140px) translateX(0px) scale(1);
     transition-delay: 0.05s;  /* 가장 먼저 나타나도록 */
 }
 
 .floating-menu-container.open .font-size-btn {
-    transform: translateY(-140px) translateX(0px) scale(1);
-    transition-delay: 0.1s;   /* 두 번째로 나타나도록 */
-}
-
-.floating-menu-container.open .dark-mode-btn {
     transform: translateY(-70px) translateX(0px) scale(1);
-    transition-delay: 0.15s;  /* 세 번째로 나타나도록 */
+    transition-delay: 0.1s;   /* 두 번째로 나타나도록 */
 }
 
 .floating-menu-container.open .home-btn {
@@ -2204,14 +1985,10 @@ body.dark-mode .weather-btn:hover {
 }
 @media (max-width: 768px) {
     .floating-menu-container.open .weather-btn {
-        transform: translateY(-195px) translateX(0px) scale(1);
-    }
-    
-    .floating-menu-container.open .font-size-btn {
         transform: translateY(-130px) translateX(0px) scale(1);
     }
     
-    .floating-menu-container.open .dark-mode-btn {
+    .floating-menu-container.open .font-size-btn {
         transform: translateY(-65px) translateX(0px) scale(1);
     }
     
@@ -2540,19 +2317,9 @@ body.dark-mode .weather-btn:hover {
     box-shadow: 0 8px 25px rgba(245, 101, 101, 0.4);
 }
 
-/* 다크모드에서의 새로고침 버튼 */
-body.dark-mode .refresh-btn {
-    background: linear-gradient(135deg, #e53e3e 0%, #9b2c2c 100%); /* 다크모드용 붉은색 */
-}
-
-body.dark-mode .refresh-btn:hover {
-    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-    box-shadow: 0 8px 25px rgba(245, 101, 101, 0.4);
-}
-
 /* 새로고침 버튼 위치 조정 */
 .floating-menu-container.open .refresh-btn {
-    transform: translateY(0px) translateX(-125px) scale(1);
+    transform: translateY(0px) translateX(-130px) scale(1);
     transition-delay: 0.175s;
 }
 /* 메모 버튼 */
@@ -2653,25 +2420,91 @@ body.dark-mode .refresh-btn:hover {
     margin-top: 10px;
     text-align: right;
 }
-
-/* 다크모드 지원 */
-body.dark-mode .memo-button {
-    background: rgba(45, 55, 72, 0.95);
-    color: #9f7aea;
+/* 약속 관련 스타일 */
+.appointment-btn {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: all 0.3s ease;
 }
 
-body.dark-mode .memo-tab {
-    background: rgba(45, 55, 72, 0.8);
-    border-color: rgba(102, 126, 234, 0.3);
-    color: #e2e8f0;
+.appointment-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(79, 172, 254, 0.3);
 }
 
-body.dark-mode .memo-item {
-    background: rgba(45, 55, 72, 0.9);
-    border-color: rgba(255, 255, 255, 0.1);
+.appointment-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
+.appointment-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
 
+.location-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 10px;
+}
+
+.checkbox-label input {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+}
+
+.checkbox-label input:checked + .checkmark {
+    background: #667eea;
+}
+
+.checkbox-label input:checked + .checkmark:after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
     </style>
 </head>
 <body>
@@ -2725,7 +2558,7 @@ body.dark-mode .memo-item {
         <!-- 선택된 요일의 신청현황만 표시 -->
     </div>
 </div>
-        <div class="version-info">v2.6</div>
+        <div class="version-info">v2.7</div>
     </div>
     <!-- 고정 공지 버튼 -->
 <button id="noticeButton" class="notice-button inactive" onclick="handleNoticeButtonClick()" style="display: none;">
@@ -2781,7 +2614,60 @@ body.dark-mode .memo-item {
         </form>
     </div>
 </div>
-
+<!-- 기존 코드에 추가할 약속 잡기 모달 -->
+<div id="appointmentModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeAppointmentModal()">&times;</span>
+        <h2>약속 잡기 - <span id="modalZoneName"></span> <span id="modalTimeSlot"></span></h2>
+        
+        <div id="appointmentList" class="appointment-list">
+            <!-- 약속 정보가 여기에 표시됩니다 -->
+        </div>
+        
+        <h3>나의 계획</h3>
+        <form id="appointmentForm">
+            <input type="hidden" id="appointmentDay">
+            <input type="hidden" id="appointmentZone">
+            <input type="hidden" id="appointmentTime">
+            
+            <div class="form-group">
+                <label for="endTime">종료 시간</label>
+                <input type="time" id="endTime" required>
+            </div>
+            
+            <div class="form-group">
+                <label>장소</label>
+                <div class="location-options">
+                    <div class="radio-option">
+                        <input type="radio" id="locationZone" name="location" value="zone" checked>
+                        <label for="locationZone"><span id="selectedZoneName"></span></label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="locationKingdom" name="location" value="왕국회관">
+                        <label for="locationKingdom">왕국회관</label>
+                    </div>
+                    
+                    <div class="radio-option">
+                        <input type="radio" id="locationCustom" name="location" value="custom">
+                        <label for="locationCustom">직접입력</label>
+                        <input type="text" id="customLocation" placeholder="직접 입력" style="display: none; margin-top: 5px;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="bringCart">
+                    <span class="checkmark"></span>
+                    전시대는 제가 챙길게요
+                </label>
+            </div>
+            
+            <button type="submit" class="btn">저장</button>
+        </form>
+    </div>
+</div>
 
     <!-- 신청 모달 -->
     <div id="registrationModal" class="modal">
@@ -2926,6 +2812,32 @@ body.dark-mode .memo-item {
         </div>
     </div>
 </div>
+<!-- 구역 수정 모달 -->
+<div id="editZoneModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditZoneModal()">&times;</span>
+        <h2>구역 수정</h2>
+
+        <div class="form-group">
+            <label for="editZoneName">구역 이름</label>
+            <input type="text" id="editZoneName" placeholder="구역 이름을 입력하세요" required>
+        </div>
+
+        <div class="form-group">
+            <label>구역 일정 설정</label>
+            <div id="editSchedulesContainer">
+                <!-- 일정들이 여기에 동적으로 추가됩니다 -->
+            </div>
+            <button type="button" class="btn secondary small" onclick="addNewScheduleToEdit()" style="margin-top: 10px;">
+                + 새 일정 추가
+            </button>
+        </div>
+
+        <div class="zone-add-controls">
+            <button type="button" class="btn success" onclick="updateZone()">구역 수정</button>
+        </div>
+    </div>
+</div>
 
     <!-- 데이터 통계 모달 -->
     <div id="statsModal" class="modal">
@@ -2965,7 +2877,7 @@ body.dark-mode .memo-item {
         </div>
 
         <div style="text-align: right; margin-bottom: 20px; color: #999; font-size: 14px;">
-            글자수: <span id="noticeCharCount">0</span>/300
+            글자수: <span id="noticeCharCount">0</span>/3000
         </div>
 
         <div class="admin-action-buttons">
@@ -3002,6 +2914,7 @@ body.dark-mode .memo-item {
         const SEOUL_LAT = 37.5665;
         const SEOUL_LON = 126.9780;
         const GAS_URL = "https://script.google.com/macros/s/AKfycbzpcLIHHRPMtxkSTAa_3VzDl5ss5IWsGOp_UlCU5iZi6P0rw7WBXiNezbZhb_pprhV5Pw/exec";
+        const APPOINTMENT_GAS_URL = "https://script.google.com/macros/s/AKfycbw4wqFQZk_DHenQjoCAh7KhKdGUzejuQ_6kl2vtIpRci8YIPx_y6x6ikLMqrFxRF2w3ZA/exec";
         let memos = [];
         let currentMemoZone = '';
         let zones = []; // 동적으로 로드
@@ -3166,7 +3079,6 @@ function initializeApplicants() {
                 <input type="radio" id="zone${index}" name="zone" value="${zone.name}">
                 <label for="zone${index}" class="zone-label" data-zone="${zone.name}">
                     ${zone.name}
-                    <div class="capacity-info">${currentTotal}/${totalCapacity}</div>
                 </label>
             `;
             zoneSelection.appendChild(optionDiv);
@@ -3325,7 +3237,7 @@ async function loadMemos() {
         displayMemos();
     } catch (error) {
         console.error('메모 로드 오류:', error);
-        alert('메모를 불러오는 중 오류가 발생했습니다: ' + error.message);
+        alert('메모를 불러오는 중 오류가 발생했습니다. 메모 저장용 서버가 불안정해 원래 오류가 자주 발생하니 조금 시간을 두고 다시 시도해주세요. error_code: ' + error.message);
     }
 }
 // 메모 탭 생성
@@ -3536,6 +3448,160 @@ function closeStatsModal() {
         statsModal.style.display = 'none';
     }
 }
+
+// 약속 잡기 모달 열기
+function openAppointmentModal(day, zone, timeSlot) {
+    if (!currentUser) {
+        alert('로그인이 필요합니다.');
+        return;
+    }
+    
+    // 현재 사용자가 이 시간대에 신청했는지 확인
+    const userApplied = applicants[day] && 
+                       applicants[day][zone] && 
+                       applicants[day][zone][timeSlot] &&
+                       applicants[day][zone][timeSlot].includes(currentUser);
+    
+    if (!userApplied) {
+        alert('해당 시간대에 신청한 사용자만 약속 잡기를 사용할 수 있습니다.');
+        return;
+    }
+    
+    document.getElementById('appointmentDay').value = day;
+    document.getElementById('appointmentZone').value = zone;
+    document.getElementById('appointmentTime').value = timeSlot;
+    
+    // 모달 타이틀 설정
+    document.getElementById('modalZoneName').textContent = zone;
+    document.getElementById('modalTimeSlot').textContent = timeSlot;
+    
+    // 선택된 구역 이름 표시
+    document.getElementById('selectedZoneName').textContent = zone;
+    
+    // 기존 약속 정보 로드
+    loadAppointments(day, zone, timeSlot);
+    
+    document.getElementById('appointmentModal').style.display = 'block';
+}
+
+// 약속 잡기 모달 닫기
+function closeAppointmentModal() {
+    document.getElementById('appointmentModal').style.display = 'none';
+}
+
+// 약속 정보 로드
+// loadAppointments 함수 수정
+async function loadAppointments(day, zone, timeSlot) {
+    try {
+        const response = await fetch(`${APPOINTMENT_GAS_URL}?day=${encodeURIComponent(day)}&zone=${encodeURIComponent(zone)}&timeSlot=${encodeURIComponent(timeSlot)}`);
+        const data = await response.json();
+        
+        const appointmentList = document.getElementById('appointmentList');
+        appointmentList.innerHTML = '';
+        
+        if (data.length === 0) {
+            appointmentList.innerHTML = '<p class="no-appointments">아직 약속이 없습니다. 첫 번째로 나의 계획을 공유해보세요!</p>';
+            return;
+        }
+        
+        data.forEach(appointment => {
+            // 시간 형식 변환 - ISO 문자열을 HH:MM 형식으로 변환
+            let displayEndTime = appointment.endTime;
+            
+            // ISO 형식인지 확인 (1899-12-29T16:31:08.000Z 같은 형식)
+            if (typeof appointment.endTime === 'string' && appointment.endTime.includes('T')) {
+                try {
+                    const date = new Date(appointment.endTime);
+                    // 시간과 분만 추출
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    displayEndTime = `${hours}:${minutes}`;
+                } catch (e) {
+                    console.error('시간 변환 오류:', e);
+                    // 변환 실패 시 원본 값 유지
+                    displayEndTime = appointment.endTime;
+                }
+            }
+            
+            // 선택지에 따른 문장 생성
+            let locationText = appointment.location === 'zone' ? zone : 
+                              appointment.location === '왕국회관' ? '왕국회관' : 
+                              appointment.customLocation || '직접입력';
+            
+            const bringCartText = appointment.bringCart ? ', 전시대는 제가 챙길게요' : '';
+            
+            const appointmentDiv = document.createElement('div');
+            appointmentDiv.className = 'appointment-item';
+            
+            appointmentDiv.innerHTML = `
+                <strong>${appointment.user}</strong>: 저는 ${displayEndTime}까지 ${locationText}(으)로 나갈게요! ${bringCartText}
+            `;
+            
+            appointmentList.appendChild(appointmentDiv);
+        });
+    } catch (error) {
+        console.error('약속 정보 로드 오류:', error);
+        document.getElementById('appointmentList').innerHTML = '<p class="error">약속 정보를 불러오는 중 오류가 발생했습니다.</p>';
+    }
+}
+// 약속 정보 저장
+document.getElementById('appointmentForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const day = document.getElementById('appointmentDay').value;
+    const zone = document.getElementById('appointmentZone').value;
+    const timeSlot = document.getElementById('appointmentTime').value;
+    const endTime = document.getElementById('endTime').value;
+    const locationType = document.querySelector('input[name="location"]:checked').value;
+    const bringCart = document.getElementById('bringCart').checked;
+    const customLocation = document.getElementById('customLocation').value;
+    
+    if (!endTime) {
+        alert('종료 시간을 선택해주세요.');
+        return;
+    }
+    
+    if (locationType === 'custom' && !customLocation) {
+        alert('직접 입력한 장소를 입력해주세요.');
+        return;
+    }
+    
+    try {
+        const response = await fetch(APPOINTMENT_GAS_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                user: currentUser,
+                day: day,
+                zone: zone,
+                timeSlot: timeSlot,
+                endTime: endTime,
+                location: locationType,
+                bringCart: bringCart,
+                customLocation: customLocation
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert(result.message);
+            loadAppointments(day, zone, timeSlot);
+        } else {
+            alert('약속 저장 중 오류가 발생했습니다: ' + result.message);
+        }
+    } catch (error) {
+        console.error('약속 저장 오류:', error);
+        alert('약속 저장 중 오류가 발생했습니다.');
+    }
+});
+
+// 직접 입력 필드 표시/숨기기
+document.querySelectorAll('input[name="location"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('customLocation').style.display = this.value === 'custom' ? 'block' : 'none';
+    });
+});
+
 // 시간 선택 UI 업데이트
 // 시간 선택 UI 업데이트 함수 수정
 function updateTimeSelection(selectedDay, selectedZone) {
@@ -3874,8 +3940,14 @@ function displayDayApplications(day) {
                             timeHeaderDiv.style.color = '#667eea';
                             timeHeaderDiv.style.fontWeight = '700';
                             timeHeaderDiv.style.marginBottom = '6px';
-                            timeHeaderDiv.textContent = `${formatTimeToAMPM(slot.time)} (${currentCount}/${slot.maxCapacity || 4})`;
-                            
+                            timeHeaderDiv.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>${formatTimeToAMPM(slot.time)} (${currentCount}/${slot.maxCapacity || 4})</span>
+            <button class="appointment-btn" onclick="openAppointmentModal('${day}', '${zone.name}', '${slot.time}')">
+                약속 잡기
+            </button>
+        </div>
+    `;
                             const namesDiv = document.createElement('div');
                             if (currentCount > 0) {
                                 namesDiv.innerHTML = applicants[day][zone.name][slot.time]
@@ -4437,9 +4509,12 @@ async function addZoneToFirestore(name, schedules) {
                 const zoneItem = document.createElement('div');
                 zoneItem.className = 'user-item';
                 zoneItem.innerHTML = `
-                        <div class="user-name">${zoneName} (용량: ${maxCapacity})</div>
+                    <div class="user-name">${zoneName}</div>
+                    <div>
+                        <button class="btn success small" onclick="editZone('${docId}', '${zoneName}')">수정</button>
                         <button class="btn danger small" onclick="deleteZone('${docId}', '${zoneName}')">삭제</button>
-                    `;
+                    </div>
+                `;
                 zoneManagementListEl.appendChild(zoneItem);
             });
         }
@@ -5367,12 +5442,6 @@ function createWeatherModal(dailyForecasts) {
         modalContent.classList.add('active');
     }, 10);
 }
-
-
-//=====================================================================================
-// LCC DFS 좌표변환을 위한 라이브러리 (수정할 필요 없음)
-// 출처: https://gist.github.com/fronteer-kr/14d7f779d52a21ac2f56
-//=====================================================================================
 function dfs_xy_conv(code, v1, v2) {
     var DEGRAD = Math.PI / 180.0;
     var GRID = 5.0;
@@ -5422,6 +5491,310 @@ function dfs_xy_conv(code, v1, v2) {
                 closeCancelModal();
             }
         }
+        // 현재 수정 중인 구역 ID 저장
+let currentlyEditingZoneId = null;
+
+// 구역 수정 모달 열기
+async function editZone(zoneId) {
+    currentlyEditingZoneId = zoneId;
+    
+    // 기존 구역 데이터 불러오기
+    const { doc, getDoc } = window.firestoreFunctions;
+    const zoneRef = doc(window.db, 'zones', zoneId);
+    const zoneSnap = await getDoc(zoneRef);
+    
+    if (!zoneSnap.exists()) {
+        alert('구역 데이터를 불러오는데 실패했습니다. 페이지를 새로고침 해도 동일 문제가 반복되면 관리자에게 문의해주시기 바랍니다.');
+        return;
+    }
+    
+    const zoneData = zoneSnap.data();
+    
+    // 모달에 데이터 채우기
+    document.getElementById('editZoneName').value = zoneData.name;
+    
+    // 스케줄 데이터 채우기
+    const container = document.getElementById('editSchedulesContainer');
+    container.innerHTML = '';
+    
+    if (zoneData.schedules && zoneData.schedules.length > 0) {
+        zoneData.schedules.forEach((schedule, index) => {
+            addScheduleToEditContainer(container, schedule, index);
+        });
+    } else {
+        addNewScheduleToEdit();
+    }
+    
+    // 모달 열기
+    document.getElementById('editZoneModal').style.display = 'block';
+}
+
+// 수정 모달에 스케줄 추가
+function addScheduleToEditContainer(container, schedule, index) {
+    const scheduleId = Date.now() + index;
+    const scheduleDiv = document.createElement('div');
+    scheduleDiv.className = 'schedule-item';
+    scheduleDiv.id = `edit-schedule-${scheduleId}`;
+    
+    scheduleDiv.innerHTML = `
+        <div class="schedule-header">
+            <div class="schedule-title">일정 #${index + 1}</div>
+            <button type="button" class="remove-schedule" onclick="removeEditSchedule(${scheduleId})">삭제</button>
+        </div>
+        
+        <div class="form-group">
+            <label>요일 선택</label>
+            <div class="day-selection-grid">
+                ${['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'].map(day => `
+                    <div class="day-checkbox">
+                        <input type="checkbox" id="edit-${day}-${scheduleId}" value="${day}" ${schedule.days.includes(day) ? 'checked' : ''}>
+                        <label for="edit-${day}-${scheduleId}">${day}</label>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>시간대 설정</label>
+            <div class="time-slot-settings" id="edit-timeSlots-${scheduleId}">
+                ${schedule.timeSlots.map((slot, slotIndex) => `
+                    <div class="time-slot-item">
+                        <div class="time-slot-row">
+                            <div class="time-input-group">
+                                <label class="time-input-label">시작 시간</label>
+                                <div class="time-picker-container">
+                                    <div class="time-picker">
+                                        <select class="time-select start-hour">
+                                            ${generateHourOptions(slot.time.split('-')[0].split(':')[0])}
+                                        </select>
+                                        <span>:</span>
+                                        <select class="time-select start-minute">
+                                            ${generateMinuteOptions(slot.time.split('-')[0].split(':')[1])}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <label class="time-input-label">종료 시간</label>
+                                <div class="time-picker-container">
+                                    <div class="time-picker">
+                                        <select class="time-select end-hour">
+                                            ${generateHourOptions(slot.time.split('-')[1].split(':')[0])}
+                                        </select>
+                                        <span>:</span>
+                                        <select class="time-select end-minute">
+                                            ${generateMinuteOptions(slot.time.split('-')[1].split(':')[1])}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <label class="time-input-label">최대 인원</label>
+                                <input type="number" class="capacity-input" value="${slot.maxCapacity}" min="1" max="20">
+                            </div>
+                            
+                            <div class="time-input-group">
+                                <button type="button" class="btn remove-time" onclick="this.parentElement.parentElement.parentElement.remove()">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="time-slot-controls">
+                <button type="button" class="btn secondary small" onclick="addTimeSlotToEditSchedule(${scheduleId})">시간대 추가</button>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(scheduleDiv);
+}
+
+// 수정 모달에 새 스케줄 추가
+function addNewScheduleToEdit() {
+    const container = document.getElementById('editSchedulesContainer');
+    const scheduleId = Date.now();
+    
+    const scheduleDiv = document.createElement('div');
+    scheduleDiv.className = 'schedule-item';
+    scheduleDiv.id = `edit-schedule-${scheduleId}`;
+    
+    scheduleDiv.innerHTML = `
+        <div class="schedule-header">
+            <div class="schedule-title">일정 #${container.children.length + 1}</div>
+            <button type="button" class="remove-schedule" onclick="removeEditSchedule(${scheduleId})">삭제</button>
+        </div>
+        
+        <div class="form-group">
+            <label>요일 선택</label>
+            <div class="day-selection-grid">
+                ${['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'].map(day => `
+                    <div class="day-checkbox">
+                        <input type="checkbox" id="edit-${day}-${scheduleId}" value="${day}">
+                        <label for="edit-${day}-${scheduleId}">${day}</label>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>시간대 설정</label>
+            <div class="time-slot-settings" id="edit-timeSlots-${scheduleId}">
+                <div class="empty-time-slots">시간대를 추가해주세요</div>
+            </div>
+            <div class="time-slot-controls">
+                <button type="button" class="btn secondary small" onclick="addTimeSlotToEditSchedule(${scheduleId})">시간대 추가</button>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(scheduleDiv);
+}
+
+// 수정 모달에서 시간대 추가
+function addTimeSlotToEditSchedule(scheduleId) {
+    const container = document.getElementById(`edit-timeSlots-${scheduleId}`);
+    
+    if (container.querySelector('.empty-time-slots')) {
+        container.innerHTML = '';
+    }
+    
+    const timeSlotDiv = document.createElement('div');
+    timeSlotDiv.className = 'time-slot-item';
+    
+    timeSlotDiv.innerHTML = `
+        <div class="time-slot-row">
+            <div class="time-input-group">
+                <label class="time-input-label">시작 시간</label>
+                <div class="time-picker-container">
+                    <div class="time-picker">
+                        <select class="time-select start-hour">
+                            ${generateHourOptions('09')}
+                        </select>
+                        <span>:</span>
+                        <select class="time-select start-minute">
+                            ${generateMinuteOptions('00')}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="time-input-group">
+                <label class="time-input-label">종료 시간</label>
+                <div class="time-picker-container">
+                    <div class="time-picker">
+                        <select class="time-select end-hour">
+                            ${generateHourOptions('12')}
+                        </select>
+                        <span>:</span>
+                        <select class="time-select end-minute">
+                            ${generateMinuteOptions('00')}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="time-input-group">
+                <label class="time-input-label">최대 인원</label>
+                <input type="number" class="capacity-input" value="4" min="1" max="20">
+            </div>
+            
+            <div class="time-input-group">
+                <button type="button" class="btn remove-time" onclick="this.parentElement.parentElement.parentElement.remove()">삭제</button>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(timeSlotDiv);
+}
+
+// 수정 모달에서 스케줄 삭제
+function removeEditSchedule(scheduleId) {
+    const scheduleDiv = document.getElementById(`edit-schedule-${scheduleId}`);
+    if (scheduleDiv && confirm('이 일정을 삭제하시겠습니까?')) {
+        scheduleDiv.remove();
+    }
+}
+
+// 구역 수정 저장
+async function updateZone() {
+    const name = document.getElementById('editZoneName').value.trim();
+    
+    if (!name) {
+        alert('구역 이름을 입력해주세요.');
+        return;
+    }
+    
+    // 모든 스케줄 데이터 수집
+    const schedules = [];
+    const scheduleElements = document.querySelectorAll('#editSchedulesContainer .schedule-item');
+    
+    for (const scheduleElement of scheduleElements) {
+        const selectedDays = [];
+        const dayCheckboxes = scheduleElement.querySelectorAll('input[type="checkbox"]:checked');
+        dayCheckboxes.forEach(checkbox => {
+            selectedDays.push(checkbox.value);
+        });
+        
+        if (selectedDays.length === 0) continue;
+        
+        const timeSlots = [];
+        const timeSlotElements = scheduleElement.querySelectorAll('.time-slot-item');
+        
+        for (const timeSlotElement of timeSlotElements) {
+            const startHour = timeSlotElement.querySelector('.start-hour').value;
+            const startMinute = timeSlotElement.querySelector('.start-minute').value;
+            const endHour = timeSlotElement.querySelector('.end-hour').value;
+            const endMinute = timeSlotElement.querySelector('.end-minute').value;
+            const capacity = parseInt(timeSlotElement.querySelector('.capacity-input').value);
+            
+            const timeText = `${startHour}:${startMinute}-${endHour}:${endMinute}`;
+            
+            timeSlots.push({
+                time: timeText,
+                maxCapacity: capacity,
+                isActive: true
+            });
+        }
+        
+        if (timeSlots.length > 0) {
+            schedules.push({
+                days: selectedDays,
+                timeSlots: timeSlots
+            });
+        }
+    }
+    
+    if (schedules.length === 0) {
+        alert('최소 하나의 유효한 일정을 설정해주세요.');
+        return;
+    }
+    
+    try {
+        const { doc, updateDoc } = window.firestoreFunctions;
+        const zoneRef = doc(window.db, 'zones', currentlyEditingZoneId);
+        
+        await updateDoc(zoneRef, {
+            name: name,
+            schedules: schedules
+        });
+        
+        alert(`${name} 구역이 수정되었습니다.`);
+        closeEditZoneModal();
+        loadZonesFromFirestore();
+        loadAndDisplayZones();
+    } catch (error) {
+        console.error('구역 수정 오류:', error);
+        alert('구역 수정 중 오류가 발생했습니다.');
+    }
+}
+
+// 구역 수정 모달 닫기
+function closeEditZoneModal() {
+    document.getElementById('editZoneModal').style.display = 'none';
+    currentlyEditingZoneId = null;
+}
 
         // 모달에서 구역 표시 업데이트
         function updateZoneDisplayForModal() {
@@ -5482,20 +5855,22 @@ function updateZoneDisplay(selectedDay) {
     });
     console.log('Zone display updated for day:', selectedDay);
 }
-        function generateHourOptions() {
+        function generateHourOptions(selectedValue = null) {
     let options = '';
     for (let i = 6; i <= 22; i++) {
         const hour = i.toString().padStart(2, '0');
-        options += `<option value="${hour}">${hour}</option>`;
+        const isSelected = selectedValue === hour ? 'selected' : '';
+        options += `<option value="${hour}" ${isSelected}>${hour}</option>`;
     }
     return options;
 }
 
-function generateMinuteOptions() {
+function generateMinuteOptions(selectedValue = null) {
     const minutes = ['00', '15', '30', '45'];
     let options = '';
     minutes.forEach(minute => {
-        options += `<option value="${minute}">${minute}</option>`;
+        const isSelected = selectedValue === minute ? 'selected' : '';
+        options += `<option value="${minute}" ${isSelected}>${minute}</option>`;
     });
     return options;
 }
@@ -5597,8 +5972,8 @@ async function saveNotice() {
         return;
     }
     
-    if (content.length > 300) {
-        alert('공지사항은 300자 이내로 입력해주세요.');
+    if (content.length > 3000) {
+        alert('공지사항은 3000자 이내로 입력해주세요.');
         return;
     }
     
@@ -5715,7 +6090,7 @@ function openNoticeViewModal() {
     }
     
     // 내용 설정
-    contentElement.textContent = currentNotice.content;
+    contentElement.innerHTML = currentNotice.content.replace(/\n/g, '<br>');
     
     // 날짜 설정
     const date = new Date(currentNotice.lastUpdated);
@@ -5895,7 +6270,7 @@ if (isOverlappingTime) {
 
             const saved = await saveToFirestore(currentUser, dayValue, zoneValue, timeValue);
             if (saved) {
-                alert(`${dayValue} ${zoneValue} 신청이 완료되었습니다!`);
+                alert(`${dayValue} ${zoneValue} 구역 [${timeValue}] 신청이 완료되었습니다!`);
                 closeRegistrationModal();
             }
         });
@@ -5921,6 +6296,10 @@ if (isOverlappingTime) {
             const statsModal = document.getElementById('statsModal');
             const noticeManagementModal = document.getElementById('noticeManagementModal');
             const noticeViewModal = document.getElementById('noticeViewModal');
+            const editZoneModal = document.getElementById('editZoneModal');
+                if (event.target === editZoneModal) {
+                    closeEditZoneModal();
+                }
 
             if (event.target === registrationModal) {
                 closeRegistrationModal();
@@ -6002,11 +6381,7 @@ async function executeAdminAction() {
     <button class="sub-menu-btn refresh-btn" onclick="refreshPage()" title="페이지 새로고침">
         X
     </button>
-    <!-- 다크모드 토글 버튼 -->
-    <button class="sub-menu-btn dark-mode-btn" onclick="toggleDarkMode()" title="다크모드 전환">
-        🌙
-    </button>
-    
+   
     <!-- 구역카드 버튼 -->
     <button class="sub-menu-btn home-btn" onclick="goToHome()" title="홈으로 이동">
         🏠
@@ -6042,27 +6417,6 @@ function refreshPage() {
     window.location.reload();
 }
 
-// 다크모드 토글 함수
-function toggleDarkMode() {
-    const body = document.body;
-    const darkModeBtn = document.querySelector('.dark-mode-btn');
-    
-    body.classList.toggle('dark-mode');
-    
-    // 다크모드 상태에 따라 아이콘 변경
-    if (body.classList.contains('dark-mode')) {
-        darkModeBtn.innerHTML = '☀️';
-        darkModeBtn.title = '라이트모드 전환';
-        localStorage.setItem('darkMode', 'enabled');
-    } else {
-        darkModeBtn.innerHTML = '🌙';
-        darkModeBtn.title = '다크모드 전환';
-        localStorage.setItem('darkMode', 'disabled');
-    }
-    // 글자 크기 버튼 색상 업데이트
-    updateFontSizeButtonColor();
-}
-
 // 홈으로 이동 함수
 function goToHome() {
     window.open('https://bgs.jwcard.co.kr', '_blank');
@@ -6070,14 +6424,6 @@ function goToHome() {
 
 // 페이지 로드 시 다크모드 상태 복원
 document.addEventListener('DOMContentLoaded', function() {
-    const darkMode = localStorage.getItem('darkMode');
-    const darkModeBtn = document.querySelector('.dark-mode-btn');
-    
-    if (darkMode === 'enabled') {
-        document.body.classList.add('dark-mode');
-        darkModeBtn.innerHTML = '☀️';
-        darkModeBtn.title = '라이트모드 전환';
-    }
 });
 
 // 메뉴 외부 클릭 시 닫기
