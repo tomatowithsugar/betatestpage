@@ -3981,13 +3981,20 @@ function displayDayApplications(day) {
                             timeSlotDiv.style.marginBottom = '12px';
                             
                             const timeHeaderDiv = document.createElement('div');
-                            timeHeaderDiv.className = 'time-slot-header';
-                            timeHeaderDiv.style.color = '#667eea';
-                            timeHeaderDiv.style.fontWeight = '700';
-                            timeHeaderDiv.style.marginBottom = '6px';
-                            timeHeaderDiv.innerHTML = `
-    ${formatTimeToAMPM(slot.time)} (${currentCount}/${slot.maxCapacity || 4})
-    <button class="btn small" onclick="openMessengerModal('${day}', '${zone.name}', '${slot.time}')" style="margin-left: 10px; padding: 4px 8px; font-size: 12px;">
+timeHeaderDiv.className = 'time-slot-header';
+timeHeaderDiv.style.cssText = `
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #667eea;
+    font-weight: 700;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+`;
+timeHeaderDiv.innerHTML = `
+    <span>${formatTimeToAMPM(slot.time)} (${currentCount}/${slot.maxCapacity || 4})</span>
+    <button class="btn small" onclick="openMessengerModal('${day}', '${zone.name}', '${slot.time}')" 
+            style="padding: 4px 8px; font-size: 12px; white-space: nowrap;">
         💬구역 채팅
     </button>
 `;
