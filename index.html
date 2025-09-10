@@ -3947,6 +3947,21 @@ async function openMessengerModal(day, zone, timeSlot) {
         currentChatRoom = { day, zone, timeSlot };
         document.getElementById('messengerInfo').textContent = `${day} ${zone} ${formatTimeToAMPM(timeSlot)} 채팅방`;
         document.getElementById('messengerModal').style.display = 'block';
+         setTimeout(() => {
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) {
+                messageInput.focus();
+                
+                // 모바일에서 키보드가 올라왔을 때의 UI 조정
+                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                    const modalContent = document.querySelector('#messengerModal .modal-content');
+                    modalContent.style.maxHeight = '70vh';
+                    
+                    const messagesContainer = document.getElementById('messagesContainer');
+                    messagesContainer.style.maxHeight = 'calc(70vh - 160px)';
+                }
+            }
+        }, 300);
         document.getElementById('messageInput').value = '';
         
         // 실시간 메시지 리스너 시작
