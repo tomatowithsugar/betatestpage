@@ -2464,6 +2464,16 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
   display: flex;
   flex-direction: column;
   padding: 20px 15px 30px;
+  /* 아래 스타일을 추가/수정합니다 */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  animation: modalFadeIn 0.3s ease; /* 기존 애니메이션 유지 */
 }
 
 #messagesContainer {
@@ -3947,21 +3957,8 @@ async function openMessengerModal(day, zone, timeSlot) {
         currentChatRoom = { day, zone, timeSlot };
         document.getElementById('messengerInfo').textContent = `${day} ${zone} ${formatTimeToAMPM(timeSlot)} 채팅방`;
         document.getElementById('messengerModal').style.display = 'block';
-         setTimeout(() => {
-            const messageInput = document.getElementById('messageInput');
-            if (messageInput) {
-                messageInput.focus();
-                
-                // 모바일에서 키보드가 올라왔을 때의 UI 조정
-                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    const modalContent = document.querySelector('#messengerModal .modal-content');
-                    modalContent.style.maxHeight = '70vh';
-                    
-                    const messagesContainer = document.getElementById('messagesContainer');
-                    messagesContainer.style.maxHeight = 'calc(70vh - 160px)';
-                }
-            }
-        }, 300);
+         const modalContent = document.querySelector('#messengerModal .modal-content');
+    modalContent.style.animation = 'modalFadeIn 0.3s ease';
         document.getElementById('messageInput').value = '';
         
         // 실시간 메시지 리스너 시작
