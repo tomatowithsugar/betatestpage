@@ -2457,6 +2457,55 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     height: 300px;
     margin-bottom: 20px;
 }
+/* 메신저 모달 스타일 개선 */
+#messengerModal .modal-content {
+  max-height: 85vh;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 15px 30px;
+}
+
+#messagesContainer {
+  flex: 1;
+  min-height: 200px;
+  max-height: calc(85vh - 180px);
+  margin-bottom: 15px;
+}
+
+#messageInput {
+  min-height: 60px;
+  max-height: 120px;
+}
+
+/* 모바일에서의 추가 조정 */
+@media (max-width: 768px) {
+  #messengerModal .modal-content {
+    max-height: 90vh;
+    padding: 15px 10px 25px;
+    border-radius: 16px 16px 0 0;
+  }
+  
+  #messagesContainer {
+    max-height: calc(90vh - 160px);
+  }
+  
+  #messageInput {
+    min-height: 50px;
+    font-size: 16px; /* iOS에서 확대 방지 */
+  }
+}
+
+@media (max-width: 480px) {
+  #messengerModal .modal-content {
+    max-height: 95vh;
+    padding: 10px 8px 20px;
+  }
+  
+  #messagesContainer {
+    max-height: calc(95vh - 150px);
+  }
+}
     </style>
 </head>
 <body>
@@ -4075,7 +4124,83 @@ function handleMessageKeyPress(event) {
         sendMessage();
     }
 }
+// 모든 메시지 삭제 함수
+async function deleteAllMessages() {
+    try {
+        // messengerFirestore가 없으면 초기화
+        if (!window.messengerFirestore) {
+            await initializeMessengerFirebase();
+        }
+        const { db, collection, getDocs, deleteDoc, doc } = window.messengerFirestore;
+        const messagesRef = collection(db, 'chatMessages');
+        const querySnapshot = await getDocs(messagesRef);
+        
+        const deletePromises = [];
+        querySnapshot.forEach((document) => {
+            deletePromises.push(deleteDoc(doc(db, 'chatMessages', document.id)));
+        });
+        
+        await Promise.all(deletePromises);
+        console.log('모든 메시지가 삭제되었습니다.');
+    } catch (error) {
+        console.error('메시지 삭제 오류:', error);
+    }
+}
 
+// 월요일 00시 확인 및 메시지 삭제 함수
+async function checkAndDeleteMessages() {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0:일, 1:월, ..., 6:토
+    
+    // 월요일인지 확인
+    if (dayOfWeek === 1) {
+        const lastDeleteDate = localStorage.getItem('lastMessageDeleteDate');
+        const today = now.toDateString();
+        
+        // 오늘 아직 삭제하지 않았는지 확인
+        if (lastDeleteDate !== today) {
+            await deleteAllMessages();
+            localStorage.setItem('lastMessageDeleteDate', today);
+            console.log('월요일 메시지 삭제 실행');
+        }
+    }
+}
+
+// 앱 초기화 함수 수정
+window.initializeApp = async function () {
+    try {
+        console.log('Initializing application...');
+        setCurrentWeekDates();
+        setAdminWeekDates();
+        
+        // 사용자와 구역을 병렬로 로드
+        await Promise.all([
+            loadZonesFromFirestore(),
+            loadUsersFromFirestore()
+        ]);
+        
+        populateAdminUserSelect();
+        loadDataFromFirestore();
+        loadNoticeFromFirestore();
+
+        // 메시지 자동 삭제 확인 시작 (1시간마다 체크)
+        setInterval(() => {
+            checkAndDeleteMessages().catch(console.error);
+        }, 60 * 60 * 1000); // 1시간마다 실행
+        checkAndDeleteMessages().catch(console.error); // 앱 시작 시에도 한번 확인
+
+        document.getElementById('loginName').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+        
+        console.log('Application initialized successfully');
+    } catch (error) {
+        console.error('앱 초기화 오류:', error);
+        alert('애플리케이션 초기화 중 오류가 발생했습니다.');
+    }
+};
 // 모달 외부 클릭시 닫기
 window.onclick = function(event) {
     const modal = document.getElementById('messengerModal');
