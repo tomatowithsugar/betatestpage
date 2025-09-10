@@ -2490,7 +2490,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
   display: flex;
   gap: 8px;
   margin-top: 15px;
-  align-items: center;
+  align-items: flex-end; /* 하단 정렬 */
 }
 
 #messageInput {
@@ -2519,8 +2519,8 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
   transition: all 0.2s ease;
+  flex-shrink: 0; /* 크기 고정 */
 }
-
 #sendMessageBtn:active {
   transform: scale(0.95);
 }
@@ -2540,6 +2540,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 body.modal-open {
   overflow: hidden;
 }
+
 
 /* 개별 메시지 스타일 */
 .message {
@@ -2589,27 +2590,13 @@ body.modal-open {
   color: rgba(0, 0, 0, 0.6);
 }
 @media (max-width: 768px) {
-    .modal-content {
-        top: 10px;
-        max-height: calc(100vh - 20px);
-        border-radius: 20px;
-    }
-      #messengerModal .modal-content {
-    width: 95%;
-    max-width: 95%;
-    max-height: 85vh;
-    padding: 15px;
+  .message-input-container {
+    padding: 0 10px;
   }
   
-  #messagesContainer {
-    max-height: 60vh;
+  #messageInput {
+    font-size: 16px; /* iOS zoom 방지 */
   }
-  body.modal-open {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
 }
 
 /* 모바일 최적화 */
