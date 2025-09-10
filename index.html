@@ -14,13 +14,13 @@
 
         // Firebase 설정
         const firebaseConfig = {
-            apiKey: "AIzaSyCv5Za0pq9okmTgorjPuZHiJIhkgAieVPY",
-            authDomain: "assignment-1bf57.firebaseapp.com",
-            projectId: "assignment-1bf57",
-            storageBucket: "assignment-1bf57.firebasestorage.app",
-            messagingSenderId: "609185997879",
-            appId: "1:609185997879:web:c8db0f997cbfafc2088bb2",
-            measurementId: "G-Q0X97TE8LS"
+apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
+authDomain: "cart-witnessing-404c0.firebaseapp.com",
+projectId: "cart-witnessing-404c0",
+storageBucket: "cart-witnessing-404c0.firebasestorage.app",
+messagingSenderId: "616001042576",
+appId: "1:616001042576:web:314fe2268c8fffe82a8015",
+measurementId: "G-HT3T8YS1MW"
         };
 
         const messengerFirebaseConfig = {
@@ -2458,63 +2458,192 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     margin-bottom: 20px;
 }
 /* 메신저 모달 스타일 개선 */
+/* 메신저 모달 전체 스타일 */
 #messengerModal .modal-content {
-  max-height: 85vh;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 15px 30px;
-  /* 아래 스타일을 추가/수정합니다 */
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 16px;
   width: 90%;
   max-width: 500px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-  animation: modalFadeIn 0.3s ease; /* 기존 애니메이션 유지 */
+  height: auto; /* 고정 높이 대신 auto로 변경 */
+  max-height: 80vh; /* 최대 높이 제한은 유지 */
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  animation: modalFadeIn 0.3s ease;
+  overflow: hidden; /* 모달 내용이 넘치면 숨기기 */
 }
 
-#messagesContainer {
-  flex: 1;
-  min-height: 200px;
-  max-height: calc(85vh - 180px);
-  margin-bottom: 15px;
+@keyframes slideUpFromBottom {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* 메시지 입력 영역 */
+.message-input-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+  align-items: center;
 }
 
 #messageInput {
-  min-height: 60px;
-  max-height: 120px;
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 24px;
+  border: 1px solid #e0e0e0;
+  resize: none;
+  min-height: 24px;
+  max-height: 100px;
+  font-size: 16px;
+  line-height: 1.4;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* 모바일에서의 추가 조정 */
+#sendMessageBtn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+  transition: all 0.2s ease;
+}
+
+#sendMessageBtn:active {
+  transform: scale(0.95);
+}
+
+/* 메시지 컨테이너 스타일 */
+#messagesContainer {
+  flex: 1;
+  overflow-y: auto; /* 세로 스크롤만 활성화 */
+  padding: 10px 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 15px;
+  max-height: 50vh; /* 높이 제한 */
+  min-height: 200px; /* 최소 높이 설정 */
+}
+body.modal-open {
+  overflow: hidden;
+}
+
+/* 개별 메시지 스타일 */
+.message {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  position: relative;
+  word-break: break-word;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 내 메시지 스타일 */
+.my-message {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-top-right-radius: 4px;
+}
+
+/* 다른 사람 메시지 스타일 */
+.other-message {
+  align-self: flex-start;
+  background: #f1f1f1;
+  color: #333;
+  border-top-left-radius: 4px;
+}
+
+/* 메시지 정보 (작성자, 시간) */
+.message-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.my-message .message-info {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.other-message .message-info {
+  color: rgba(0, 0, 0, 0.6);
+}
 @media (max-width: 768px) {
+    .modal-content {
+        top: 10px;
+        max-height: calc(100vh - 20px);
+        border-radius: 20px;
+    }
+      #messengerModal .modal-content {
+    width: 95%;
+    max-width: 95%;
+    max-height: 85vh;
+    padding: 15px;
+  }
+  
+  #messagesContainer {
+    max-height: 60vh;
+  }
+}
+
+/* 모바일 최적화 */
+@media (max-width: 480px) {
   #messengerModal .modal-content {
-    max-height: 90vh;
-    padding: 15px 10px 25px;
+    max-height: 85vh;
+    padding: 12px;
     border-radius: 16px 16px 0 0;
   }
   
   #messagesContainer {
-    max-height: calc(90vh - 160px);
+    max-height: calc(85vh - 120px);
+  }
+  
+  .message {
+    max-width: 85%;
   }
   
   #messageInput {
-    min-height: 50px;
     font-size: 16px; /* iOS에서 확대 방지 */
   }
 }
 
-@media (max-width: 480px) {
-  #messengerModal .modal-content {
-    max-height: 95vh;
-    padding: 10px 8px 20px;
-  }
-  
-  #messagesContainer {
-    max-height: calc(95vh - 150px);
-  }
+/* 스크롤바 스타일링 */
+#messagesContainer::-webkit-scrollbar {
+  width: 5px;
+}
+
+#messagesContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+#messagesContainer::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+#messagesContainer::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
     </style>
 </head>
@@ -2542,17 +2671,21 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
             <!-- 채팅방 정보가 여기에 표시됩니다 -->
         </div>
 
-        <div id="messagesContainer" style="height: 300px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #ddd; padding: 10px; border-radius: 8px;">
+        <div id="messagesContainer">
             <!-- 메시지들이 여기에 표시됩니다 -->
         </div>
 
-        <div class="form-group">
-            <textarea id="messageInput" rows="3" placeholder="메시지를 입력하세요..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;" onkeypress="handleMessageKeyPress(event)"></textarea>
+        <div class="message-input-container">
+            <textarea id="messageInput" placeholder="메시지를 입력하세요..." onkeypress="handleMessageKeyPress(event)"></textarea>
+            <button id="sendMessageBtn" onclick="sendMessage()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="white"/>
+                </svg>
+            </button>
         </div>
-
-        <button class="btn" onclick="sendMessage()">전송</button>
     </div>
 </div>
+
 
         <!-- 일반 사용자 메인 페이지 -->
         <div class="main-page" id="mainPage">
@@ -2590,7 +2723,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         <!-- 선택된 요일의 신청현황만 표시 -->
     </div>
 </div>
-        <div class="version-info">v2.7</div>
+        <div class="version-info">v3.1</div>
     </div>
     <!-- 고정 공지 버튼 -->
 <button id="noticeButton" class="notice-button inactive" onclick="handleNoticeButtonClick()" style="display: none;">
@@ -3956,9 +4089,13 @@ async function openMessengerModal(day, zone, timeSlot) {
         
         currentChatRoom = { day, zone, timeSlot };
         document.getElementById('messengerInfo').textContent = `${day} ${zone} ${formatTimeToAMPM(timeSlot)} 채팅방`;
+        
+        // body에 modal-open 클래스 추가하여 배경 스크롤 방지
+        document.body.classList.add('modal-open');
+        
         document.getElementById('messengerModal').style.display = 'block';
-         const modalContent = document.querySelector('#messengerModal .modal-content');
-    modalContent.style.animation = 'modalFadeIn 0.3s ease';
+        const modalContent = document.querySelector('#messengerModal .modal-content');
+        modalContent.style.animation = 'modalFadeIn 0.3s ease';
         document.getElementById('messageInput').value = '';
         
         // 실시간 메시지 리스너 시작
@@ -3970,10 +4107,12 @@ async function openMessengerModal(day, zone, timeSlot) {
         alert('채팅방을 여는 중 오류가 발생했습니다: ' + error.message);
     }
 }
-
 // 메신저 모달 닫기 함수
 function closeMessengerModal() {
     document.getElementById('messengerModal').style.display = 'none';
+    
+    // body에서 modal-open 클래스 제거하여 배경 스크롤 복원
+    document.body.classList.remove('modal-open');
     
     // 실시간 리스너 정리
     if (messagesUnsubscribe) {
@@ -4058,36 +4197,37 @@ function displayMessages(messages) {
     
     messages.forEach(msg => {
         const messageDiv = document.createElement('div');
-        messageDiv.style.marginBottom = '10px';
-        messageDiv.style.padding = '8px 12px';
-        messageDiv.style.borderRadius = '12px';
-        messageDiv.style.backgroundColor = msg.author === currentUser ? '#e3f2fd' : '#f5f5f5';
-        messageDiv.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+        messageDiv.className = `message ${msg.author === currentUser ? 'my-message' : 'other-message'}`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.textContent = msg.content;
+        
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'message-info';
         
         const authorSpan = document.createElement('span');
-        authorSpan.style.fontWeight = 'bold';
-        authorSpan.style.marginRight = '5px';
-        authorSpan.textContent = msg.author + ':';
-        
-        const contentSpan = document.createElement('span');
-        contentSpan.textContent = msg.content;
+        authorSpan.textContent = msg.author;
         
         const timeSpan = document.createElement('span');
-        timeSpan.style.fontSize = '0.8em';
-        timeSpan.style.color = '#999';
-        timeSpan.style.marginLeft = '10px';
-        timeSpan.style.float = 'right';
         timeSpan.textContent = formatTime(msg.timestamp);
         
-        messageDiv.appendChild(authorSpan);
-        messageDiv.appendChild(contentSpan);
-        messageDiv.appendChild(timeSpan);
+        infoDiv.appendChild(authorSpan);
+        infoDiv.appendChild(timeSpan);
+        
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(infoDiv);
         
         container.appendChild(messageDiv);
     });
     
     // 스크롤을 최신 메시지로 이동
     container.scrollTop = container.scrollHeight;
+}
+window.onclick = function(event) {
+    const messengerModal = document.getElementById('messengerModal');
+    if (event.target === messengerModal) {
+        closeMessengerModal();
+    }
 }
 // 메시지 전송 함수
 async function sendMessage() {
