@@ -2601,30 +2601,23 @@ body.modal-open {
 
 /* 모바일 최적화 */
 @media (max-width: 480px) {
-  #messengerModal .modal-content {
-    max-height: 85vh;
+   #messengerModal .modal-content {
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    max-height: 100vh;
+    height: 100vh;
+    border-radius: 0 0 16px 16px;
     padding: 12px;
-    border-radius: 16px 16px 0 0;
   }
   
   #messagesContainer {
-    max-height: calc(85vh - 120px);
+    max-height: calc(100vh - 140px);
   }
-  
-  .message {
-    max-width: 85%;
-  }
-  
-  #messageInput {
-    font-size: 16px; /* iOS에서 확대 방지 */
-  }
-  body.modal-open {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
 }
-}
+
 
 /* 스크롤바 스타일링 */
 #messagesContainer::-webkit-scrollbar {
