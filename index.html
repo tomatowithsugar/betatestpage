@@ -2457,7 +2457,8 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     height: 300px;
     margin-bottom: 20px;
 }
-/* 메신저 모달 전체 스타일 */
+/* 메신저 모달 스타일 개선 */
+        /* 메신저 모달 전체 스타일 */
         #messengerModal .modal-content {
             position: fixed;
             top: 50%;
@@ -2727,12 +2728,14 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         /* 가로 모드 대응 */
         @media (max-width: 768px) and (orientation: landscape) {
             #messengerModal .modal-content {
-                max-height: calc(100vh - 20px);
-                width: 90%;
+                max-height: calc(100vh - 40px);
+                width: 85%;
+                top: 50%;
+                transform: translate(-50%, -50%);
             }
 
             #messagesContainer {
-                max-height: calc(100vh - 180px);
+                max-height: calc(100vh - 200px);
                 min-height: 120px;
             }
 
