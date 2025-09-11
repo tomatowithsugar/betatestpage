@@ -2500,6 +2500,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             position: relative;
             margin: auto;
+            z-index: 10000;
         }
 
         @keyframes fadeIn {
@@ -4201,9 +4202,11 @@ async function openMessengerModal(day, zone, timeSlot) {
     console.log('메신저 모달 열기 시작:', day, zone, timeSlot);
     
     try {
+        document.getElementById('floatingMenu').style.display = 'none';
         // Firebase 초기화 확인
         await initializeMessengerFirebase();
         console.log('메신저 Firebase 초기화 완료');
+        
         
         // 현재 사용자가 이 시간대에 신청했는지 확인
         const hasApplied = userApplications.some(app => 
@@ -4237,6 +4240,7 @@ async function openMessengerModal(day, zone, timeSlot) {
 }
 // 메신저 모달 닫기 함수
 function closeMessengerModal() {
+    document.getElementById('floatingMenu').style.display = 'flex';
     document.getElementById('messengerModal').style.display = 'none';
     
     // body에서 modal-open 클래스 제거하여 배경 스크롤 복원
