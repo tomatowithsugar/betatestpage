@@ -2500,6 +2500,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             position: relative;
             margin: auto;
+            z-index: 10000;
         }
 
         @keyframes fadeIn {
@@ -2682,6 +2683,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
                 max-height: calc(100vh - 40px);
                 padding: 16px;
                 border-radius: 12px;
+                z-index: 10000;
             }
 
             h2 {
@@ -2726,10 +2728,12 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
             @media (max-width: 480px) {
                 .modal {
                     padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+                    z-index: 10000;
                 }
 
                 #messengerModal .modal-content {
                     max-height: calc(100vh - max(40px, env(safe-area-inset-top) + env(safe-area-inset-bottom) + 40px));
+                    z-index: 10000;
                 }
 
                 .message-input-container {
@@ -2742,6 +2746,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         @media (max-width: 768px) and (orientation: landscape) {
             #messengerModal .modal-content {
                 max-height: calc(100vh - 40px);
+                z-index: 10000;
             }
 
             #messagesContainer {
@@ -2792,7 +2797,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         <!-- 메신저 모달 -->
 <div id="messengerModal" class="modal">
     <div class="modal-content">
-
         <h2>단체 채팅</h2>
 
         <div id="messengerInfo" style="margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 8px;">
