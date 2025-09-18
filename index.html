@@ -3358,11 +3358,17 @@ function initializeApplicants() {
 }
 
         // 페이지 로드 시 초기화
-        window.initializeApp = async function () {
+window.initializeApp = async function () {
     try {
         console.log('Initializing application...');
         setCurrentWeekDates();
         setAdminWeekDates();
+        
+        // 저장된 사용자 이름이 있으면 입력 필드에 설정
+        const savedName = localStorage.getItem('savedUserName');
+        if (savedName && savedName !== 'admin') {
+            document.getElementById('loginName').value = savedName;
+        }
         
         // 사용자와 구역을 병렬로 로드
         await Promise.all([
@@ -4735,41 +4741,6 @@ async function checkAndDeleteMessages() {
     }
 }
 
-// 앱 초기화 함수 수정
-window.initializeApp = async function () {
-    try {
-        console.log('Initializing application...');
-        setCurrentWeekDates();
-        setAdminWeekDates();
-        
-        // 사용자와 구역을 병렬로 로드
-        await Promise.all([
-            loadZonesFromFirestore(),
-            loadUsersFromFirestore()
-        ]);
-        
-        populateAdminUserSelect();
-        loadDataFromFirestore();
-        loadNoticeFromFirestore();
-
-        // 메시지 자동 삭제 확인 시작 (1시간마다 체크)
-        setInterval(() => {
-            checkAndDeleteMessages().catch(console.error);
-        }, 60 * 60 * 1000); // 1시간마다 실행
-        checkAndDeleteMessages().catch(console.error); // 앱 시작 시에도 한번 확인
-
-        document.getElementById('loginName').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                login();
-            }
-        });
-        
-        console.log('Application initialized successfully');
-    } catch (error) {
-        console.error('앱 초기화 오류:', error);
-        alert('애플리케이션 초기화 중 오류가 발생했습니다.');
-    }
-};
 // 모달 외부 클릭시 닫기
 window.onclick = function(event) {
     const modal = document.getElementById('messengerModal');
