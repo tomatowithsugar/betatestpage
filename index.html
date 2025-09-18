@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>불광서부회중 전시대 신청</title>
+    <title>불광동부회중 전시대 신청</title>
     <link rel="apple-touch-icon" href="apple-touch-icon_v3.png">
     <link rel="icon" type="image/png" href="favicon-512x512_v3.png">
 
@@ -14,23 +14,23 @@
 
         // Firebase 설정
         const firebaseConfig = {
-apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
-authDomain: "cart-witnessing-404c0.firebaseapp.com",
-projectId: "cart-witnessing-404c0",
-storageBucket: "cart-witnessing-404c0.firebasestorage.app",
-messagingSenderId: "616001042576",
-appId: "1:616001042576:web:314fe2268c8fffe82a8015",
-measurementId: "G-HT3T8YS1MW"
+apiKey: "AIzaSyCmX3np9Fk86BcKDKz1XQ6izbxGDt2QsYY",
+authDomain: "carts-68026.firebaseapp.com",
+projectId: "carts-68026",
+storageBucket: "carts-68026.firebasestorage.app",
+messagingSenderId: "52580537476",
+appId: "1:52580537476:web:c60bc822909fa687675ed1",
+measurementId: "G-ZG0H2C2BZ6"
         };
 
         const messengerFirebaseConfig = {
-            apiKey: "AIzaSyAGTCpQGZw28QkEpaBy-62pi0PhgOMt_i0",
-            authDomain: "bgs-messeger.firebaseapp.com",
-            projectId: "bgs-messeger",
-            storageBucket: "bgs-messeger.firebasestorage.app",
-            messagingSenderId: "823756736946",
-            appId: "1:823756736946:web:5a35d2e0604972a6d43cab",
-            measurementId: "G-JB4LFXKWDX"
+apiKey: "AIzaSyAk1ID-IHNudkiR9LWmY0w3tlIEmPXcB1w",
+authDomain: "bgd-messe.firebaseapp.com",
+projectId: "bgd-messe",
+storageBucket: "bgd-messe.firebasestorage.app",
+messagingSenderId: "966181555577",
+appId: "1:966181555577:web:93af3a0bef1ed49e7033a8",
+measurementId: "G-7RT4TFPR1V"
         };
 
         // Firebase 초기화
@@ -2774,13 +2774,97 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
+        /* 로딩 인디케이터 스타일 */
+.loading-indicator {
+    text-align: center;
+    padding: 30px;
+    color: #718096;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* 에러 메시지 스타일 */
+.error-message {
+    text-align: center;
+    padding: 30px;
+    color: #e53e3e;
+}
+/* 시간이 지난 봉사에 대한 스타일 */
+.time-slot-item.passed {
+    opacity: 0.6;
+    background: rgba(245, 245, 245, 0.7);
+    border-left: 4px solid #a0aec0;
+}
+
+.time-slot-item.passed .name-tag {
+    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+    box-shadow: 0 4px 12px rgba(160, 174, 192, 0.25);
+}
+/* 종료된 봉사 텍스트 스타일 */
+.time-slot-item.passed .time-slot-header {
+    color: #e53e3e !important;
+    font-weight: 800 !important;
+}
+
+.time-slot-item.passed {
+    color: #e53e3e !important;
+    font-weight: 800 !important;
+    background: rgba(229, 62, 62, 0.1) !important;
+    border: 1px solid rgba(229, 62, 62, 0.3) !important;
+}
+/* 지도 버튼 스타일 */
+.map-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.95);
+    color: #667eea;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.map-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* 지도 미리보기 스타일 */
+#mapPreview {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
     </style>
 </head>
 <body>
     <div class="container">
         <!-- 로그인 페이지 -->
         <div class="login-page" id="loginPage">
-            <h1>불광서부회중<br>전시대 봉사 신청</h1>
+            <h1>불광동부회중<br>전시대 봉사 신청</h1>
 
             <div class="login-form">
                 <div class="form-group">
@@ -2818,7 +2902,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 
         <!-- 일반 사용자 메인 페이지 -->
         <div class="main-page" id="mainPage">
-            <h1>불광서부회중<br>전시대 봉사 신청</h1>
+            <h1>불광동부회중<br>전시대 봉사 신청</h1>
 
             <div class="user-info" id="userInfo"></div>
 
@@ -2837,6 +2921,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
             <div class="admin-actions">
                 <button type="button" class="btn admin" onclick="openUserManagementModal()">전도인 관리</button>
                 <button type="button" class="btn admin" onclick="openZoneManagementModal()">구역 관리</button>
+                <button type="button" class="btn admin" onclick="openMapManagementModal()">지도 관리</button>
                 <button type="button" class="btn admin" onclick="openNoticeManagementModal()">공지사항 관리</button>
                 <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>
             </div>
@@ -2852,7 +2937,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         <!-- 선택된 요일의 신청현황만 표시 -->
     </div>
 </div>
-        <div class="version-info">v3.1</div>
+        <div class="version-info">v3.3</div>
     </div>
     <!-- 고정 공지 버튼 -->
 <button id="noticeButton" class="notice-button inactive" onclick="handleNoticeButtonClick()" style="display: none;">
@@ -2873,6 +2958,10 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         </div>
         
         <div class="memo-content" id="memoContent">
+                <div id="memoLoading" class="loading-indicator" style="display: none;">
+        <div class="spinner"></div>
+        <p>메모를 불러오는 중입니다...</p>
+    </div>
             <!-- 선택된 구역의 메모들이 표시됩니다 -->
         </div>
         
@@ -3042,6 +3131,10 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
                 + 새 일정 추가
             </button>
         </div>
+        <div class="form-group">
+    <label for="newZoneMapLink">구역 지도 링크 (Google Maps iframe)</label>
+    <input type="text" id="newZoneMapLink" placeholder="https://www.google.com/maps/embed?pb=...">
+</div>
 
         <div class="zone-add-controls">
             <button type="button" class="btn success" onclick="addNewZone()">구역 추가</button>
@@ -3073,6 +3166,10 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
                 + 새 일정 추가
             </button>
         </div>
+        <div class="form-group">
+    <label for="editZoneMapLink">구역 지도 링크</label>
+    <input type="text" id="editZoneMapLink" placeholder="https://www.google.com/maps/embed?pb=...">
+</div>
 
         <div class="zone-add-controls">
             <button type="button" class="btn success" onclick="updateZone()">구역 수정</button>
@@ -3161,6 +3258,44 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         </div>
     </div>
 </div>
+<!-- 기존 모달들 다음에 추가 -->
+<div id="mapManagementModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeMapManagementModal()">&times;</span>
+        <h2>구역 지도 관리</h2>
+        
+        <div class="form-group">
+            <label for="mapZoneSelect">구역 선택</label>
+            <select id="mapZoneSelect">
+                <!-- 동적으로 채워질 옵션 -->
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="zoneMapLink">지도 링크 (Google Maps iframe)</label>
+            <input type="text" id="zoneMapLink" placeholder="https://www.google.com/maps/embed?pb=...">
+        </div>
+        
+        <div class="form-group">
+            <div id="mapPreview" style="height: 200px; margin-top: 10px; display: none;">
+                <iframe id="previewIframe" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
+            </div>
+        </div>
+        
+        <button type="button" class="btn" onclick="saveZoneMapLink()">저장</button>
+    </div>
+</div>
+<!-- mapManagementModal 다음에 추가 -->
+<div id="mapModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeMapModal()">&times;</span>
+        <h2 id="mapModalTitle">구역 지도</h2>
+        <div id="mapZoneButtons" style="margin-bottom:10px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center;"></div>
+        <div id="mapContainer">
+            <iframe id="mapIframe" width="100%" height="400" frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
 
     <script>// 신청자 데이터를 저장할 객체
         const applicants = {};
@@ -3168,7 +3303,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         const KMA_API_KEY = "9a51af0f896d3b36123dd1e23780795957e9349038e8410404b6260b68309a7e";
         const SEOUL_LAT = 37.5665;
         const SEOUL_LON = 126.9780;
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzpcLIHHRPMtxkSTAa_3VzDl5ss5IWsGOp_UlCU5iZi6P0rw7WBXiNezbZhb_pprhV5Pw/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbx9HiHvRSF9KbgrURRruSvaoDRgbG9CttTZreApopQmch3V8raqgMHLL0sHwyQxgEV6xQ/exec";
         let currentChatRoom = null;
         let messengerApp, messengerDb;
         let messagesUnsubscribe = null;
@@ -3294,7 +3429,8 @@ function initializeApplicants() {
             zones.push({
                 id: doc.id,
                 name: data.name,
-                schedules: schedules
+                schedules: schedules,
+                mapLink: data.mapLink || ''
             });
         });
         
@@ -3408,6 +3544,28 @@ async function initializeMessengerFirebase() {
     }
     console.log('Zone UI updated');
 }
+function populateMapZoneButtons() {
+  const container = document.getElementById('mapZoneButtons');
+  container.innerHTML = '';
+
+  zones.forEach((zone, index) => {
+    if (zone.mapLink) {
+      const btn = document.createElement('button');
+      btn.textContent = zone.name;
+      btn.className = "btn small"; // 기존 버튼 스타일 재활용
+      btn.onclick = () => changeMapZone(index);
+      container.appendChild(btn);
+    }
+  });
+}
+function changeMapZone(index) {
+  const selectedZone = zones[index];
+  if (selectedZone && selectedZone.mapLink) {
+    document.getElementById('mapIframe').src = selectedZone.mapLink;
+    document.getElementById('mapModalTitle').textContent = `${selectedZone.name} 지도`;
+  }
+}
+
       
 // 메모 모달 열기
 function openMemoModal() {
@@ -3503,6 +3661,13 @@ function populateZoneOptions() {
 }
 // 메모 불러오기
 async function loadMemos() {
+    const loadingElement = document.getElementById('memoLoading');
+    const memoContent = document.getElementById('memoContent');
+    
+    // 로딩 시작 시 인디케이터 표시
+    loadingElement.style.display = 'block';
+    memoContent.style.opacity = '0.5'; // 기존 내용 흐리게
+
     try {
         console.log('Loading memos from:', GAS_URL);
         const response = await fetch(`${GAS_URL}?action=getMemos`);
@@ -3514,7 +3679,6 @@ async function loadMemos() {
         const text = await response.text();
         console.log('Raw response:', text);
         
-        // 빈 응답 체크
         if (!text.trim()) {
             memos = [];
             console.log('No memos found (empty response)');
@@ -3527,7 +3691,18 @@ async function loadMemos() {
         displayMemos();
     } catch (error) {
         console.error('메모 로드 오류:', error);
-        alert('메모를 불러오는 중 오류가 발생했습니다. 메모 저장용 서버가 불안정해 원래 오류가 자주 발생하니 조금 시간을 두고 다시 시도해주세요. error_code: ' + error.message);
+        // 에러 메시지를 더 사용자 친화적으로 변경
+        memoContent.innerHTML = `
+            <div class="error-message">
+                <p>메모를 불러오는 중 문제가 발생했습니다.</p>
+                <p>잠시 후 다시 시도해주세요.</p>
+                <button class="btn small" onclick="loadMemos()">다시 시도</button>
+            </div>
+        `;
+    } finally {
+        // 로딩 완료 후 인디케이터 숨기기
+        loadingElement.style.display = 'none';
+        memoContent.style.opacity = '1';
     }
 }
 // 메모 탭 생성
@@ -3621,7 +3796,16 @@ function formatDate(dateString) {
     const date = new Date(dateString);
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
-
+function isTimeSlotPassed(day, timeSlot) {
+    const actualDate = getActualDateForDay(day); // YYYY-MM-DD 형식
+    const endTimeStr = timeSlot.split('-')[1]; // 'HH:MM'
+    
+    // actualDate와 endTimeStr을 합쳐서 Date 객체 생성 (KST 기준)
+    const endDateTime = new Date(`${actualDate}T${endTimeStr}:00+09:00`);
+    const now = new Date();
+    
+    return now > endDateTime;
+}
 // 메모 저장
 async function saveMemo(e) {
     e.preventDefault();
@@ -3923,6 +4107,93 @@ function closeFontSizeSlider() {
     const slider = document.getElementById('fontSizeSlider');
     slider.classList.remove('show');
 }
+// 지도 관리 모달 열기
+function openMapManagementModal() {
+    document.getElementById('mapManagementModal').style.display = 'block';
+    populateMapZoneSelect();
+}
+
+// 지도 관리 모달 닫기
+function closeMapManagementModal() {
+    document.getElementById('mapManagementModal').style.display = 'none';
+}
+
+// 구역 선택 옵션 채우기
+function populateMapZoneSelect() {
+    const select = document.getElementById('mapZoneSelect');
+    select.innerHTML = '';
+    
+    zones.forEach(zone => {
+        const option = document.createElement('option');
+        option.value = zone.id;
+        option.textContent = zone.name;
+        option.dataset.mapLink = zone.mapLink || '';
+        select.appendChild(option);
+    });
+    
+    // 선택 변경 시 미리보기 업데이트
+    select.onchange = updateMapPreview;
+}
+
+// 지도 미리보기 업데이트
+function updateMapPreview() {
+    const select = document.getElementById('mapZoneSelect');
+    const selectedOption = select.options[select.selectedIndex];
+    const mapLink = selectedOption.dataset.mapLink;
+    const preview = document.getElementById('mapPreview');
+    
+    if (mapLink) {
+        document.getElementById('previewIframe').src = mapLink;
+        preview.style.display = 'block';
+        document.getElementById('zoneMapLink').value = mapLink;
+    } else {
+        preview.style.display = 'none';
+        document.getElementById('zoneMapLink').value = '';
+    }
+}
+
+// 구역 지도 링크 저장
+async function saveZoneMapLink() {
+    const zoneId = document.getElementById('mapZoneSelect').value;
+    const mapLink = document.getElementById('zoneMapLink').value.trim();
+    
+    try {
+        const { doc, updateDoc } = window.firestoreFunctions;
+        const zoneRef = doc(window.db, 'zones', zoneId);
+        
+        await updateDoc(zoneRef, {
+            mapLink: mapLink
+        });
+        
+        alert('지도 링크가 저장되었습니다.');
+        closeMapManagementModal();
+        loadZonesFromFirestore(); // 구역 데이터 다시 로드
+    } catch (error) {
+        console.error('지도 링크 저장 오류:', error);
+        alert('지도 링크 저장 중 오류가 발생했습니다.');
+    }
+}
+
+// 지도 모달 열기
+function openMapModal() {
+  const modal = document.getElementById('mapModal');
+  modal.style.display = 'block';
+
+  populateMapZoneButtons();
+
+  // 기본 첫 번째 구역 자동 표시
+  const firstZoneIndex = zones.findIndex(z => z.mapLink);
+  if (firstZoneIndex !== -1) {
+    changeMapZone(firstZoneIndex);
+  }
+}
+
+
+// 지도 모달 닫기
+function closeMapModal() {
+    document.getElementById('mapModal').style.display = 'none';
+    document.getElementById('mapIframe').src = '';
+}
 
 // 글자 크기 변경 처리
 function changeFontSize(baseSize) {
@@ -4056,51 +4327,60 @@ function displayDayApplications(day) {
         timeSlotsDiv.className = 'time-slots-container';
         
         // 해당 요일에 활성화된 시간대 표시
-        if (zone.schedules) {
-            zone.schedules.forEach(schedule => {
-                if (schedule.days && schedule.days.includes(day)) {
-                    schedule.timeSlots.forEach(slot => {
-                        if (slot.isActive !== false) {
-                            const currentCount = applicants[day] && 
-                                                 applicants[day][zone.name] && 
-                                                 applicants[day][zone.name][slot.time] 
-                                                 ? applicants[day][zone.name][slot.time].length 
-                                                 : 0;
-                            
-                            const timeSlotDiv = document.createElement('div');
-timeSlotDiv.className = 'time-slot-item';
-timeSlotDiv.style.marginBottom = '12px';
-const timeHeaderDiv = document.createElement('div');
-timeHeaderDiv.className = 'time-slot-header';
-timeHeaderDiv.style.color = '#667eea';
-timeHeaderDiv.style.fontWeight = '700';
-timeHeaderDiv.style.marginBottom = '6px';
+if (zone.schedules) {
+    zone.schedules.forEach(schedule => {
+        if (schedule.days && schedule.days.includes(day)) {
+            schedule.timeSlots.forEach(slot => {
+                if (slot.isActive !== false) {
+                    const currentCount = applicants[day] && 
+                                         applicants[day][zone.name] && 
+                                         applicants[day][zone.name][slot.time] 
+                                         ? applicants[day][zone.name][slot.time].length 
+                                         : 0;
+                    
+                    const isPassed = isTimeSlotPassed(day, slot.time);
 
-// 시간대 헤더에 채팅 버튼 추가
-timeHeaderDiv.innerHTML = `
-    ${formatTimeToAMPM(slot.time)} (${currentCount}/${slot.maxCapacity || 4})
-    <button class="btn small" onclick="openMessengerModal('${day}', '${zone.name}', '${slot.time}')" style="margin-left: 10px; padding: 4px 8px; font-size: 12px;">
-        💬
-    </button>
-`;
-                            
-                            const namesDiv = document.createElement('div');
-                            if (currentCount > 0) {
-                                namesDiv.innerHTML = applicants[day][zone.name][slot.time]
-                                    .map(name => `<span class="name-tag">${name}</span>`)
-                                    .join('');
-                            } else {
-                                namesDiv.innerHTML = '<span style="color: #a0aec0; font-style: italic;">신청자 없음</span>';
-                            }
-                            
-                            timeSlotDiv.appendChild(timeHeaderDiv);
-                            timeSlotDiv.appendChild(namesDiv);
-                            timeSlotsDiv.appendChild(timeSlotDiv);
-                        }
-                    });
+                    const timeSlotDiv = document.createElement('div');
+                    timeSlotDiv.className = `time-slot-item ${isPassed ? 'passed' : ''}`;
+                    timeSlotDiv.style.marginBottom = '12px';
+
+                    const timeHeaderDiv = document.createElement('div');
+                    timeHeaderDiv.className = 'time-slot-header';
+                    timeHeaderDiv.style.marginBottom = '6px';
+
+                    if (isPassed) {
+                        timeHeaderDiv.style.color = '#a0aec0';
+                        timeHeaderDiv.innerHTML = `
+                            ${formatTimeToAMPM(slot.time)} (종료된 봉사)
+                        `;
+                    } else {
+                        timeHeaderDiv.style.color = '#667eea';
+                        timeHeaderDiv.style.fontWeight = '700';
+                        timeHeaderDiv.innerHTML = `
+                            ${formatTimeToAMPM(slot.time)} (${currentCount}/${slot.maxCapacity || 4})
+                            <button class="btn small" onclick="openMessengerModal('${day}', '${zone.name}', '${slot.time}')" style="margin-left: 10px; padding: 4px 8px; font-size: 12px;">
+                                💬
+                            </button>
+                        `;
+                    }
+                    
+                    const namesDiv = document.createElement('div');
+                    if (currentCount > 0) {
+                        namesDiv.innerHTML = applicants[day][zone.name][slot.time]
+                            .map(name => `<span class="name-tag">${name}</span>`)
+                            .join('');
+                    } else {
+                        namesDiv.innerHTML = '<span style="color: #a0aec0; font-style: italic;">신청자 없음</span>';
+                    }
+                    
+                    timeSlotDiv.appendChild(timeHeaderDiv);
+                    timeSlotDiv.appendChild(namesDiv);
+                    timeSlotsDiv.appendChild(timeSlotDiv);
                 }
             });
         }
+    });
+}
 
         zoneDiv.appendChild(zoneNameDiv);
         zoneDiv.appendChild(timeSlotsDiv);
@@ -4135,7 +4415,12 @@ if (fontSizeSlider) {
             closeFontSizeSlider();
         }
     });
-    
+    window.addEventListener('DOMContentLoaded', function() {
+    const savedName = localStorage.getItem('savedUserName');
+    if (savedName && savedName !== 'admin') {
+        document.getElementById('loginName').value = savedName;
+    }
+});
     // ESC 키로 슬라이더 닫기
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
@@ -4782,6 +5067,12 @@ async function addZoneToFirestore(name, schedules) {
                 document.getElementById('noticeButton').style.display = 'block';
                 return;
             }
+            if (name !== 'admin') {
+        localStorage.setItem('savedUserName', name);
+    } else {
+        // 관리자는 저장하지 않음
+        localStorage.removeItem('savedUserName');
+    }
 
             const { collection, getDocs, query, where } = window.firestoreFunctions;
             const usersRef = collection(window.db, 'users');
@@ -6135,6 +6426,7 @@ async function editZone(zoneId) {
     
     // 모달에 데이터 채우기
     document.getElementById('editZoneName').value = zoneData.name;
+    document.getElementById('editZoneMapLink').value = zoneData.mapLink || '';
     
     // 스케줄 데이터 채우기
     const container = document.getElementById('editSchedulesContainer');
@@ -6343,7 +6635,8 @@ function removeEditSchedule(scheduleId) {
 // 구역 수정 저장
 async function updateZone() {
     const name = document.getElementById('editZoneName').value.trim();
-    
+    const mapLink = document.getElementById('editZoneMapLink').value.trim();
+
     if (!name) {
         alert('구역 이름을 입력해주세요.');
         return;
@@ -6400,7 +6693,8 @@ async function updateZone() {
         
         await updateDoc(zoneRef, {
             name: name,
-            schedules: schedules
+            schedules: schedules,
+            mapLink: mapLink
         });
         
         alert(`${name} 구역이 수정되었습니다.`);
@@ -6990,7 +7284,9 @@ async function executeAdminAction() {
         function resetAdminForm() {
             alert('폼 초기화 (구현 필요)');
         }</script>
-
+<button id="mapButton" class="map-button" onclick="openMapModal()">
+    🗺️
+</button>
         <!-- 플로팅 메뉴를 body 태그 끝나기 전에 추가 -->
 <div class="floating-menu-container" id="floatingMenu">
         <button class="sub-menu-btn weather-btn" onclick="openWeather()" title="날씨 정보">
@@ -7042,7 +7338,7 @@ function refreshPage() {
 
 // 홈으로 이동 함수
 function goToHome() {
-    window.open('https://bgs.jwcard.co.kr', '_blank');
+    window.open('https://bgd.jwcard.co.kr', '_blank');
 }
 
 // 페이지 로드 시 다크모드 상태 복원
