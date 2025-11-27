@@ -54,6 +54,33 @@ measurementId: "G-JB4LFXKWDX"
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        /* 1. 모든 요소의 크기 계산에 테두리와 패딩을 포함시킴 (가장 중요) */
+* {
+    box-sizing: border-box;
+}
+
+/* 2. body와 html의 여백 제거 */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* 3. 컨테이너 스타일 최적화 */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #f8f9fa; /* 배경색 */
+    min-height: 100dvh; /* 최소 높이를 화면 전체로 */
+    
+    /* 상단 패딩 제거 (상단 바가 있으므로) */
+    padding-top: 0;
+    
+    /* 하단 패딩 조정: 플로팅 버튼(약 60px)에 가려지지 않을 정도로만 설정 */
+    padding-bottom: 80px; 
+    
+    position: relative;
+}
 * {
     margin: 0;
     padding: 0;
@@ -72,7 +99,7 @@ body {
     background: linear-gradient(145deg, #667eea 0%, #764ba2 50%, #667eea 100%);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -97,7 +124,7 @@ body {
     box-shadow: none;
     width: 100%;
     max-width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -432,7 +459,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     border-radius: 0;
     flex-grow: 1;
     overflow-y: auto;
-    max-height: calc(100vh - 300px);
+    max-height: calc(100dvh - 245px);
 }
 
 .applicants-list h3 {
@@ -1117,7 +1144,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     
     .container {
         border-radius: 0;
-        min-height: 100vh;
+        min-height: 100dvh;
     }
     
     h1 {
@@ -3136,7 +3163,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     <div class="container">
 <header class="top-bar">
     <div class="top-bar-left">
-        <div class="app-title">불광서부회중</div>
+        <div class="app-title">전시대신청-불광서부</div>
     </div>
 
     <div class="top-bar-right">
