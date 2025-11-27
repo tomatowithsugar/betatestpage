@@ -3160,20 +3160,20 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     </style>
 </head>
 <body>
-    <div class="container">
-<header class="top-bar">
-    <div class="top-bar-left">
-        <div class="app-title">전시대신청-불광서부</div>
-    </div>
+<div class="container">
+    <header id="mainHeader" class="top-bar" style="display: none;">
+        <div class="top-bar-left">
+            <div class="app-title">불광서부회중</div>
+        </div>
+        <div class="top-bar-right">
+            <button id="noticeButton" class="bar-icon-btn" onclick="handleNoticeButtonClick()" style="display: none;">
+                📢 <div id="noticeBadge" class="notice-badge"></div>
+            </button>
+            <div id="topBarUserName" class="user-name-display"></div>
+        </div>
+    </header>
 
-    <div class="top-bar-right">
-        <button id="noticeButton" class="bar-icon-btn" onclick="handleNoticeButtonClick()" style="display: none;">
-            📢 <div id="noticeBadge" class="notice-badge"></div>
-        </button>
-        
-        <div id="topBarUserName" class="user-name-display"></div>
-    </div>
-</header>
+    <h1 id="loginTitle">불광서부회중<br>전시대 봉사 신청</h1>
         <!-- 로그인 페이지 -->
         <div class="login-page" id="loginPage">
             
@@ -5684,6 +5684,8 @@ async function addZoneToFirestore(name, schedules) {
     if (name === 'admin') {
         currentUser = 'admin';
         isAdmin = true;
+        document.getElementById('loginTitle').style.display = 'none'; // 제목 숨김
+        document.getElementById('mainHeader').style.display = 'flex'; // 상단 바 표시
         
         // 화면 전환
         document.getElementById('loginPage').style.display = 'none';
@@ -5723,6 +5725,8 @@ async function addZoneToFirestore(name, schedules) {
     nameDisplay.style.display = 'block'; // 이름 박스 보이기
     nameDisplay.style.color = '#4a5568'; // 일반 유저색
     nameDisplay.style.background = 'rgba(102, 126, 234, 0.1)';
+    document.getElementById('loginTitle').style.display = 'none'; // 제목 숨김
+    document.getElementById('mainHeader').style.display = 'flex'; // 상단 바 표시
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('mainPage').style.display = 'block';
     document.getElementById('noticeButton').style.display = 'block';
