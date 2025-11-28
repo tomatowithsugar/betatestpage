@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>불광서부회중 전시대 신청</title>
+    <title>불광동부회중 전시대 신청</title>
     <link rel="apple-touch-icon" href="apple-touch-icon_v3.png">
     <link rel="icon" type="image/png" href="favicon-512x512_v3.png">
 
@@ -14,23 +14,23 @@
 
         // Firebase 설정
         const firebaseConfig = {
-apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
-authDomain: "cart-witnessing-404c0.firebaseapp.com",
-projectId: "cart-witnessing-404c0",
-storageBucket: "cart-witnessing-404c0.firebasestorage.app",
-messagingSenderId: "616001042576",
-appId: "1:616001042576:web:314fe2268c8fffe82a8015",
-measurementId: "G-HT3T8YS1MW"
+apiKey: "AIzaSyCmX3np9Fk86BcKDKz1XQ6izbxGDt2QsYY",
+authDomain: "carts-68026.firebaseapp.com",
+projectId: "carts-68026",
+storageBucket: "carts-68026.firebasestorage.app",
+messagingSenderId: "52580537476",
+appId: "1:52580537476:web:c60bc822909fa687675ed1",
+measurementId: "G-ZG0H2C2BZ6"
         };
 
         const messengerFirebaseConfig = {
-apiKey: "AIzaSyAGTCpQGZw28QkEpaBy-62pi0PhgOMt_i0",
-authDomain: "bgs-messeger.firebaseapp.com",
-projectId: "bgs-messeger",
-storageBucket: "bgs-messeger.firebasestorage.app",
-messagingSenderId: "823756736946",
-appId: "1:823756736946:web:5a35d2e0604972a6d43cab",
-measurementId: "G-JB4LFXKWDX"
+apiKey: "AIzaSyAk1ID-IHNudkiR9LWmY0w3tlIEmPXcB1w",
+authDomain: "bgd-messe.firebaseapp.com",
+projectId: "bgd-messe",
+storageBucket: "bgd-messe.firebasestorage.app",
+messagingSenderId: "966181555577",
+appId: "1:966181555577:web:93af3a0bef1ed49e7033a8",
+measurementId: "G-7RT4TFPR1V"
         };
 
         // Firebase 초기화
@@ -49,6 +49,34 @@ measurementId: "G-JB4LFXKWDX"
         window.addEventListener('DOMContentLoaded', function () {
             window.initializeApp();
         });
+        // 1. 로딩 화면 켜기
+    window.showProcessing = function() {
+        const overlay = document.getElementById('fullScreenStatus');
+        const loading = document.getElementById('loadingState');
+        const success = document.getElementById('successState');
+        
+        overlay.style.display = 'flex'; // 전체 화면 켜기
+        loading.style.display = 'flex'; // 로딩 보여주기
+        success.style.display = 'none'; // 성공은 아직 숨기기
+    }
+
+    // 2. 성공 화면으로 전환하기
+    window.showComplete = function() {
+        const overlay = document.getElementById('fullScreenStatus');
+        const loading = document.getElementById('loadingState');
+        const success = document.getElementById('successState');
+
+        loading.style.display = 'none'; // 로딩 끄기
+        success.style.display = 'flex'; // 성공 보여주기 (애니메이션 시작)
+
+        // 2초 뒤에 다 끄고 원래대로
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            if (typeof closeRegistrationModal === 'function') {
+                closeRegistrationModal();
+            }
+        }, 2000);
+    }
     </script>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -3037,6 +3065,83 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         transform: translateY(0px) translateX(-65px) scale(1);
     }
 }
+
+/* 전체 화면 완료 오버레이 스타일 */
+/* 전체 화면 오버레이 */
+.fullscreen-overlay {
+    display: none; /* 평소엔 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.98); /* 거의 불투명한 흰색 */
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.status-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeUp 0.4s ease-out;
+}
+
+.status-message {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #4a5568;
+}
+
+/* 뱅글뱅글 도는 로딩 스피너 */
+.spinner-border {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #e2e8f0;
+    border-top: 5px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* 체크 표시 애니메이션 */
+.checkmark {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2.5;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #68d391;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2.5;
+    stroke-miterlimit: 10;
+    stroke: #68d391;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes stroke { 100% { stroke-dashoffset: 0; } }
+@keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+@keyframes fill { 100% { box-shadow: inset 0px 0px 0px 70px #68d391; } }
 /* 채팅방 목록 버튼 */
 .chat-rooms-button {
     position: fixed;
@@ -3187,7 +3292,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 <div class="container">
     <header id="mainHeader" class="top-bar" style="display: none;">
         <div class="top-bar-left">
-            <div class="app-title">불광서부회중</div>
+            <div class="app-title">불광동부회중</div>
         </div>
         <div class="top-bar-right">
             <button id="noticeButton" class="bar-icon-btn" onclick="handleNoticeButtonClick()" style="display: none;">
@@ -3197,7 +3302,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         </div>
     </header>
 
-    <h1 id="loginTitle">불광서부회중<br>전시대 봉사 신청</h1>
+    <h1 id="loginTitle">불광동부회중<br>전시대 봉사 신청</h1>
         <!-- 로그인 페이지 -->
         <div class="login-page" id="loginPage">
             
@@ -3267,7 +3372,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         <!-- 선택된 요일의 신청현황만 표시 -->
     </div>
 </div>
-        <div class="version-info">v3.3</div>
+        <div class="version-info">v3.6.0.2025.11.28</div>
     </div>
 
 <!-- 메모 모달 -->
@@ -3646,7 +3751,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         const KMA_API_KEY = "9a51af0f896d3b36123dd1e23780795957e9349038e8410404b6260b68309a7e";
         const SEOUL_LAT = 37.5665;
         const SEOUL_LON = 126.9780;
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzpcLIHHRPMtxkSTAa_3VzDl5ss5IWsGOp_UlCU5iZi6P0rw7WBXiNezbZhb_pprhV5Pw/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbx9HiHvRSF9KbgrURRruSvaoDRgbG9CttTZreApopQmch3V8raqgMHLL0sHwyQxgEV6xQ/exec";
         let currentChatRoom = null;
         let messengerApp, messengerDb;
         let messagesUnsubscribe = null;
@@ -4202,6 +4307,7 @@ function loadMyChatRooms() {
         }
     });
     
+
     // 채팅방 목록 표시
     uniqueChatRooms.forEach(room => {
         const roomElement = document.createElement('div');
@@ -7848,12 +7954,17 @@ if (isOverlappingTime) {
     alert(`${dayValue}에 이미 겹치는 시간대(${timeValue})에 신청하셨습니다. 다른 시간대를 선택해주세요.`);
     return; // 신청 중단
 }
+window.showProcessing();
 
             const saved = await saveToFirestore(currentUser, dayValue, zoneValue, timeValue);
-            if (saved) {
-                alert(`${dayValue} ${zoneValue} 구역 [${timeValue}] 신청이 완료되었습니다!`);
-                closeRegistrationModal();
-            }
+if (saved) {
+        // 기존 alert 삭제하고 아래 함수 호출
+        window.showComplete();
+    } else {
+        // 실패했다면 로딩 끄고 에러 알림 (혹시 모를 에러 대비)
+        document.getElementById('fullScreenStatus').style.display = 'none';
+        alert("신청 중 오류가 발생했습니다.");
+    }
         });
 
         // 마감된 구역 클릭 방지
@@ -8010,7 +8121,7 @@ function refreshPage() {
 
 // 홈으로 이동 함수
 function goToHome() {
-    window.open('https://bgs.jwcard.co.kr', '_blank');
+    window.open('https://bgd.jwcard.co.kr', '_blank');
 }
 
 // 지도 모달 열기 함수
@@ -8069,6 +8180,43 @@ document.addEventListener('keydown', function(event) {
         }
     }
 });
+// [새로 추가할 함수] 전체 화면 성공 메시지 표시
+    function showFullScreenSuccess() {
+        const overlay = document.getElementById('fullScreenSuccess');
+        if (!overlay) return;
+
+        overlay.style.display = 'flex';
+        
+        // 애니메이션 시작
+        requestAnimationFrame(() => {
+            overlay.classList.add('active');
+        });
+
+        // 2.5초 후 닫기
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                if (typeof closeRegistrationModal === 'function') {
+                    closeRegistrationModal(); // 신청창 닫기
+                }
+            }, 300);
+        }, 2500);
+    }
 </script>
+<div id="fullScreenStatus" class="fullscreen-overlay">
+    <div id="loadingState" class="status-content">
+        <div class="spinner-border"></div>
+        <p class="status-message">잠시만 기다려주세요...</p>
+    </div>
+
+    <div id="successState" class="status-content" style="display: none;">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+        <p class="status-message">신청이 완료되었습니다</p>
+    </div>
+</div>
 </body>
 </html>
