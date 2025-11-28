@@ -340,8 +340,8 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 .action-buttons {
     display: flex;
     flex-direction: row; 
-    gap: 12px;      
-    margin-bottom: 16px;
+    gap: 15px;      /* 버튼 사이 간격을 조금 더 넓힘 */
+    margin-bottom: 24px; /* 아래 여백 추가 */
 }
 
 .admin-actions {
@@ -453,13 +453,13 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 
 .applicants-list {
-    margin-top: 10px;
+    margin-top: 5px;
     padding: 0;
     background: none;
     border-radius: 0;
     flex-grow: 1;
     overflow-y: auto;
-    max-height: calc(100dvh - 245px);
+    max-height: calc(100dvh - 250px);
 }
 
 .applicants-list h3 {
@@ -1002,6 +1002,27 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     align-items: center;
     gap: 12px; /* 아이콘과 이름 사이 간격 */
 }
+.action-buttons .btn:first-child {
+    flex: 7;            /* 7의 비율 */
+    font-weight: 800;   /* 글자를 더 굵게 강조 */
+    font-size: 22px;    /* 메인 버튼이므로 글자를 조금 더 크게 */
+    z-index: 1;         /* 겹침 이슈 방지 */
+}
+
+/* 두 번째 버튼 (신청 취소) - 비율 3 */
+.action-buttons .btn:last-child {
+    flex: 3;            /* 3의 비율 */
+    font-size: 18px;    /* 신청 버튼보다는 약간 작게 하여 위계 구분 */
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%); /* 너무 튀지 않는 밝은 회색 톤 */
+    color: #4a5568;     /* 글자색을 진한 회색으로 변경하여 가독성 확보 */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* 신청 버튼보다 옅은 그림자 */
+}
+
+/* 취소 버튼 호버 효과 (선택 사항) */
+.action-buttons .btn:last-child:hover {
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+    transform: translateY(-2px);
+}
 
 /* 바 안에 들어가는 아이콘 버튼 공통 스타일 */
 .bar-icon-btn {
@@ -1193,11 +1214,14 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     }
     
 .action-buttons .btn {
-    flex: 1;             /* 공간을 1:1로 공평하게 나눠 가짐 */
-    width: auto;         /* 가로 꽉 차는 설정 해제 */
-    margin-bottom: 0;    /* 버튼 아래 불필요한 여백 제거 */
-    padding: 16px;       /* 버튼 높이를 살짝 줄여서 공간 절약 (선택사항) */
-    font-size: 16px;     /* 글자 크기 조정 */
+    width: auto;       /* 기존 width: 100% 해제 (비율 적용을 위해) */
+    padding: 25px 0;   /* 버튼 높이를 키워서 더 눈에 띄게 함 (기존 20px -> 25px) */
+    font-size: 20px;   /* 글자 크기 확대 (기존 약 17px -> 20px) */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* 그림자를 더 진하게 하여 입체감 부여 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 18px; /* 둥근 모서리 약간 더 강조 */
 }
 }
 
