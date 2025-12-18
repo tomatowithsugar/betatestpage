@@ -6,6 +6,7 @@
     <title>불광동부회중 전시대 신청</title>
     <link rel="apple-touch-icon" href="apple-touch-icon_v3.png">
     <link rel="icon" type="image/png" href="favicon-512x512_v3.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- Firebase SDK -->
     <script type="module">
@@ -50,32 +51,59 @@ measurementId: "G-7RT4TFPR1V"
             window.initializeApp();
         });
         // 1. 로딩 화면 켜기
+    // 1. 로딩 화면 켜기 (나머지 다 끄기)
     window.showProcessing = function() {
         const overlay = document.getElementById('fullScreenStatus');
         const loading = document.getElementById('loadingState');
         const success = document.getElementById('successState');
+        const del = document.getElementById('deleteState');
         
-        overlay.style.display = 'flex'; // 전체 화면 켜기
-        loading.style.display = 'flex'; // 로딩 보여주기
-        success.style.display = 'none'; // 성공은 아직 숨기기
+        if(overlay) overlay.style.display = 'flex';
+        
+        // 로딩만 켜고 나머지는 확실하게 숨김
+        if(loading) loading.style.display = 'flex';
+        if(success) success.style.display = 'none';
+        if(del) del.style.display = 'none';
     }
 
-    // 2. 성공 화면으로 전환하기
+    // 2. 신청 완료(체크) 화면 켜기
     window.showComplete = function() {
         const overlay = document.getElementById('fullScreenStatus');
         const loading = document.getElementById('loadingState');
         const success = document.getElementById('successState');
+        const del = document.getElementById('deleteState');
 
-        loading.style.display = 'none'; // 로딩 끄기
-        success.style.display = 'flex'; // 성공 보여주기 (애니메이션 시작)
+        // 체크 표시만 켜고 나머지는 확실하게 숨김
+        if(loading) loading.style.display = 'none';
+        if(del) del.style.display = 'none'; // 휴지통 강제 숨김
+        if(success) success.style.display = 'flex';
 
-        // 2초 뒤에 다 끄고 원래대로
         setTimeout(() => {
-            overlay.style.display = 'none';
+            if(overlay) overlay.style.display = 'none';
             if (typeof closeRegistrationModal === 'function') {
                 closeRegistrationModal();
             }
         }, 2000);
+    }
+
+    // 3. 취소 완료(휴지통) 화면 켜기
+    window.showDeleteComplete = function() {
+        const overlay = document.getElementById('fullScreenStatus');
+        const loading = document.getElementById('loadingState');
+        const success = document.getElementById('successState');
+        const del = document.getElementById('deleteState');
+
+        // 휴지통만 켜고 나머지는 확실하게 숨김
+        if(loading) loading.style.display = 'none';
+        if(success) success.style.display = 'none'; // 체크 표시 강제 숨김
+        if(del) del.style.display = 'flex';
+
+        setTimeout(() => {
+            if(overlay) overlay.style.display = 'none';
+            if (typeof closeRegistrationModal === 'function') {
+                closeRegistrationModal();
+            }
+        }, 2000); 
     }
     </script>
 
@@ -124,15 +152,20 @@ html, body {
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(145deg, #667eea 0%, #764ba2 50%, #667eea 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
-    min-height: 100dvh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    margin: 0;
     padding: 0;
-    color: #1a202c;
+}
+
+.container {
+    background: #ffffff;
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    box-shadow: 0 0 40px rgba(0,0,0,0.06);
+    position: relative;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
 }
 
 @keyframes gradientShift {
@@ -222,7 +255,55 @@ h1 {
 }
 
 .login-page {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 200px);
+    padding: 40px 20px;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 60px rgba(102, 126, 234, 0.15);
+    animation: slideUpFade 0.6s ease-out;
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-form input {
+    height: 56px;
+    font-size: 17px;
+    border-radius: 14px;
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.login-form .btn {
+    height: 56px;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 20px;
 }
 
 .main-page, .admin-page {
@@ -371,7 +452,24 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     gap: 15px;      /* 버튼 사이 간격을 조금 더 넓힘 */
     margin-bottom: 24px; /* 아래 여백 추가 */
 }
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;  /* 버튼 간 간격 */
+}
 
+.action-buttons .btn:first-child {  /* 신청 버튼 */
+    flex: 7;            /* 너비 비율 7:3으로 넓게 */
+    font-weight: 800;   /* 굵게 강조 */
+    font-size: 20px;    /* 크기 강조 */
+}
+
+.action-buttons .btn:last-child {  /* 취소 버튼 */
+    flex: 3;            /* 얇게 (좁게) */
+    font-size: 16px;    /* 작게 */
+    background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);  /* 회색 톤으로 덜 강조 */
+    color: #4a5568;     /* 어두운 글자색 */
+}
 .admin-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1074,18 +1172,27 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     margin: 0 !important;
 }
 #noticeButton {
-    width: auto; /* 너비 자동 조절 */
-    height: 32px; /* 높이를 조금 줄여서 날렵하게 */
-    padding: 0 12px; /* 좌우 패딩을 줘서 타원 모양 만듦 */
-    border-radius: 20px; /* 둥근 모서리 (높이의 절반 이상) */
-    font-size: 16px; /* 폰트 크기 약간 축소 */
-    background: rgba(102, 126, 234, 0.1); /* 기본 배경색 추가 (선택사항) */
-    color: #4a5568; /* 텍스트 색상 */
-    gap: 6px; /* 아이콘과 텍스트 사이 간격 (만약 텍스트 추가 시) */
+    position: static !important;
+    width: auto;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: #667eea;
+    gap: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
+
 #noticeButton:hover {
-    background: rgba(102, 126, 234, 0.2); /* 배경색 진하게 */
-    transform: scale(1.05); /* 살짝 커지는 효과 */
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+    transform: translateY(-1px);
+}
+
+#noticeButton.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
 }
 /* 메모 버튼 등 다른 원형 버튼 호버 효과 */
 .bar-icon-btn:not(#noticeButton):hover {
@@ -1194,6 +1301,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     .container {
         border-radius: 0;
         min-height: 100dvh;
+        padding-bottom: calc(70px + env(safe-area-inset-bottom));
     }
     
     h1 {
@@ -1364,127 +1472,119 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         font-size: 16px;
     }
 }
-/* 플로팅 메뉴 버튼 컨테이너 */
-.floating-menu-container {
+.bottom-nav {
     position: fixed;
-    bottom: 20px;
-    right: 30px;
-    z-index: 900;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
-    gap: 0;
-}
-
-/* 메인 메뉴 버튼 */
-.floating-menu-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: none;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-    backdrop-filter: blur(20px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    position: relative;
-    overflow: hidden;
-}
-
-.floating-menu-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.6s;
-}
-
-.floating-menu-btn:hover::before {
-    left: 100%;
-}
-
-.floating-menu-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
-}
-
-/* 햄버거 아이콘 */
-.hamburger-icon {
-    width: 24px;
-    height: 18px;
-    position: relative;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hamburger-line {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: white;
-    border-radius: 2px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hamburger-line:nth-child(1) {
-    top: 0;
-}
-
-.hamburger-line:nth-child(2) {
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.hamburger-line:nth-child(3) {
     bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 600px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.04);
+    z-index: 1000;
 }
 
-/* 메뉴 열린 상태 */
-.floating-menu-container.open .hamburger-icon {
-    transform: rotate(90deg);
-}
-
-.floating-menu-container.open .hamburger-line:nth-child(1) {
-    top: 50%;
-    transform: translateY(-50%) rotate(45deg);
-}
-
-.floating-menu-container.open .hamburger-line:nth-child(2) {
-    opacity: 0;
-    transform: translateY(-50%) translateX(20px);
-}
-
-.floating-menu-container.open .hamburger-line:nth-child(3) {
-    bottom: 50%;
-    transform: translateY(50%) rotate(-45deg);
-}
-
-/* 서브 메뉴 버튼들 */
-.sub-menu-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
+.nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
     cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 12px;
+    position: relative;
+    user-select: none;
+}
+
+.nav-item:active {
+    transform: scale(0.92);
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.nav-icon {
+    font-size: 24px;
+    transition: transform 0.2s ease;
+    filter: grayscale(100%);
+    opacity: 0.6;
+}
+
+.nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #a0aec0;
+    transition: all 0.2s ease;
+}
+
+.nav-item.active .nav-icon {
+    transform: scale(1.05);
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+.nav-item.active .nav-label {
+    color: #667eea;
+}
+
+.nav-badge {
+    position: absolute;
+    top: 6px;
+    right: calc(50% - 18px);
+    background: #e53e3e;
+    color: white;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    min-width: 16px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(229, 62, 62, 0.3);
+}
+
+/* 더보기 메뉴 아이템 */
+.more-menu-items {
+    display: grid;
+    gap: 12px;
+}
+
+.more-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.more-menu-item:active {
+    transform: scale(0.98);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.more-menu-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    backdrop-filter: blur(20px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    opacity: 0;
-    transform: scale(0);
-    pointer-events: none;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    position: absolute;
+    background: white;
+    border-radius: 12px;
+}
+
+.more-menu-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
 }
 
 /* 다크모드 토글 버튼 */
@@ -1798,7 +1898,15 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     box-shadow: 0 4px 12px rgba(252, 129, 129, 0.3);
     min-width: 60px;
 }
+.nav-icon {
+    font-size: 24px;  /* 크기 통일 */
+    color: #718096;   /* 기본 회색 */
+    transition: color 0.3s;
+}
 
+.nav-item.active .nav-icon {
+    color: #667eea;  /* active 시 파랑 강조 */
+}
 .btn.remove-time:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(252, 129, 129, 0.4);
@@ -2100,79 +2208,47 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     display: flex;
     overflow-x: auto;
     gap: 8px;
-    margin-bottom: 20px;
-    padding: 0 10px;
-    scrollbar-width: none; /* Firefox */
+    margin: 0 20px 20px 20px;
+    padding: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 16px;
 }
 
 .day-tabs::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    display: none;
 }
 
 .day-tab {
     flex: 0 0 auto;
-    padding: 12px 16px;
+    padding: 12px 20px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    background: transparent;
+    border: none;
     cursor: pointer;
     font-weight: 600;
     font-size: 14px;
     white-space: nowrap;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    color: #718096;
 }
 
-.day-tab:hover {
-    background: rgba(102, 126, 234, 0.1);
+.day-tab:active {
+    transform: scale(0.95);
 }
 
 .day-tab.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    background: white;
+    color: #667eea;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .day-tab.empty {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
-.tab-content {
-    min-height: 200px;
-}
-.day-tabs {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-}
-/* 날씨 버튼 스타일 */
-.weather-btn {
-    background: rgba(255, 255, 255, 0.95);
-    color: #3b82f6;
-    bottom: 5px;
-    right: 5px;
-}
-
-.weather-btn:hover {
-    background: white;
-    transform: scale(1.1);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-}
-
-/* 플로팅 메뉴 열린 상태에서의 버튼 위치 조정 */
-.floating-menu-container.open .weather-btn {
-    transform: translateY(-140px) translateX(0px) scale(1);
-    transition-delay: 0.05s;  /* 가장 먼저 나타나도록 */
-}
-
-.floating-menu-container.open .font-size-btn {
-    transform: translateY(-70px) translateX(0px) scale(1);
-    transition-delay: 0.1s;   /* 두 번째로 나타나도록 */
-}
-
-.floating-menu-container.open .home-btn {
-    transform: translateY(0px) translateX(-70px) scale(1);
-    transition-delay: 0.2s;   /* 마지막으로 나타나도록 */
-}
 @media (max-width: 768px) {
     .floating-menu-container.open .weather-btn {
         transform: translateY(-130px) translateX(0px) scale(1);
@@ -2186,59 +2262,22 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         transform: translateY(0px) translateX(-65px) scale(1);
     }
 }
-/* 날씨 모달 오버레이 스타일 */
-.weather-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-.weather-modal-overlay.active {
-    opacity: 1;
-}
-
-/* 날씨 모달 컨텐츠 스타일 (아래에서 위로 올라오는 애니메이션) */
-.weather-modal-content {
-    background-color: #ffffff;
-    width: 100%;
-    max-width: 800px;
-    max-height: 80vh;
-    border-radius: 20px 20px 0 0;
-    box-shadow: 0 -5px 25px rgba(0,0,0,0.2);
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.weather-modal-content.active {
-    transform: translateY(0);
-}
 
 /* 모달 헤더 (제목, 닫기 버튼) */
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    color: #333;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
 .modal-header h2 {
     margin: 0;
-    font-size: 1.5em;
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a202c;
 }
 
 .close-button {
@@ -2271,17 +2310,15 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
   border-radius: 4px;
 }
 
-/* 개별 날씨 카드 */
 .forecast-card {
-    flex: 0 0 130px; /* 카드의 너비를 고정 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 15px;
-    border: 1px solid #e9ecef;
-    text-align: center;
+    flex: 0 0 140px;
+    padding: 20px 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
 }
 
 .forecast-date {
@@ -3142,39 +3179,44 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 @keyframes stroke { 100% { stroke-dashoffset: 0; } }
 @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
 @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 70px #68d391; } }
-/* 채팅방 목록 버튼 */
-.chat-rooms-button {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: none;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    cursor: pointer;
-    font-size: 24px;
-    z-index: 900;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-    backdrop-filter: blur(20px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.chat-rooms-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
-}
 
 /* 채팅방 목록 스타일 */
 .chat-rooms-list {
     max-height: 400px;
     overflow-y: auto;
     margin-top: 20px;
+}
+/* 휴지통 아이콘 스타일 */
+.trash-icon-box {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #fff5f5; /* 연한 빨간 배경 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(229, 62, 62, 0.2);
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.trash-can {
+    width: 50px;
+    height: 50px;
+    animation: shakeTrash 0.5s ease-in-out 0.4s; /* 등장 후 흔들림 */
+}
+
+/* 팝업 등장 효과 */
+@keyframes popIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* 휴지통 흔들림 효과 */
+@keyframes shakeTrash {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
 }
 
 .chat-room-item {
@@ -3237,6 +3279,178 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     text-align: center;
     padding: 40px 20px;
     color: #a0aec0;
+}
+/* 주간 신청 횟수 카드 */
+.weekly-limit-card {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 0 20px 24px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.limit-icon {
+    font-size: 32px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.limit-info {
+    flex: 1;
+    min-width: 0; /* 텍스트 오버플로우 방지 */
+}
+
+.limit-label {
+    font-size: 13px;
+    color: #718096;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+/* 메인 액션 카드 컨테이너 */
+.action-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 0 20px 24px 20px;
+}
+
+.action-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 0 0 0 100%;
+}
+
+.action-card:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.action-card-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.action-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 6px;
+}
+
+.action-card-description {
+    font-size: 13px;
+    color: #718096;
+    line-height: 1.5;
+}
+
+.action-card.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.action-card.primary .action-card-title,
+.action-card.primary .action-card-description {
+    color: white;
+}
+
+.action-card.primary::before {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* 기존 action-buttons 스타일 제거하고 숨김 처리 */
+.action-buttons {
+    display: none;
+}
+
+.limit-count {
+    font-size: 20px;
+    font-weight: 800;
+    color: #667eea;
+    line-height: 1.2;
+}
+
+.limit-count strong {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 제한 초과 시 색상 변경 */
+.limit-count.over-limit strong {
+    background: linear-gradient(135deg, #fc8181 0%, #e53e3e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+    .weekly-limit-card {
+        margin: 0 15px 20px 15px;
+        padding: 16px;
+    }
+    
+    .limit-icon {
+        font-size: 28px;
+        width: 45px;
+        height: 45px;
+    }
+    
+    .limit-label {
+        font-size: 12px;
+    }
+    
+    .limit-count {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 390px) {
+    .weekly-limit-card {
+        padding: 14px;
+        gap: 12px;
+    }
+    
+    .limit-icon {
+        font-size: 24px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .limit-count {
+        font-size: 16px;
+    }
 }
 
 /* 모바일 반응형 */
@@ -3342,12 +3556,32 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 
 
         <!-- 일반 사용자 메인 페이지 -->
-        <div class="main-page" id="mainPage">
-            <div class="action-buttons">
-                <button type="button" class="btn" onclick="openRegistrationModal()">전시대 봉사 신청</button>
-                <button type="button" class="btn secondary" onclick="openCancelModal()">신청 취소</button>
-            </div>
+<div class="main-page" id="mainPage">
+    <!-- 주간 신청 현황 카드 -->
+    <div id="weeklyLimitCard" class="weekly-limit-card" style="display: none;">
+        <div class="limit-info">
+            <div class="limit-label">이번 주 신청 현황</div>
+            <div id="weeklyLimitDisplay" class="limit-count"></div>
         </div>
+    </div>
+
+    <!-- 액션 카드들 -->
+    <div class="action-cards">
+        <div class="action-card primary" onclick="openRegistrationModal()">
+            <span class="action-card-icon">✨</span>
+            <div class="action-card-title">전시대 봉사 신청</div>
+            <div class="action-card-description">이번 주 봉사 일정을 확인하고 신청하세요</div>
+        </div>
+
+        <div class="action-card" onclick="openCancelModal()">
+            <span class="action-card-icon">📋</span>
+            <div class="action-card-title">신청취소</div>
+            <div class="action-card-description">내 신청 내역을 확인하고 취소할 수 있습니다</div>
+        </div>
+    </div>
+
+    <!-- 기존 action-buttons는 숨김 처리 또는 제거 -->
+</div>
 
         <!-- 관리자 페이지 -->
         <div class="admin-page" id="adminPage">
@@ -3356,6 +3590,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
             <div class="admin-actions">
                 <button type="button" class="btn admin" onclick="openUserManagementModal()">전도인 관리</button>
                 <button type="button" class="btn admin" onclick="openZoneManagementModal()">구역 관리</button>
+                <button type="button" class="btn admin" onclick="openWeeklyLimitModal()">주간 횟수 제한</button>
                 <button type="button" class="btn admin" onclick="openMapManagementModal()">지도 관리</button>
                 <button type="button" class="btn admin" onclick="openNoticeManagementModal()">공지사항 관리</button>
                 <button type="button" class="btn secondary" onclick="openStatsModal()">데이터 통계</button>
@@ -3729,10 +3964,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     </div>
 </div>
 
-<!-- 왼쪽 아래 채팅방 버튼 -->
-<button id="chatRoomsButton" class="chat-rooms-button" onclick="openChatRoomsModal()" title="내 채팅방">
-    💬
-</button>
 <!-- mapManagementModal 다음에 추가 -->
 <div id="mapModal" class="modal">
     <div class="modal-content">
@@ -3742,6 +3973,50 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         <div id="mapContainer">
             <iframe id="mapIframe" width="100%" height="400" frameborder="0" style="border:0" allowfullscreen></iframe>
         </div>
+    </div>
+</div>
+<!-- 주간 횟수 제한 모달 -->
+<div id="weeklyLimitModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeWeeklyLimitModal()">&times;</span>
+        <h2>주간 신청 횟수 제한 설정</h2>
+        
+        <div class="form-group">
+            <label>현재 설정</label>
+            <div id="currentLimitInfo" style="
+                padding: 15px;
+                background: rgba(102, 126, 234, 0.1);
+                border-radius: 12px;
+                text-align: center;
+                font-size: 18px;
+                font-weight: 600;
+                color: #667eea;
+                margin-bottom: 20px;
+            "></div>
+        </div>
+        
+        <div class="form-group">
+            <label>
+                <input type="radio" name="limitType" value="limited" id="limitedRadio" checked>
+                횟수 제한 설정
+            </label>
+            <input type="number" 
+                   id="weeklyLimitInput" 
+                   min="1" 
+                   max="20" 
+                   value="3" 
+                   placeholder="주간 최대 신청 횟수"
+                   style="margin-top: 10px;">
+        </div>
+        
+        <div class="form-group">
+            <label>
+                <input type="radio" name="limitType" value="unlimited" id="unlimitedRadio">
+                제한 없음 (무제한)
+            </label>
+        </div>
+        
+        <button type="button" class="btn" onclick="saveWeeklyLimit()">설정 저장</button>
     </div>
 </div>
 
@@ -3774,6 +4049,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         let currentChart = null;
         let currentView = 'table';
         let currentStatsType = 'zone';
+        let weeklyLimit = null;
         // 전역 변수에 읽지 않은 메시지 상태 추가
 let unreadMessages = {};
 let unreadMessagesListener = null;
@@ -3851,16 +4127,22 @@ function updateChatButtonBadge() {
     const chatButton = document.getElementById('chatRoomsButton');
     const totalUnread = Object.values(unreadMessages).reduce((sum, count) => sum + count, 0);
     
-    if (totalUnread > 0) {
-        chatButton.classList.add('has-unread');
-        // 숫자 대신 빨간 점만 표시
-        chatButton.innerHTML = `💬<span class="chat-badge-dot"></span>`;
-    } else {
-        chatButton.classList.remove('has-unread');
-        chatButton.innerHTML = '💬';
+    if (navBadge) {
+        if (totalUnread > 0) {
+            navBadge.textContent = totalUnread > 99 ? '99+' : totalUnread;
+            navBadge.style.display = 'block';
+        } else {
+            navBadge.style.display = 'none';
+        }
     }
 }
 
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
 // CSS에 빨간 점 스타일 추가
 const style = document.createElement('style');
 style.textContent = `
@@ -4055,7 +4337,8 @@ function initializeApplicants() {
         // 사용자와 구역을 병렬로 로드
         await Promise.all([
             loadZonesFromFirestore(),
-            loadUsersFromFirestore()
+            loadUsersFromFirestore(),
+            loadWeeklyLimitFromFirestore()
         ]);
         
         populateAdminUserSelect();
@@ -4126,6 +4409,8 @@ function initializeApplicants() {
         updateZoneUI();
         updateDaySelectionModal();
         updateDisplay();
+        updateWeeklyLimitDisplay();
+document.getElementById('weeklyLimitDisplay').style.display = 'block';
         createDayTabs();
         populateZoneOptions();
     } catch (error) {
@@ -4133,6 +4418,40 @@ function initializeApplicants() {
         alert('구역 목록을 불러오는 중 오류가 발생했습니다: ' + error.message);
     }
 }
+// 네비게이션 활성화 상태 관리
+function setActiveNav(element) {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    element.classList.add('active');
+}
+
+// 더보기 메뉴 열기/닫기
+function openMoreMenu() {
+    document.getElementById('moreMenuModal').style.display = 'block';
+}
+
+function closeMoreMenu() {
+    document.getElementById('moreMenuModal').style.display = 'none';
+}
+
+// 글자 크기 토글
+function toggleFontSize() {
+    // 기존 글자 크기 슬라이더 로직 재사용 또는 간단한 토글
+    const currentSize = parseInt(localStorage.getItem('fontSize') || '16');
+    const newSize = currentSize === 16 ? 18 : currentSize === 18 ? 20 : 16;
+    changeFontSize(newSize);
+    alert(`글자 크기가 ${newSize}px로 변경되었습니다.`);
+}
+
+// 모달 외부 클릭 시 더보기 메뉴 닫기
+window.onclick = function(event) {
+    const moreMenuModal = document.getElementById('moreMenuModal');
+    if (event.target === moreMenuModal) {
+        closeMoreMenu();
+    }
+    // 기존 모달 닫기 로직도 여기에 유지
+};
 // Firebase 모듈 동적 로딩 및 초기화
 async function initializeMessengerFirebase() {
     if (messengerDb) return messengerDb;
@@ -4968,7 +5287,63 @@ function closeMapModal() {
     document.getElementById('mapModal').style.display = 'none';
     document.getElementById('mapIframe').src = '';
 }
+// 주간 횟수 제한 모달 열기
+function openWeeklyLimitModal() {
+    document.getElementById('weeklyLimitModal').style.display = 'block';
+    
+    // 현재 설정 표시
+    const currentInfo = document.getElementById('currentLimitInfo');
+    if (weeklyLimit && weeklyLimit.isUnlimited) {
+        currentInfo.textContent = '현재: 무제한';
+        document.getElementById('unlimitedRadio').checked = true;
+        document.getElementById('weeklyLimitInput').disabled = true;
+    } else if (weeklyLimit) {
+        currentInfo.textContent = `현재: 주 ${weeklyLimit.limit}회 제한`;
+        document.getElementById('limitedRadio').checked = true;
+        document.getElementById('weeklyLimitInput').value = weeklyLimit.limit;
+        document.getElementById('weeklyLimitInput').disabled = false;
+    }
+    
+    // 라디오 버튼 이벤트 리스너
+    document.getElementById('limitedRadio').addEventListener('change', function() {
+        document.getElementById('weeklyLimitInput').disabled = false;
+    });
+    
+    document.getElementById('unlimitedRadio').addEventListener('change', function() {
+        document.getElementById('weeklyLimitInput').disabled = true;
+    });
+}
 
+// 주간 횟수 제한 모달 닫기
+function closeWeeklyLimitModal() {
+    document.getElementById('weeklyLimitModal').style.display = 'none';
+}
+
+// 주간 횟수 제한 저장
+async function saveWeeklyLimit() {
+    const isUnlimited = document.getElementById('unlimitedRadio').checked;
+    const limitValue = parseInt(document.getElementById('weeklyLimitInput').value);
+    
+    if (!isUnlimited && (!limitValue || limitValue < 1)) {
+        alert('유효한 횟수를 입력해주세요. (최소 1회)');
+        return;
+    }
+    
+    const saved = await saveWeeklyLimitToFirestore(
+        isUnlimited ? 999 : limitValue, 
+        isUnlimited
+    );
+    
+    if (saved) {
+        alert(isUnlimited ? 
+            '주간 신청 횟수 제한이 해제되었습니다.' : 
+            `주간 신청 횟수가 ${limitValue}회로 설정되었습니다.`
+        );
+        closeWeeklyLimitModal();
+    } else {
+        alert('설정 저장 중 오류가 발생했습니다.');
+    }
+}
 // 글자 크기 변경 처리
 function changeFontSize(baseSize) {
   // 기본 크기 비율 계산
@@ -5676,7 +6051,9 @@ function scrollToActiveTab() {
             if (document.getElementById('chatRoomsModal').style.display === 'block') {
                 loadMyChatRooms();
             }
-            
+                if (currentUser && !isAdmin) {
+        updateWeeklyLimitDisplay();
+    }
             // ✅ unreadMessages 추적 시작 (사용자 데이터 로드 후)
             if (currentUser && currentUser !== 'admin') {
                 setTimeout(() => {
@@ -5861,8 +6238,17 @@ async function addZoneToFirestore(name, schedules) {
     document.getElementById('mainPage').style.display = 'block';
     document.getElementById('noticeButton').style.display = 'block';
     filterUserApplications();
-    updateCancelList();
-    updateDisplay();
+updateCancelList();
+updateDisplay();
+
+// 주간 신청 횟수 표시
+const weeklyLimitCard = document.getElementById('weeklyLimitCard');  // 👈 변경
+if (weeklyLimitCard) {  // 👈 변경
+    weeklyLimitCard.style.display = 'flex';  // 👈 변경
+    setTimeout(() => {
+        updateWeeklyLimitDisplay();
+    }, 1000);
+}
 
     // 공지사항 로드 추가
     loadNoticeFromFirestore();
@@ -6839,6 +7225,7 @@ function getActiveDays() {
             }
             userApplications = allApplications.filter(a => a.name === currentUser);
             console.log('Filtered user applications:', userApplications);
+            updateWeeklyLimitDisplay();
         }
 // 신청 모달의 요일 선택 UI를 업데이트하는 함수
 function updateDaySelectionModal() {
@@ -6943,236 +7330,20 @@ function attachDaySelectionListeners() {
             const confirmMessage = `${application.day}(${dateString}) ${application.zone} 전시대 봉사 신청을 취소하시겠습니까?`;
 
             if (confirm(confirmMessage)) {
+                window.showProcessing();
                 cancelApplication(application.id, application);
+                window.showDeleteComplete();
             }
         }
-
-// 날씨 정보 열기 함수 (기상청 API)
-async function openWeather() {
-    const xy = dfs_xy_conv("toXY", 37.6027, 126.9292); // 서울 은평구
-    const now = new Date();
-    let base_date = now.getFullYear().toString() +
-                    ("0" + (now.getMonth() + 1)).slice(-2) +
-                    ("0" + now.getDate()).slice(-2);
-    
-    const available_times = ["0200", "0500", "0800", "1100", "1400", "1700", "2000", "2300"];
-    let current_hour = ("0" + now.getHours()).slice(-2);
-    let base_time = "";
-
-    for (let i = available_times.length - 1; i >= 0; i--) {
-        if (current_hour >= available_times[i].substring(0, 2)) {
-            base_time = available_times[i];
-            break;
-        }
-    }
-    if (base_time === "") {
-        now.setDate(now.getDate() - 1);
-        base_date = now.getFullYear().toString() +
-                    ("0" + (now.getMonth() + 1)).slice(-2) +
-                    ("0" + now.getDate()).slice(-2);
-        base_time = "2300";
-    }
-
-    const apiUrl = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${KMA_API_KEY}&pageNo=1&numOfRows=1000&dataType=JSON&base_date=${base_date}&base_time=${base_time}&nx=${xy.x}&ny=${xy.y}`;
-
-    try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error(`API 요청 실패: ${response.status}`);
-        const data = await response.json();
-        
-        if (data.response.header.resultCode !== "00") {
-            throw new Error(`API 오류: ${data.response.header.resultMsg}`);
-        }
-        
-        const dailyData = processKmaData(data.response.body.items.item);
-        createWeatherModal(dailyData);
-
-    } catch (error) {
-        console.error("날씨 정보를 가져오는 중 오류가 발생했습니다:", error);
-        alert(`날씨 정보를 가져오는 데 실패했습니다: ${error.message}`);
-    }
-}
-
-function processKmaData(items) {
-    const daily = {};
-
-    items.forEach(item => {
-        const date = item.fcstDate;
-        if (!daily[date]) {
-            daily[date] = {
-                dt: new Date(date.substring(0,4), date.substring(4,6) - 1, date.substring(6,8)),
-                temp_min: null,
-                temp_max: null,
-                sky: null, 
-                pty: null, 
-            };
-        }
-        
-        if (item.category === 'TMX') daily[date].temp_max = parseFloat(item.fcstValue);
-        if (item.category === 'TMN') daily[date].temp_min = parseFloat(item.fcstValue);
-        
-        // 정오(12시)의 날씨를 대표로 사용하되, 만약 정오 데이터가 없다면 그 시간대의 SKY/PTY를 사용 (가장 중요한 대표 날씨)
-        if (item.fcstTime === "1200" || (!daily[date].sky && !daily[date].pty)) { // 12시 데이터 우선, 없으면 첫 데이터
-            if (item.category === 'SKY') daily[date].sky = parseInt(item.fcstValue);
-            if (item.category === 'PTY') daily[date].pty = parseInt(item.fcstValue);
-        }
-    });
-    
-    // 오늘 최저기온은 이미 발표되었으므로, 현재 기온으로 대체 (더 정확)
-    // KMA API는 TMN/TMX를 포함하지만, 당일 TMN은 보통 밤에 나타남.
-    // 현재 기온(TMP)을 받아와 당일 최저/최고 기온과 비교하여 더 정확한 값을 설정
-    const todayKey = Object.keys(daily)[0];
-    if (todayKey && daily[todayKey]) {
-        const currentTempItem = items.find(i => i.category === 'TMP' && i.fcstDate === todayKey);
-        if (currentTempItem) {
-            const currentTemp = parseFloat(currentTempItem.fcstValue);
-            if (daily[todayKey].temp_min === null || currentTemp < daily[todayKey].temp_min) {
-                daily[todayKey].temp_min = currentTemp;
-            }
-            if (daily[todayKey].temp_max === null || currentTemp > daily[todayKey].temp_max) {
-                daily[todayKey].temp_max = currentTemp;
-            }
-        }
-    }
-
-
-    return Object.values(daily).filter(day => day.temp_max !== null && day.temp_min !== null && day.sky !== null);
-}
-
-// 날씨 상태 코드와 아이콘 및 배경 정보 매핑하는 함수 (배경 이미지 URL 추가)
-function getWeatherInfo(sky, pty) {
-    let description = "정보 없음";
-    let icon = "❓";
-    let backgroundClass = "default-bg"; // 기본 배경 클래스
-
-    if (pty === 0) { // 강수 없음
-        if (sky === 1) { description = "맑음"; icon = "☀️"; backgroundClass = "clear-bg"; } // 맑음
-        else if (sky === 3) { description = "구름많음"; icon = "☁️"; backgroundClass = "cloudy-bg"; } // 구름많음
-        else if (sky === 4) { description = "흐림"; icon = "🌫️"; backgroundClass = "overcast-bg"; } // 흐림
-    } else if (pty === 1) { description = "비"; icon = "🌧️"; backgroundClass = "rain-bg"; } // 비
-    else if (pty === 2) { description = "비/눈"; icon = "🌨️"; backgroundClass = "sleet-bg"; } // 비/눈
-    else if (pty === 3) { description = "눈"; icon = "❄️"; backgroundClass = "snow-bg"; } // 눈
-    else if (pty === 4) { description = "소나기"; icon = "🌦️"; backgroundClass = "shower-bg"; } // 소나기
-    
-    return { description, icon, backgroundClass };
-}
-
-// 모달 생성 함수 (기상청 데이터에 맞게 수정)
-function createWeatherModal(dailyForecasts) {
-    const existingModal = document.querySelector('.weather-modal-overlay');
-    if (existingModal) existingModal.remove();
-
-    const overlay = document.createElement('div');
-    overlay.className = 'weather-modal-overlay';
-    
-    const modalContent = document.createElement('div');
-    modalContent.className = 'weather-modal-content';
-
-    // 첫째 날의 날씨 정보로 모달 전체의 배경 클래스 설정
-    if (dailyForecasts.length > 0) {
-        const todayWeather = getWeatherInfo(dailyForecasts[0].sky, dailyForecasts[0].pty);
-        modalContent.classList.add(todayWeather.backgroundClass);
-    }
-
-
-    modalContent.innerHTML = `
-        <div class="modal-header">
-            <h2>이번 주 은평구 날씨</h2>
-            <button class="close-button">&times;</button>
-        </div>
-        <div class="forecast-container"></div>
-    `;
-
-    const forecastContainer = modalContent.querySelector('.forecast-container');
-    // 최대 7일치 예보만 표시
-    dailyForecasts.slice(0, 7).forEach(day => {
-        const date = day.dt;
-        const dayOfWeek = date.toLocaleString('ko-KR', { weekday: 'short' });
-        const monthDay = date.toLocaleString('ko-KR', { month: 'long', day: 'numeric' });
-
-        const weatherInfo = getWeatherInfo(day.sky, day.pty);
-        
-        const card = document.createElement('div');
-        card.className = `forecast-card ${weatherInfo.backgroundClass}-card`; // 카드에도 배경 클래스 적용
-        card.innerHTML = `
-            <div class="forecast-date">
-                <span class="day-of-week">${dayOfWeek}</span>
-                <span class="month-day">${monthDay}</span>
-            </div>
-            <div class="weather-icon-kma">${weatherInfo.icon}</div>
-            <div class="weather-description">${weatherInfo.description}</div>
-            <div class="temperature">
-                <span class="temp-max">최고: ${day.temp_max}°</span>
-                <span class="temp-min">최저: ${day.temp_min}°</span>
-            </div>
-        `;
-        forecastContainer.appendChild(card);
-    });
-
-    overlay.appendChild(modalContent);
-    document.body.appendChild(overlay);
-    
-    const close = () => {
-        modalContent.classList.remove('active');
-        overlay.classList.remove('active');
-        setTimeout(() => overlay.remove(), 300);
-    };
-
-    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
-    modalContent.querySelector('.close-button').addEventListener('click', close);
-    
-    setTimeout(() => {
-        overlay.classList.add('active');
-        modalContent.classList.add('active');
-    }, 10);
-}
-function dfs_xy_conv(code, v1, v2) {
-    var DEGRAD = Math.PI / 180.0;
-    var GRID = 5.0;
-    var RE = 6371.00877; 
-    var SLAT1 = 30.0;
-    var SLAT2 = 60.0;
-    var OLON = 126.0;
-    var OLAT = 38.0;
-    var XO = 43;
-    var YO = 136;
-
-    var re = RE / GRID;
-    var slat1 = SLAT1 * DEGRAD;
-    var slat2 = SLAT2 * DEGRAD;
-    var olon = OLON * DEGRAD;
-    var olat = OLAT * DEGRAD;
-
-    var sn = Math.tan(Math.PI * 0.25 + slat2 * 0.5) / Math.tan(Math.PI * 0.25 + slat1 * 0.5);
-    sn = Math.log(Math.cos(slat1) / Math.cos(slat2)) / Math.log(sn);
-    var sf = Math.tan(Math.PI * 0.25 + slat1 * 0.5);
-    sf = Math.pow(sf, sn) * Math.cos(slat1) / sn;
-    var ro = Math.tan(Math.PI * 0.25 + olat * 0.5);
-    ro = re * sf / Math.pow(ro, sn);
-    var rs = {};
-    if (code == "toXY") {
-        rs['lat'] = v1;
-        rs['lng'] = v2;
-        var ra = Math.tan(Math.PI * 0.25 + (v1) * DEGRAD * 0.5);
-        ra = re * sf / Math.pow(ra, sn);
-        var theta = v2 * DEGRAD - olon;
-        if (theta > Math.PI) theta -= 2.0 * Math.PI;
-        if (theta < -Math.PI) theta += 2.0 * Math.PI;
-        theta *= sn;
-        rs['x'] = Math.floor(ra * Math.sin(theta) + XO + 0.5);
-        rs['y'] = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
-    }
-    return rs;
-}
-        // 신청 취소 실행
+              // 신청 취소 실행
         async function cancelApplication(docId, application) {
             const deleted = await deleteFromFirestore(docId, application);
             if (deleted) {
                 const dateParts = application.actualDate.split('-');
                 const date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
                 const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-                alert(`${application.day}(${dateString}) ${application.zone} 신청이 취소되었습니다.`);
                 closeCancelModal();
+                updateWeeklyLimitDisplay();
             }
         }
         // 현재 수정 중인 구역 ID 저장
@@ -7648,7 +7819,97 @@ async function loadNoticeFromFirestore() {
         console.error('공지사항 로드 오류:', error);
     }
 }
+// 주간 제한 설정 로드
+async function loadWeeklyLimitFromFirestore() {
+    try {
+        const { doc, getDoc } = window.firestoreFunctions;
+        const settingsRef = doc(window.db, 'settings', 'weeklyLimit');
+        const settingsSnap = await getDoc(settingsRef);
+        
+        if (settingsSnap.exists()) {
+            weeklyLimit = settingsSnap.data();
+            console.log('Weekly limit loaded:', weeklyLimit);
+        } else {
+            // 기본값 설정
+            weeklyLimit = { limit: 999, isUnlimited: true };
+            console.log('No limit settings found, using default');
+        }
+        
+        updateWeeklyLimitDisplay();
+    } catch (error) {
+        console.error('주간 제한 설정 로드 오류:', error);
+        weeklyLimit = { limit: 999, isUnlimited: true };
+    }
+}
 
+// 주간 제한 설정 저장
+async function saveWeeklyLimitToFirestore(limit, isUnlimited) {
+    try {
+        const { doc, setDoc } = window.firestoreFunctions;
+        const settingsRef = doc(window.db, 'settings', 'weeklyLimit');
+        
+        await setDoc(settingsRef, {
+            limit: isUnlimited ? 999 : limit,
+            isUnlimited: isUnlimited
+        });
+        
+        weeklyLimit = { limit: isUnlimited ? 999 : limit, isUnlimited: isUnlimited };
+        updateWeeklyLimitDisplay();
+        
+        console.log('Weekly limit saved:', weeklyLimit);
+        return true;
+    } catch (error) {
+        console.error('주간 제한 설정 저장 오류:', error);
+        return false;
+    }
+}
+// 주간 신청 횟수 표시 업데이트
+// 주간 신청 횟수 표시 업데이트
+// 주간 신청 횟수 표시 업데이트
+function updateWeeklyLimitDisplay() {
+    const displayElement = document.getElementById('weeklyLimitDisplay');
+    const cardElement = document.getElementById('weeklyLimitCard');
+    
+    if (!displayElement || !cardElement) {
+        console.warn('weeklyLimitDisplay or weeklyLimitCard element not found');
+        return;
+    }
+    
+    // 현재 주의 신청 횟수 계산
+    const currentWeek = getCurrentWeekDates();
+    const currentCount = allApplications.filter(app => 
+        app.name === currentUser && 
+        app.actualDate >= currentWeek.start && 
+        app.actualDate <= currentWeek.end
+    ).length;
+    
+    console.log('Weekly limit display update:', {
+        currentUser,
+        currentCount,
+        weeklyLimit,
+        allApplications: allApplications.length,
+        userApplications: userApplications.length
+    });
+    
+    if (!weeklyLimit) {
+        cardElement.style.display = 'none';
+        return;
+    }
+    
+    // 카드 표시
+    cardElement.style.display = 'flex';
+    
+    if (weeklyLimit.isUnlimited) {
+        displayElement.innerHTML = `<strong>${currentCount}회</strong> / ∞`;
+        displayElement.className = 'limit-count';
+    } else {
+        const limitCount = weeklyLimit.limit;
+        const isOverLimit = currentCount >= limitCount;
+        
+        displayElement.innerHTML = `<strong>${currentCount}회</strong> / ${limitCount}회`;
+        displayElement.className = isOverLimit ? 'limit-count over-limit' : 'limit-count';
+    }
+}
 // 공지사항 저장
 async function saveNotice() {
     const content = document.getElementById('noticeContent').value.trim();
@@ -7895,6 +8156,13 @@ document.addEventListener('change', function(e) {
         // 폼 제출 이벤트 처리
         document.getElementById('registrationForm').addEventListener('submit', async function (e) {
             e.preventDefault();
+                if (weeklyLimit && !weeklyLimit.isUnlimited) {
+        const currentCount = userApplications.length;
+        if (currentCount >= weeklyLimit.limit) {
+            alert(`이번 주 신청 가능 횟수(${weeklyLimit.limit}회)를 모두 사용하셨습니다.`);
+            return;
+        }
+    }
                 const selectedDay = document.querySelector('input[name="day"]:checked');
                 const selectedZone = document.querySelector('input[name="zone"]:checked');
                 const selectedTime = document.querySelector('input[name="time"]:checked');
@@ -7958,6 +8226,9 @@ window.showProcessing();
 
             const saved = await saveToFirestore(currentUser, dayValue, zoneValue, timeValue);
 if (saved) {
+        setTimeout(() => {
+        updateWeeklyLimitDisplay();
+    }, 500);
         // 기존 alert 삭제하고 아래 함수 호출
         window.showComplete();
     } else {
@@ -7996,6 +8267,10 @@ if (saved) {
     if (event.target === chatRoomsModal) {
         closeChatRoomsModal();
     }
+    const weeklyLimitModal = document.getElementById('weeklyLimitModal');
+if (event.target === weeklyLimitModal) {
+    closeWeeklyLimitModal();
+}
 
             if (event.target === registrationModal) {
                 closeRegistrationModal();
@@ -8064,46 +8339,58 @@ async function executeAdminAction() {
             alert('폼 초기화 (구현 필요)');
         }</script>
         <!-- 플로팅 메뉴를 body 태그 끝나기 전에 추가 -->
-<div class="floating-menu-container" id="floatingMenu">
-    <button class="sub-menu-btn memo-btn" onclick="openMemoModal()" title="구역 메모">
-        📝
-    </button>
-        <button class="sub-menu-btn map-btn" onclick="openMapModal()" title="구역 지도">
-        🗺️
-    </button>
-        <button class="sub-menu-btn weather-btn" onclick="openWeather()" title="날씨 정보">
-        🔅
-    </button>
-        <!-- 글자 크기 조정 버튼 -->
-        <div class="sub-menu-btn font-size-btn" onclick="toggleFontSizeSlider()" title="글자 크기 조정">
-        Aa
+<!-- body 태그 끝나기 직전에 추가 -->
+<nav class="bottom-nav" id="bottomNav">
+    <div class="nav-item active" onclick="setActiveNav(this); scrollToTop()">
+        <span class="material-icons nav-icon">home</span>  <!-- 세련된 홈 아이콘 -->
+        <div class="nav-label">홈</div>
     </div>
-        <!-- 새로고침 버튼 -->
-    <button class="sub-menu-btn refresh-btn" onclick="refreshPage()" title="페이지 새로고침">
-        X
-    </button>
-   
-    <!-- 구역카드 버튼 -->
-    <button class="sub-menu-btn home-btn" onclick="goToHome()" title="홈으로 이동">
-        🏠
-    </button>
     
-    <!-- 메인 메뉴 버튼 -->
-    <button class="floating-menu-btn" onclick="toggleFloatingMenu()" title="메뉴">
-        <div class="hamburger-icon">
-            <div class="hamburger-line"></div>
-            <div class="hamburger-line"></div>
-            <div class="hamburger-line"></div>
+    <div class="nav-item" onclick="setActiveNav(this); openMapModal()">
+        <span class="material-icons nav-icon">map</span>  <!-- 지도 -->
+        <div class="nav-label">지도</div>
+    </div>
+    
+    <div class="nav-item" onclick="setActiveNav(this); openMemoModal()">
+        <span class="material-icons nav-icon">note</span>  <!-- 메모 -->
+        <div class="nav-label">메모</div>
+    </div>
+    
+    <div class="nav-item" id="chatNavItem" onclick="setActiveNav(this); openChatRoomsModal()">
+        <span class="material-icons nav-icon">chat</span>  <!-- 채팅 -->
+        <div class="nav-label">채팅</div>
+        <div class="nav-badge" id="chatNavBadge" style="display: none;"></div>
+    </div>
+    
+    <div class="nav-item" onclick="setActiveNav(this); openMoreMenu()">
+        <span class="material-icons nav-icon">more_horiz</span>  <!-- 더보기 -->
+        <div class="nav-label">더보기</div>
+    </div>
+</nav>
+
+<!-- 더보기 메뉴 모달 -->
+<div id="moreMenuModal" class="modal" style="display: none;">
+    <div class="modal-content" style="border-radius: 24px 24px 0 0; padding: 30px 20px;">
+        <h2 style="margin-bottom: 20px;">더보기</h2>
+        
+        <div class="more-menu-items">
+            <div class="more-menu-item" onclick="toggleFontSize()">
+                <span class="more-menu-icon">Aa</span>
+                <span class="more-menu-text">글자 크기</span>
+            </div>
+            
+            <div class="more-menu-item" onclick="goToHome()">
+                <span class="more-menu-icon">🏠</span>
+                <span class="more-menu-text">구역카드 홈</span>
+            </div>
+            
+            <div class="more-menu-item" onclick="refreshPage()">
+                <span class="more-menu-icon">🔄</span>
+                <span class="more-menu-text">새로고침</span>
+            </div>
         </div>
-    </button>
-        <!-- 글자 크기 슬라이더 (처음에는 숨김) -->
-    <div class="font-size-slider-container" id="fontSizeSlider">
-        <div class="slider-header">
-            <span>글자 크기</span>
-            <button class="close-slider" onclick="closeFontSizeSlider()">×</button>
-        </div>
-        <input type="range" id="fontSizeRange" min="12" max="24" value="16" step="1">
-        <div class="slider-value" id="fontSizeValue">16px</div>
+        
+        <button class="btn" onclick="closeMoreMenu()" style="margin-top: 20px;">닫기</button>
     </div>
 </div>
 
@@ -8207,7 +8494,7 @@ document.addEventListener('keydown', function(event) {
 <div id="fullScreenStatus" class="fullscreen-overlay">
     <div id="loadingState" class="status-content">
         <div class="spinner-border"></div>
-        <p class="status-message">잠시만 기다려주세요...</p>
+        <p class="status-message">처리 중입니다...</p>
     </div>
 
     <div id="successState" class="status-content" style="display: none;">
@@ -8216,6 +8503,18 @@ document.addEventListener('keydown', function(event) {
             <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
         </svg>
         <p class="status-message">신청이 완료되었습니다</p>
+    </div>
+
+    <div id="deleteState" class="status-content" style="display: none;">
+        <div class="trash-icon-box">
+            <svg class="trash-can" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+        </div>
+        <p class="status-message" style="color: #e53e3e;">신청이 취소되었습니다</p>
     </div>
 </div>
 </body>
