@@ -514,7 +514,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     border-radius: 0;
     flex-grow: 1;
     overflow-y: auto;
-    max-height: calc(100dvh - 250px);
+    min-height: calc(100dvh - 250px);
 }
 
 .applicants-list h3 {
@@ -3510,7 +3510,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 .content-section {
     display: none;
     padding: 20px;
-    padding-bottom: 100px;
+    padding-bottom: 10px;   /* ← 줄이기 */
     min-height: calc(100dvh - 60px - 60px);
 }
 
@@ -3550,7 +3550,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 
 /* 컨테이너에 하단 여백 추가 */
 .container {
-    padding-bottom: calc(var(--bottom-nav-height) + 20px);
+    padding-bottom: calc(var(--bottom-nav-height) + var(--bottom-action-bar-height) + 20px);
 }
 
 /* 모달을 전체 화면으로 변경 */
@@ -3695,8 +3695,8 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 .content-section {
     display: none;
     padding: 20px;
-    padding-bottom: 80px; /* 네비게이션 바 높이만큼 여백 */
-    min-height: calc(100dvh - 60px - 60px); /* 상단바와 하단바 제외 */
+    padding-bottom: 10px;   /* ← 줄이기 */
+    min-height: calc(100dvh - 60px - 60px);
 }
 
 .content-section.active {
@@ -3731,6 +3731,127 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     font-size: 14px;
     color: #718096;
 }
+/* 글자 크기 조절 스타일 개선 */
+.font-size-control {
+    padding: 20px;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 12px;
+}
+
+.font-size-preview {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+#fontPreviewText {
+    font-weight: 600;
+    color: #667eea;
+    transition: font-size 0.2s ease;
+}
+
+.font-size-slider-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.font-size-label {
+    font-size: 13px;
+    color: #718096;
+    font-weight: 500;
+    min-width: 40px;
+}
+
+#settingsFontSizeRange {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, #cbd5e0, #667eea);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+#settingsFontSizeRange::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
+    transition: all 0.2s ease;
+}
+
+#settingsFontSizeRange::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: #764ba2;
+}
+
+#settingsFontSizeRange::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
+}
+
+.font-size-value {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #667eea;
+    padding: 8px;
+    background: white;
+    border-radius: 6px;
+}
+/* 2층 하단 네비게이션 바 (신청 버튼) */
+:root {
+    --bottom-nav-height: 60px;
+    --bottom-action-bar-height: 68px;  /* ← 2층 높이 추가 */
+}
+
+.bottom-action-bar {
+    position: fixed;
+    bottom: var(--bottom-nav-height);   /* 1층 nav 바로 위에 배치 */
+    left: 0;
+    right: 0;
+    height: var(--bottom-action-bar-height);
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(102, 126, 234, 0.15);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    z-index: 999;
+    box-shadow: 0 -1px 6px rgba(0,0,0,0.04);
+}
+
+.bottom-action-bar.visible {
+    display: flex;
+}
+
+.bottom-action-bar .btn {
+    padding: 14px 0;   
+    font-size: 17px;       
+    margin-bottom: 0;
+    border-radius: 12px;
+}
+.bottom-action-bar .btn:first-child {
+    flex: 7;
+}
+.bottom-action-bar .btn:last-child {
+    flex: 3;
+}
     </style>
 </head>
 <body>
@@ -3742,8 +3863,6 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         <div class="initial-loading-progress">
             <div class="initial-loading-bar"></div>
         </div>
-        <div class="initial-loading-text">서버에 연결 중입니다</div>
-        <div class="initial-loading-subtext">잠시만 기다려주세요...</div>
     </div>
 </div>
 <div class="container">
@@ -3804,14 +3923,10 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
         <div class="main-page" id="mainPage">
             <div id="weeklyLimitCard" class="weekly-limit-card" style="display: none;">
         <div class="limit-info">
-            <div class="limit-label">이번 주 신청 현황</div>
+            <div class="limit-label">나의 이번 주 신청 현황</div>
             <div id="weeklyLimitDisplay" class="limit-count"></div>
         </div>
     </div>
-            <div class="action-buttons">
-                <button type="button" class="btn" onclick="openRegistrationModal()">전시대 봉사 신청</button>
-                <button type="button" class="btn secondary" onclick="openCancelModal()">신청 취소</button>
-            </div>
         </div>
 
         <!-- 관리자 페이지 -->
@@ -3899,7 +4014,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
                 </svg>
                 <div>
                     <h3>구역 지도</h3>
-                    <p>구역 지도를 확인합니다</p>
+                    <p>전시대 구역을 확인합니다</p>
                 </div>
             </div>
             
@@ -3918,9 +4033,20 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
                 </svg>
                 <div>
                     <h3>날씨</h3>
-                    <p>현재 날씨를 확인합니다</p>
+                    <p>날씨를 확인합니다</p>
                 </div>
             </div>
+            <!-- 날씨 카드 바로 아래에 추가 -->
+<div class="tool-card" onclick="window.open('https://bgs.jwcard.co.kr', '_blank')">
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 40px; height: 40px; stroke: #667eea;">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    <div>
+        <h3>구역 카드</h3>
+        <p>구역 카드 보기</p>
+    </div>
+</div>
         </div>
     
     <!-- 선택된 채팅방 정보 -->
@@ -5261,14 +5387,23 @@ async function deleteMemo() {
 
 // 이벤트 리스너 등록
 document.addEventListener('DOMContentLoaded', function() {
+    // 저장된 글자 크기 적용
     applySavedFontSize();
     
-    // 메모 폼 이벤트 리스너
-    document.getElementById('editMemoForm').addEventListener('submit', saveMemo);
+    // 슬라이더 이벤트 리스너 추가 (모달용)
+    const fontSizeSlider = document.getElementById('settingsFontSizeRange');
+    if (fontSizeSlider) {
+        fontSizeSlider.addEventListener('input', function() {
+            changeFontSize(parseInt(this.value));
+        });
+    }
     
-    // 구역 데이터가 로드된 후 옵션 채우기
-    if (typeof zones !== 'undefined' && zones.length > 0) {
-        populateZoneOptions();
+    // 슬라이더 이벤트 리스너 추가 (섹션용)
+    const fontSizeSliderSection = document.getElementById('settingsFontSizeRangeSection');
+    if (fontSizeSliderSection) {
+        fontSizeSliderSection.addEventListener('input', function() {
+            changeFontSize(parseInt(this.value));
+        });
     }
 });
 function getCurrentZoneTotal(zoneName) {
@@ -5832,7 +5967,7 @@ window.addEventListener('DOMContentLoaded', function() {
     
     // 슬라이더 이벤트 리스너 추가
 // 기존 코드에서 이 부분을 찾아 수정합니다
-const fontSizeSlider = document.getElementById('fontSizeRange');
+const fontSizeSlider = document.getElementById('settingsFontSizeRange');
 if (fontSizeSlider) {
   fontSizeSlider.addEventListener('input', function() {
     changeFontSize(parseInt(this.value));
@@ -8952,7 +9087,12 @@ function showBottomNav() {
     if (bottomNav) {
         bottomNav.classList.add('visible');
     }
+    const bottomActionBar = document.getElementById('bottomActionBar');
+if (bottomActionBar) {
+    bottomActionBar.classList.add('visible');
 }
+}
+
 
 // 로그아웃 시 네비게이션 바 숨기기
 function hideBottomNav() {
@@ -8960,6 +9100,10 @@ function hideBottomNav() {
     if (bottomNav) {
         bottomNav.classList.remove('visible');
     }
+    const bottomActionBar = document.getElementById('bottomActionBar');
+if (bottomActionBar) {
+    bottomActionBar.classList.remove('visible');
+}
 }
 
 // 설정 모달 열기
@@ -9259,6 +9403,7 @@ function changeFontSize(size) {
 
 // 폰트 크기 표시 업데이트
 function updateFontSizeDisplay(size) {
+    // 모달용
     const valueDisplay = document.getElementById('settingsFontSizeValue');
     const previewText = document.getElementById('fontPreviewText');
     
@@ -9268,6 +9413,24 @@ function updateFontSizeDisplay(size) {
     if (previewText) {
         previewText.style.fontSize = size + 'px';
     }
+    
+    // 섹션용
+    const valueDisplaySection = document.getElementById('settingsFontSizeValueSection');
+    const previewTextSection = document.getElementById('fontPreviewTextSection');
+    
+    if (valueDisplaySection) {
+        valueDisplaySection.textContent = size + 'px';
+    }
+    if (previewTextSection) {
+        previewTextSection.style.fontSize = size + 'px';
+    }
+    
+    // 슬라이더 값도 동기화
+    const sliderModal = document.getElementById('settingsFontSizeRange');
+    const sliderSection = document.getElementById('settingsFontSizeRangeSection');
+    
+    if (sliderModal) sliderModal.value = size;
+    if (sliderSection) sliderSection.value = size;
 }
 
 // 저장된 폰트 크기 적용
@@ -9311,7 +9474,7 @@ document.addEventListener('DOMContentLoaded', function() {
     applySavedFontSize();
     
     // 슬라이더 이벤트 리스너 추가
-    const fontSizeSlider = document.getElementById('fontSizeRange');
+    const fontSizeSlider = document.getElementById('settingsFontSizeRange');
     if (fontSizeSlider) {
         fontSizeSlider.addEventListener('input', function() {
             changeFontSize(parseInt(this.value));
@@ -9398,6 +9561,10 @@ document.addEventListener('keydown', function(event) {
         <p class="status-message" style="color: #e53e3e;">신청이 취소되었습니다</p>
     </div>
 </div>
+<div class="bottom-action-bar" id="bottomActionBar">
+    <button type="button" class="btn" onclick="openRegistrationModal()">전시대 봉사 신청</button>
+    <button type="button" class="btn secondary" onclick="openCancelModal()">신청 취소</button>
+</div>
 <!-- 하단 네비게이션 바 (로그인 후 표시) -->
 <div class="bottom-nav" id="bottomNav">
     <!-- 1. 홈 -->
@@ -9459,7 +9626,7 @@ document.addEventListener('keydown', function(event) {
                 </div>
                 <div class="font-size-slider-wrapper">
                     <span class="font-size-label">작게</span>
-                    <input type="range" id="settingsFontSizeRange" min="12" max="24" value="16" step="1">
+                    <input type="range" id="settingsFontSizeRange" min="12" max="24" value="16" step="1" oninput="changeFontSize(parseInt(this.value))">
                     <span class="font-size-label">크게</span>
                 </div>
                 <div class="font-size-value" id="settingsFontSizeValue">16px</div>
