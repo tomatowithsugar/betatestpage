@@ -12,7 +12,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc, setDoc, updateDoc, arrayUnion, arrayRemove, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
-        // Firebase 설정
+        // Firebase 설정x
         const firebaseConfig = {
 apiKey: "AIzaSyCUe4dXiwGiMsKtMCQfLVScx9iM4sEwF50",
 authDomain: "cart-witnessing-404c0.firebaseapp.com",
@@ -8755,70 +8755,91 @@ function updateZoneDisplay(selectedDay) {
         });
     });
 
-    // 우선순위별로 그룹화 (낮은 숫자 먼저)
-    const priorities = [...new Set(available.filter(z => z.priority !== null).map(z => z.priority))]
+    // 우선순위 그룹 만들기 (낮은 숫자 먼저, 우선순위 없는 구역은 맨 마지막 그룹으로)
+    const priorityValues = [...new Set(available.filter(z => z.priority !== null).map(z => z.priority))]
         .sort((a, b) => a - b);
 
-    let activeNames = new Set();
-    let found = false;
+    const groups = priorityValues.map(p => ({
+        priority: p,
+        zones: available.filter(z => z.priority === p)
+    }));
 
-    for (const p of priorities) {
-        const group = available.filter(z => z.priority === p);
-        const totalCap = group.reduce((s, z) => s + z.maxCapacity, 0);
-        const totalCount = group.reduce((s, z) => s + z.currentCount, 0);
+    const noPriorityZones = available.filter(z => z.priority === null);
+    if (noPriorityZones.length > 0) {
+        groups.push({ priority: null, zones: noPriorityZones });
+    }
+
+    // 지금 "차례"인 그룹 찾기: 앞 그룹부터 순서대로 TO가 남은 첫 그룹
+    let turnIndex = groups.length; // 못 찾으면(=모든 그룹 마감) groups.length
+    for (let i = 0; i < groups.length; i++) {
+        const g = groups[i];
+        const totalCap = g.zones.reduce((s, z) => s + z.maxCapacity, 0);
+        const totalCount = g.zones.reduce((s, z) => s + z.currentCount, 0);
         if (totalCount < totalCap) {
-            group.forEach(z => activeNames.add(z.zoneName));
-            found = true;
-            break; // TO 남은 첫 우선순위에서 멈춤
+            turnIndex = i;
+            break;
         }
     }
 
-    if (!found) {
-        // 우선순위 구역이 전부 다 찼거나 우선순위 구역이 없으면 우선순위 없는 구역 활성화
-        available.filter(z => z.priority === null).forEach(z => activeNames.add(z.zoneName));
-    }
+    const turnZoneNames = turnIndex < groups.length
+        ? groups[turnIndex].zones.map(z => z.zoneName)
+        : [];
 
-available.forEach(z => {
-    const radioInput = z.optionDiv.querySelector('input[type="radio"]');
-    const capacityInfo = z.label.querySelector('.capacity-info');
-    if (capacityInfo) capacityInfo.textContent = `${z.currentCount}/${z.maxCapacity}`;
+    available.forEach(z => {
+        const radioInput = z.optionDiv.querySelector('input[type="radio"]');
+        const capacityInfo = z.label.querySelector('.capacity-info');
+        if (capacityInfo) capacityInfo.textContent = `${z.currentCount}/${z.maxCapacity}`;
 
-    if (activeNames.has(z.zoneName)) {
-        if (z.currentCount >= z.maxCapacity) {
+        const myGroupIndex = groups.findIndex(g => g.zones.some(zz => zz.zoneName === z.zoneName));
+
+        if (myGroupIndex < turnIndex) {
+            // 이미 지나간 그룹 → 진짜로 다 찬 구역 (빨강)
             z.label.style.background = '#ff6b6b';
             z.label.style.color = 'white';
             z.label.style.borderColor = '#ff6b6b';
             z.label.style.cursor = 'not-allowed';
             radioInput.disabled = true;
-            z.label.dataset.closeReason = 'full';      // ← 추가: 진짜로 다 찬 경우
+            z.label.dataset.closeReason = 'full';
             delete z.label.dataset.waitingZones;
-        } else {
-            if (!radioInput.checked) {
-                z.label.style.background = '';
-                z.label.style.color = '';
-                z.label.style.borderColor = '';
+
+        } else if (myGroupIndex === turnIndex) {
+            // 지금 차례인 그룹
+            if (z.currentCount >= z.maxCapacity) {
+                // 그룹 전체는 안 찼어도 이 구역만 다 찬 경우
+                z.label.style.background = '#ff6b6b';
+                z.label.style.color = 'white';
+                z.label.style.borderColor = '#ff6b6b';
+                z.label.style.cursor = 'not-allowed';
+                radioInput.disabled = true;
+                z.label.dataset.closeReason = 'full';
+                delete z.label.dataset.waitingZones;
+            } else {
+                if (!radioInput.checked) {
+                    z.label.style.background = '';
+                    z.label.style.color = '';
+                    z.label.style.borderColor = '';
+                }
+                z.label.style.cursor = 'pointer';
+                radioInput.disabled = false;
+                delete z.label.dataset.closeReason;
+                delete z.label.dataset.waitingZones;
             }
-            z.label.style.cursor = 'pointer';
-            radioInput.disabled = false;
-            delete z.label.dataset.closeReason;          // ← 추가: 신청 가능하니 초기화
-            delete z.label.dataset.waitingZones;
+
+        } else {
+            // 아직 차례가 안 된 그룹 → 회색
+            z.label.style.background = '#e8e8e8';
+            z.label.style.color = '#999';
+            z.label.style.borderColor = '#ccc';
+            z.label.style.cursor = 'not-allowed';
+            radioInput.disabled = true;
+            radioInput.checked = false;
+            z.label.dataset.closeReason = 'priority';
+            z.label.dataset.waitingZones = turnZoneNames.join(', ');
         }
-    } else {
-        z.label.style.background = '#e8e8e8';
-        z.label.style.color = '#999';
-        z.label.style.borderColor = '#ccc';
-        z.label.style.cursor = 'not-allowed';
-        radioInput.disabled = true;
-        radioInput.checked = false;
-        z.label.dataset.closeReason = 'priority';        // ← 추가: 우선순위 때문에 막힌 경우
-        z.label.dataset.waitingZones = Array.from(activeNames).join(', '); // ← 추가: 먼저 차야 할 구역 이름
-    }
-});
+    });
 
-
-    console.log('Zone display updated:', selectedDay, 'Active:', Array.from(activeNames));
+    console.log('Zone display updated:', selectedDay, 'turnIndex:', turnIndex);
 }
-
         function generateHourOptions(selectedValue = null) {
     let options = '';
     for (let i = 6; i <= 22; i++) {
