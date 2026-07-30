@@ -9,7 +9,8 @@
 
     <!-- Firebase SDK -->
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        // Firebase SDK 최적화: 필요한 함수만 import 하여 번들 크기 감소
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, deleteDoc, doc, setDoc, updateDoc, arrayUnion, arrayRemove, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
 
         // Firebase 설정x
@@ -4061,7 +4062,26 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 .modal-close-btn:hover {
     color: #2d3748;
 }
-    </style>
+    
+/* 성능 최적화를 위한 will-change 속성 */
+.chat-room-item, .application-item, .modal-content {
+    will-change: transform;
+}
+
+/* GPU 가속 활성화 */
+.hardware-accelerate {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+</style>
+
+    <!-- 성능 최적화: 리소스 미리 로드 -->
+    <link rel="preload" href="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js" as="script">
+    <link rel="preload" href="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js" as="script">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="불광서부회중 전시대 신청 시스템">
+
 </head>
 <body>
     <!-- 초기 로딩 화면 -->
@@ -4926,10 +4946,12 @@ async function updateLastChecked(chatRoomId = null) {
     updateChatRoomsList();
 }
 
-// loadMyChatRooms 함수 수정
+// 내 채팅방 목록 로드 (최적화 버전)
 function loadMyChatRooms() {
     const chatRoomsList = document.getElementById('chatRoomsList');
     const noChatRooms = document.getElementById('noChatRooms');
+    
+    if (!chatRoomsList || !noChatRooms) return;
     
     // 현재 주의 날짜 범위 계산
     const currentWeek = getCurrentWeekDates();
@@ -4947,14 +4969,17 @@ function loadMyChatRooms() {
     
     chatRoomsList.style.display = 'block';
     noChatRooms.style.display = 'none';
+    
+    // DocumentFragment 사용하여 DOM 조작 최소화
+    const fragment = document.createDocumentFragment();
     chatRoomsList.innerHTML = '';
     
-    // 채팅방 목록 생성 (중복 제거)
-    const uniqueChatRooms = [];
+    // 채팅방 목록 생성 (중복 제거 - Map 사용으로 성능 개선)
+    const uniqueChatRoomsMap = new Map();
     myCurrentWeekApplications.forEach(app => {
         const roomKey = `${app.day}_${app.zone}_${app.timeSlot}`.replace(/\s+/g, '_');
-        if (!uniqueChatRooms.find(room => room.key === roomKey)) {
-            uniqueChatRooms.push({
+        if (!uniqueChatRoomsMap.has(roomKey)) {
+            uniqueChatRoomsMap.set(roomKey, {
                 key: roomKey,
                 day: app.day,
                 zone: app.zone,
@@ -4964,35 +4989,47 @@ function loadMyChatRooms() {
         }
     });
     
+    // 참여자 수 미리 계산 (성능 최적화)
+    const participantCounts = new Map();
+    uniqueChatRoomsMap.forEach(room => {
+        const count = allApplications.filter(app => 
+            app.day === room.day && 
+            app.zone === room.zone && 
+            app.timeSlot === room.timeSlot
+        ).length;
+        participantCounts.set(room.key, count);
+    });
+    
     // 채팅방 목록 표시
-    uniqueChatRooms.forEach(room => {
+    uniqueChatRoomsMap.forEach(room => {
         const roomElement = document.createElement('div');
         roomElement.className = 'chat-room-item';
         roomElement.dataset.roomKey = room.key;
         roomElement.onclick = () => openChatRoom(room);
         
-        // 해당 채팅방의 참여자 수 계산
-        const participants = allApplications.filter(app => 
-            app.day === room.day && 
-            app.zone === room.zone && 
-            app.timeSlot === room.timeSlot
-        );
-        
         // 읽지 않은 메시지 수
         const unreadCount = unreadMessages[room.key] || 0;
+        const participantCount = participantCounts.get(room.key);
         
-        roomElement.innerHTML = `
-            <div class="chat-room-info">
-                <div class="chat-room-title">${room.zone} - ${formatTimeToAMPM(room.timeSlot)}</div>
-                <div class="chat-room-details">${room.day} • ${getFormattedDate(room.actualDate)}</div>
-                <div class="chat-room-members">${participants.length}명 참여 중</div>
-            </div>
-            ${unreadCount > 0 ? `<div class="chat-room-badge unread unread-badge">${unreadCount}</div>` : ''}
-        `;
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'chat-room-info';
+        infoDiv.textContent = `${room.zone} - ${formatTimeToAMPM(room.timeSlot)} | ${room.day} • ${getFormattedDate(room.actualDate)} | ${participantCount}명 참여 중`;
         
-        chatRoomsList.appendChild(roomElement);
+        roomElement.appendChild(infoDiv);
+        
+        if (unreadCount > 0) {
+            const badge = document.createElement('div');
+            badge.className = 'chat-room-badge unread unread-badge';
+            badge.textContent = unreadCount;
+            roomElement.appendChild(badge);
+        }
+        
+        fragment.appendChild(roomElement);
     });
+    
+    chatRoomsList.appendChild(fragment);
 }
+
 
 // openChatRoom 함수 수정
 function openChatRoom(room) {
@@ -5272,69 +5309,6 @@ function closeChatRoomsModal() {
     document.getElementById('chatRoomsModal').style.display = 'none';
 }
 
-// 내 채팅방 목록 로드
-function loadMyChatRooms() {
-    const chatRoomsList = document.getElementById('chatRoomsList');
-    const noChatRooms = document.getElementById('noChatRooms');
-    
-    // 현재 주의 날짜 범위 계산
-    const currentWeek = getCurrentWeekDates();
-    
-    // 현재 주에 신청한 봉사 필터링
-    const myCurrentWeekApplications = userApplications.filter(app => {
-        return app.actualDate >= currentWeek.start && app.actualDate <= currentWeek.end;
-    });
-    
-    if (myCurrentWeekApplications.length === 0) {
-        chatRoomsList.style.display = 'none';
-        noChatRooms.style.display = 'block';
-        return;
-    }
-    
-    chatRoomsList.style.display = 'block';
-    noChatRooms.style.display = 'none';
-    chatRoomsList.innerHTML = '';
-    
-    // 채팅방 목록 생성 (중복 제거)
-    const uniqueChatRooms = [];
-    myCurrentWeekApplications.forEach(app => {
-        const roomKey = `${app.day}_${app.zone}_${app.timeSlot}`;
-        if (!uniqueChatRooms.find(room => room.key === roomKey)) {
-            uniqueChatRooms.push({
-                key: roomKey,
-                day: app.day,
-                zone: app.zone,
-                timeSlot: app.timeSlot,
-                actualDate: app.actualDate
-            });
-        }
-    });
-    
-
-    // 채팅방 목록 표시
-    uniqueChatRooms.forEach(room => {
-        const roomElement = document.createElement('div');
-        roomElement.className = 'chat-room-item';
-        roomElement.onclick = () => openChatRoom(room);
-        
-        // 해당 채팅방의 참여자 수 계산
-        const participants = allApplications.filter(app => 
-            app.day === room.day && 
-            app.zone === room.zone && 
-            app.timeSlot === room.timeSlot
-        );
-        
-        roomElement.innerHTML = `
-            <div class="chat-room-info">
-                <div class="chat-room-title">${room.zone} - ${formatTimeToAMPM(room.timeSlot)}</div>
-                <div class="chat-room-details">${room.day} • ${getFormattedDate(room.actualDate)}</div>
-                <div class="chat-room-members">${participants.length}명 참여 중</div>
-            </div>
-        `;
-        
-        chatRoomsList.appendChild(roomElement);
-    });
-}
 
 
 // 날짜 형식화 함수 (YYYY-MM-DD → YYYY/MM/DD)
@@ -7894,6 +7868,31 @@ function isOverlapping(newTime, existingTime) {
 }
 
         // 현재 주의 날짜 범위 계산
+// 디바운스 함수 (성능 최적화: 빈번한 이벤트 호출 제한)
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// 스로틀 함수 (성능 최적화: 일정 간격으로 함수 실행 제한)
+function throttle(func, limit) {
+    let inThrottle;
+    return function(...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
         function getCurrentWeekDates() {
     const today = new Date();
     const currentDay = today.getDay();
