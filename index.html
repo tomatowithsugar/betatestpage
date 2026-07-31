@@ -3456,9 +3456,8 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    width: auto;
-    min-width: 60px;
-    max-width: calc(100vw - 40px);
+    width: calc(100vw - 40px);
+    max-width: 600px;
     height: var(--bottom-nav-height);
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
@@ -3877,9 +3876,8 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     bottom: calc(var(--bottom-nav-height) + 30px);   /* 플로팅 nav 위에 배치 (여유공간 추가) */
     left: 50%;
     transform: translateX(-50%);
-    width: auto;
-    min-width: 60px;
-    max-width: calc(100vw - 40px);
+    width: calc(100vw - 40px);
+    max-width: 600px;
     height: var(--bottom-action-bar-height);
     background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(20px);
@@ -3889,8 +3887,8 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     display: none;
     justify-content: center;
     align-items: center;
-    gap: 9px;
-    padding: 4px 21px;
+    gap: 12px;
+    padding: 6px 12px;
     z-index: 999;
     box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.12),
@@ -3903,16 +3901,17 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 
 .bottom-action-bar .btn {
-    padding: 14px 0;
+    padding: 14px 16px;
     font-size: 17px;
     margin-bottom: 0;
     border-radius: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
 }
 .bottom-action-bar .btn:first-child {
-    flex: 7;
-}
-.bottom-action-bar .btn:last-child {
-    flex: 3;
+    flex: 2;
 }
 /* ===== 봉사 캘린더 스타일 ===== */
 #calendarModal .modal-content {
