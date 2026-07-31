@@ -3447,29 +3447,49 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 /* 하단 네비게이션 바 */
 :root {
-    --bottom-nav-height: 60px;
+    --bottom-nav-height: 70px;
 }
 
+/* 하단 네비게이션 바 - iOS 스타일 알약/섬 형태 */
 .bottom-nav {
     position: fixed;
-    bottom: 0px;
-    left: 0;
-    right: 0;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    min-width: 60px;
+    max-width: calc(100vw - 40px);
     height: var(--bottom-nav-height);
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(102, 126, 234, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 35px;
     display: none;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    padding: 0 10px;
+    padding: 8px 12px;
     z-index: 1000;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .bottom-nav.visible {
     display: flex;
+}
+
+/* 확장 상태 - 스크롤 또는 클릭 시 */
+.bottom-nav.expanded {
+    height: 85px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow:
+        0 12px 48px rgba(0, 0, 0, 0.16),
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .nav-item {
@@ -3477,36 +3497,71 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex: 1;
-    padding: 8px 4px;
-    background: none;
+    min-width: 52px;
+    padding: 6px 8px;
+    background: transparent;
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     color: #718096;
     text-decoration: none;
+    position: relative;
+    gap: 2px;
 }
 
 .nav-item:active {
-    transform: scale(0.95);
+    transform: scale(0.92);
 }
 
+/* 축소 상태 - 아이콘만 */
 .nav-item svg {
     width: 24px;
     height: 24px;
-    margin-bottom: 4px;
     stroke: currentColor;
     fill: none;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08));
 }
 
+.nav-item span {
+    font-size: 0px;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    color: #4a5568;
+}
+
+/* 확장 상태 - 아이콘 + 텍스트 */
+.bottom-nav.expanded .nav-item svg {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 2px;
+}
+
+.bottom-nav.expanded .nav-item span {
+    font-size: 11px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 활성 상태 */
 .nav-item.active {
     color: #667eea;
 }
 
-.nav-item span {
-    font-size: 11px;
-    font-weight: 500;
+.nav-item.active svg {
+    filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
+}
+
+.bottom-nav.expanded .nav-item.active svg {
+    filter: drop-shadow(0 3px 6px rgba(102, 126, 234, 0.4));
+}
+
+/* 호버 효과 */
+.nav-item:hover {
+    color: #667eea;
 }
 /* 콘텐츠 섹션 스타일 */
 .content-section {
@@ -3550,9 +3605,9 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     color: #718096;
 }
 
-/* 컨테이너에 하단 여백 추가 */
+/* 컨테이너에 하단 여백 추가 - 플로팅 네비게이션 바 고려 */
 .container {
-    padding-bottom: calc(var(--bottom-nav-height) + var(--bottom-action-bar-height) + 20px);
+    padding-bottom: calc(var(--bottom-nav-height) + var(--bottom-action-bar-height) + 40px);
 }
 
 /* 모달을 전체 화면으로 변경 */
@@ -3566,7 +3621,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     height: 100%;
     background-color: #f8f9fa;
     overflow-y: auto;
-    padding-bottom: calc(var(--bottom-nav-height) + 20px);
+    padding-bottom: calc(var(--bottom-nav-height) + 40px);
 }
 
 .modal-content {
@@ -3682,11 +3737,13 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 /* 활성화된 네비게이션 아이템 표시 */
 .bottom-nav .nav-item.active {
     color: #667eea;
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(102, 126, 234, 0.08);
+    border-radius: 20px;
 }
 
 .bottom-nav .nav-item.active svg {
     stroke: #667eea;
+    filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
 }
 
 /* 콘텐츠 영역이 네비게이션 바 위로 스크롤되도록 */
@@ -3811,27 +3868,34 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 /* 2층 하단 네비게이션 바 (신청 버튼) */
 :root {
-    --bottom-nav-height: 60px;
-    --bottom-action-bar-height: 68px;  /* ← 2층 높이 추가 */
+    --bottom-nav-height: 70px;
+    --bottom-action-bar-height: 68px;  /* ← 2 층 높이 추가 */
 }
 
 .bottom-action-bar {
     position: fixed;
-    bottom: var(--bottom-nav-height);   /* 1층 nav 바로 위에 배치 */
-    left: 0;
-    right: 0;
+    bottom: calc(var(--bottom-nav-height) + 30px);   /* 플로팅 nav 위에 배치 (여유공간 추가) */
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    min-width: 60px;
+    max-width: calc(100vw - 40px);
     height: var(--bottom-action-bar-height);
-    background: rgba(273, 255, 255, 0.97);
+    background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-top: -28px solid rgba(102, 126, 234, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 35px;
     display: none;
     justify-content: center;
     align-items: center;
     gap: 9px;
     padding: 4px 21px;
-    z-index: 1000;
-    box-shadow: 0 -1px 6px rgba(0,0,0,0.04);
+    z-index: 999;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .bottom-action-bar.visible {
@@ -8606,6 +8670,9 @@ function updateNavActive(activeId) {
     // 해당 버튼에 active 클래스 추가
     const activeNav = document.getElementById('nav' + activeId.charAt(0).toUpperCase() + activeId.slice(1));
     if(activeNav) activeNav.classList.add('active');
+
+    // 네비게이션 바 확장 (사용자 인터랙션 감지)
+    expandNavBar();
 }
 
 // 메모 열기 함수 수정
@@ -10279,5 +10346,57 @@ document.addEventListener('keydown', function(event) {
         </div>
     </div>
 </div>
+<!-- 하단 네비게이션 바 확장/축소 스크립트 -->
+<script>
+// 네비게이션 바 확장 함수
+function expandNavBar() {
+    const nav = document.getElementById('bottomNav');
+    if (nav) {
+        nav.classList.add('expanded');
+        // 2 초 후 자동으로 축소
+        clearTimeout(window.navCollapseTimeout);
+        window.navCollapseTimeout = setTimeout(() => {
+            nav.classList.remove('expanded');
+        }, 2500);
+    }
+}
+
+// 스크롤 감지하여 네비게이션 바 확장
+let lastScrollY = window.scrollY;
+let scrollTimeout;
+
+window.addEventListener('scroll', function() {
+    const currentScrollY = window.scrollY;
+    const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+
+    // 일정량 이상 스크롤 시에만 반응
+    if (scrollDelta > 10) {
+        expandNavBar();
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const nav = document.getElementById('bottomNav');
+            if (nav) {
+                nav.classList.remove('expanded');
+            }
+        }, 1500);
+    }
+
+    lastScrollY = currentScrollY;
+}, { passive: true });
+
+// 각 네비게이션 아이템 클릭 시에도 확장
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+        expandNavBar();
+    });
+});
+
+// 터치 시작 시에도 확장
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('touchstart', function() {
+        expandNavBar();
+    }, { passive: true });
+});
+</script>
 </body>
 </html>
