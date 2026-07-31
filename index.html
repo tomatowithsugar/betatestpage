@@ -64,38 +64,6 @@ measurementId: "G-JB4LFXKWDX"
         if(loading) loading.style.display = 'flex';
         if(success) success.style.display = 'none';
         if(del) del.style.display = 'none';
-
-        // 원형 프로그레스 바 애니메이션 시작
-        startLoadingAnimation();
-    }
-
-    // 로딩 애니메이션 함수
-    let loadingInterval;
-    function startLoadingAnimation() {
-        const progressBar = document.getElementById('progressBar');
-        const percentText = document.getElementById('loadingPercent');
-        const circumference = 2 * Math.PI * 54; // r=54
-        let progress = 0;
-
-        // 초기화
-        progressBar.style.strokeDashoffset = circumference;
-        percentText.textContent = '0%';
-
-        // 기존 인터벌 클리어
-        if (loadingInterval) clearInterval(loadingInterval);
-
-        // 프로그레스 애니메이션
-        loadingInterval = setInterval(() => {
-            progress += Math.random() * 15 + 5; // 5~20%씩 증가
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(loadingInterval);
-            }
-
-            const offset = circumference - (progress / 100) * circumference;
-            progressBar.style.strokeDashoffset = offset;
-            percentText.textContent = Math.round(progress) + '%';
-        }, 200);
     }
 
     // 2. 신청 완료(체크) 화면 켜기
@@ -3157,73 +3125,14 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     color: #4a5568;
 }
 
-/* 뱅글뱅글 도는 로딩 스피너 (원형 프로그레스 바 + 퍼센트) */
-.loading-container {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.loading-logo {
+/* 뱅글뱅글 도는 로딩 스피너 */
+.spinner-border {
     width: 60px;
     height: 60px;
+    border: 5px solid #e2e8f0;
+    border-top: 5px solid #667eea;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
-}
-
-.loading-logo svg {
-    width: 36px;
-    height: 36px;
-    fill: white;
-}
-
-.circular-progress {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    transform: rotate(-90deg);
-}
-
-.circular-progress circle {
-    fill: none;
-    stroke-width: 6;
-    stroke-linecap: round;
-}
-
-.circular-progress .progress-bg {
-    stroke: #e2e8f0;
-}
-
-.circular-progress .progress-bar {
-    stroke: url(#gradient);
-    stroke-dasharray: 339.292;
-    stroke-dashoffset: 339.292;
-    transition: stroke-dashoffset 0.3s ease;
-    animation: progressGlow 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes progressGlow {
-    0% { filter: drop-shadow(0 0 2px rgba(102, 126, 234, 0.5)); }
-    100% { filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.8)); }
-}
-
-.loading-percent {
-    position: absolute;
-    font-size: 24px;
-    font-weight: 800;
-    color: #667eea;
-    font-variant-numeric: tabular-nums;
-}
-
-.spinner-border {
-    display: none; /* 기존 스피너 숨김 */
+    animation: spin 1s linear infinite;
 }
 
 /* 체크 표시 애니메이션 */
@@ -3536,46 +3445,31 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     font-size: 11px;
     font-weight: bold;
 }
-/* 하단 네비게이션 바 - iOS 스타일 플로팅 섬 디자인 */
+/* 하단 네비게이션 바 */
 :root {
-    --bottom-nav-height: 70px;
-    --nav-expanded-width: 90%;
-    --nav-collapsed-width: 200px;
+    --bottom-nav-height: 60px;
 }
 
 .bottom-nav {
     position: fixed;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: var(--nav-collapsed-width);
+    bottom: 0px;
+    left: 0;
+    right: 0;
     height: var(--bottom-nav-height);
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(30px) saturate(180%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    border-radius: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(102, 126, 234, 0.2);
     display: none;
     justify-content: space-around;
     align-items: center;
-    padding: 0 12px;
+    padding: 0 10px;
     z-index: 1000;
-    box-shadow:
-        0 10px 40px rgba(0, 0, 0, 0.15),
-        0 2px 10px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
 }
 
 .bottom-nav.visible {
     display: flex;
-}
-
-.bottom-nav.expanded {
-    width: var(--nav-expanded-width);
-    max-width: 500px;
-    padding: 0 20px;
 }
 
 .nav-item {
@@ -3583,59 +3477,14 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-width: 50px;
-    padding: 8px 12px;
+    flex: 1;
+    padding: 8px 4px;
     background: none;
     border: none;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     color: #718096;
     text-decoration: none;
-    opacity: 0.7;
-    position: relative;
-}
-
-.bottom-nav.expanded .nav-item {
-    min-width: 70px;
-    padding: 10px 16px;
-}
-
-.nav-item:active {
-    transform: scale(0.9);
-}
-
-.nav-item svg {
-    width: 26px;
-    height: 26px;
-    margin-bottom: 2px;
-    stroke: currentColor;
-    fill: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.bottom-nav.expanded .nav-item svg {
-    width: 30px;
-    height: 30px;
-}
-
-.nav-item.active {
-    color: #667eea;
-    opacity: 1;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
-}
-
-.nav-item span {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    transition: all 0.3s ease;
-}
-
-.bottom-nav:not(.expanded) .nav-item span {
-    font-size: 10px;
 }
 
 .nav-item:active {
@@ -3701,9 +3550,9 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     color: #718096;
 }
 
-/* 컨테이너에 하단 여백 추가 - 플로팅 네비게이션 바 고려 */
+/* 컨테이너에 하단 여백 추가 */
 .container {
-    padding-bottom: calc(var(--bottom-nav-height) + var(--bottom-action-bar-height) + 40px);
+    padding-bottom: calc(var(--bottom-nav-height) + var(--bottom-action-bar-height) + 20px);
 }
 
 /* 모달을 전체 화면으로 변경 */
@@ -3717,7 +3566,7 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
     height: 100%;
     background-color: #f8f9fa;
     overflow-y: auto;
-    padding-bottom: calc(var(--bottom-nav-height) + 40px);
+    padding-bottom: calc(var(--bottom-nav-height) + 20px);
 }
 
 .modal-content {
@@ -3962,34 +3811,27 @@ input[type="text"]:focus, select:focus, textarea:focus, input[type="number"]:foc
 }
 /* 2층 하단 네비게이션 바 (신청 버튼) */
 :root {
-    --bottom-nav-height: 70px;
-    --bottom-action-bar-height: 68px;  /* ← 2 층 높이 추가 */
+    --bottom-nav-height: 60px;
+    --bottom-action-bar-height: 68px;  /* ← 2층 높이 추가 */
 }
 
 .bottom-action-bar {
     position: fixed;
-    bottom: calc(var(--bottom-nav-height) + 16px);   /* 플로팅 nav 바로 위에 배치 (16px 는 floating offset) */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 500px;
+    bottom: var(--bottom-nav-height);   /* 1층 nav 바로 위에 배치 */
+    left: 0;
+    right: 0;
     height: var(--bottom-action-bar-height);
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(30px) saturate(180%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-    border-radius: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(273, 255, 255, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: -28px solid rgba(102, 126, 234, 0.15);
     display: none;
     justify-content: center;
     align-items: center;
     gap: 9px;
     padding: 4px 21px;
-    z-index: 999;
-    box-shadow:
-        0 10px 40px rgba(0, 0, 0, 0.15),
-        0 2px 10px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    box-shadow: 0 -1px 6px rgba(0,0,0,0.04);
 }
 
 .bottom-action-bar.visible {
@@ -10264,40 +10106,6 @@ document.addEventListener('DOMContentLoaded', function() {
             changeFontSize(parseInt(this.value));
         });
     }
-
-    // 네비게이션 바 스크롤/클릭 시 확장/축소 기능
-    const bottomNav = document.getElementById('bottomNav');
-    let navExpandTimeout;
-
-    if (bottomNav) {
-        // 네비게이션 아이템 클릭 시 확장
-        bottomNav.addEventListener('click', function() {
-            expandNavTemporarily();
-        });
-
-        // 스크롤 시 확장
-        window.addEventListener('scroll', function() {
-            expandNavTemporarily();
-        }, { passive: true });
-    }
-
-    function expandNavTemporarily() {
-        if (!bottomNav) return;
-
-        // 이미 확장되어있으면 리턴
-        if (bottomNav.classList.contains('expanded')) return;
-
-        // 확장
-        bottomNav.classList.add('expanded');
-
-        // 기존 타임아웃 클리어
-        clearTimeout(navExpandTimeout);
-
-        // 3 초 후 자동 축소
-        navExpandTimeout = setTimeout(() => {
-            bottomNav.classList.remove('expanded');
-        }, 3000);
-    }
 });
 
 // 메뉴 외부 클릭 시 닫기
@@ -10355,28 +10163,7 @@ document.addEventListener('keydown', function(event) {
 </script>
 <div id="fullScreenStatus" class="fullscreen-overlay">
     <div id="loadingState" class="status-content">
-        <div class="loading-container">
-            <!-- SVG 원형 프로그레스 바 -->
-            <svg class="circular-progress" viewBox="0 0 120 120">
-                <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#667eea"/>
-                        <stop offset="100%" stop-color="#764ba2"/>
-                    </linearGradient>
-                </defs>
-                <circle class="progress-bg" cx="60" cy="60" r="54"/>
-                <circle class="progress-bar" id="progressBar" cx="60" cy="60" r="54"/>
-            </svg>
-            <!-- 중앙 로고 아이콘 -->
-            <div class="loading-logo">
-                <svg viewBox="0 0 24 24">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-            </div>
-            <!-- 퍼센트 표시 -->
-            <div class="loading-percent" id="loadingPercent">0%</div>
-        </div>
+        <div class="spinner-border"></div>
         <p class="status-message">처리 중입니다...</p>
     </div>
 
